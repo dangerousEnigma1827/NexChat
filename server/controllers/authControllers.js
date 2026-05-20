@@ -8,7 +8,7 @@ const register = async (req, res) => {
     let hashedPassword = await bcrypt.hash(req.body.password, 10)
 
     if(findUserOfEmail){
-        return res.json({
+        return res.status(400).json({
             success:false,
             message: "User Already Exists"
         })
@@ -55,7 +55,7 @@ const login = async (req, res) => {
         
         res.json({
             success:true,
-            message: "login successful",
+            message: "Login Successful",
             user:user,
             token:token
         })
