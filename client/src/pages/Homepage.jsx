@@ -13,6 +13,7 @@ function HomePage() {
     let [currentUserId, setUserId] = useState(null)
     let [message, setMessage] = useState("")
     let [allMessagesBwTwo, setAllMessagesBwTwo] = useState([])
+    let [onlineUsers, setOnlineUsers] = useState([])
 
     let getAllUsers = async () => {
         try{
@@ -101,6 +102,10 @@ function HomePage() {
             })
         })
 
+        socket.on('online_users', (onlineUsers)=>{
+            setOnlineUsers(onlineUsers);
+        })
+
         return ()=>{
             socket.off("connect");
             socket.off("recieve_message")
@@ -140,9 +145,21 @@ function HomePage() {
                                 setUserSeletec(user._id)
                                 setUserSeletectedUsername(user.username)
                             }}>
-                                <div className='rounded-full bg-[#141720] h-[6vh] w-[6vh] flex justify-center items-center'>
-                                    <p className='text-white text-xl'>{user.username.substring(0,1)}</p>
-                                </div>
+                               <div className='relative'>
+    
+    <div className='rounded-full bg-[#141720] h-[6vh] w-[6vh] flex justify-center items-center'>
+        <p className='text-white text-xl'>
+            {user.username.substring(0,1)}
+        </p>
+    </div>
+
+    {
+        onlineUsers.includes(user._id) && (
+            <div className='absolute bottom-0 right-0 h-3 w-3 bg-green-500 rounded-full border-2 border-[#212634]'></div>
+        )
+    }
+
+</div>
                                 <p className='text-xl text-white'>{user.username}</p>
                             </div>
                         })
@@ -154,7 +171,6 @@ function HomePage() {
         <div className='w-[71vw] bg-[#141720] min-h-[100vh]'>
                {
                 !userSeleted && <div>
-                    
                 </div>
                }
                {
@@ -163,8 +179,11 @@ function HomePage() {
                         <div className='rounded-full bg-[#141720] h-[6vh] w-[6vh] flex justify-center items-center ml-6'>
                             <p className='text-white text-xl'>{userSeletedUsername.substring(0,1)}</p>
                         </div>
-                        <p className='text-xl text-white'>{userSeletedUsername}</p>
-                    </div>
+                        <div className='flex flex-col'>
+                            <p className='text-xl text-white'>{userSeletedUsername}</p>
+                            <p className='text-sm text-gray-400'>{onlineUsers.includes(userSeleted) ? "Online" : "Offline"}</p>
+                        </div>
+                        </div>
 
                     <div className='h-[80vh] w-full overflow-y-auto'>
                         <div className='w-full py-6 pb-6'>
