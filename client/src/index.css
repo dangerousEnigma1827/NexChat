@@ -14,3 +14,23 @@
 .title{
     font-family: "Finlandica Headline", sans-serif;
 }
+/* width */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* track */
+::-webkit-scrollbar-track {
+  background: #141720;
+}
+
+/* thumb */
+::-webkit-scrollbar-thumb {
+  background: #2b3142;
+  border-radius: 10px;
+}
+
+/* hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #3b4258;
+}

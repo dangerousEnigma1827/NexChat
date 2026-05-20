@@ -32,7 +32,7 @@ const io = new Server(server, {
 
 socketHandler(io)
 
-
+export default io;
 
 
 const PORT = process.env.PORT || 5000;

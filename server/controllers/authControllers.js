@@ -77,7 +77,11 @@ const me = async (req,res) => {
 
 const allUsers = async (req,res) => {
     try{
-        let allUsers = await userModels.find()
+        let allUsers = await userModels.find({
+
+            _id : {$ne : req.user.userId}
+            
+        })
         res.json(allUsers);
     }catch(err){
         console.log("error getting all users in backend")
