@@ -21,6 +21,9 @@ let userSchema = new mongoose.Schema({
     lastMessageSent:{
         type:Map,
         of:String
+    },
+    pfp:{
+        type:String
     }
 },{
     timestamps:true

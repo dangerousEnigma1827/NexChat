@@ -11,6 +11,7 @@ function HomePage() {
     let token = localStorage.getItem('token')
     let [userSeleted, setUserSeletec] = useState(false)
     let [userSeletedUsername, setUserSeletectedUsername] = useState(false)
+    let [userSeletedPfp, setUserSeletectedPfp] = useState(null)
     let [currentUserId, setUserId] = useState(null)
     let [message, setMessage] = useState("")
     let [allMessagesBwTwo, setAllMessagesBwTwo] = useState([])
@@ -202,12 +203,22 @@ function HomePage() {
                             return <div className={`h-[7vh] w-[100%] flex items-center justify-between mb-3 gap-2 cursor-pointer hover:bg-[#2b3142] rounded-md px-2 py-8 duration-500 transition-all ${user._id == userSeleted ? "bg-[#2b3142]" : ""}`} onClick={(e)=>{
                                 setUserSeletec(user._id)
                                 setUserSeletectedUsername(user.username)
+                                setUserSeletectedPfp(user.pfp)
+                                console.log(user)
                             }}>
                                <div className='flex items-center gap-4 '>
 
                                     <div className='relative'>
-                                        <div className='rounded-full bg-[#141720] h-[6vh] w-[6vh] flex justify-center items-center'>
-                                            <p className='text-white text-xl'>{user.username.substring(0,1)}</p>
+                                        <div className='rounded-full bg-[#141720] h-[7vh] w-[7vh] flex justify-center items-center text-center '>
+                                            
+                                            {user.pfp && <img src={user.pfp} className='h-full w-full object-cover rounded-full' />}
+                                            {
+                                                !user.pfp && (
+                                                    <p className='text-white text-md font-medium'>
+                                                        {user.username?.substring(0,1).toUpperCase()}
+                                                    </p>
+                                                )
+                                            }
                                         </div>
                                         {
                                             onlineUsers.includes(user._id) && (
@@ -248,7 +259,18 @@ function HomePage() {
                     userSeleted && <div className=''>
                         <div className='w-full h-[10vh] bg-[#1d202f] flex items-center gap-4'>
                             <div className='rounded-full bg-[#141720] h-[6vh] w-[6vh] flex justify-center items-center ml-6'>
-                                <p className='text-white text-xl'>{userSeletedUsername.substring(0,1)}</p>
+                                {
+                                    userSeletedPfp && (
+                                        <img src={userSeletedPfp} className='h-full w-full object-cover rounded-full' />
+                                    )
+                                }
+                                {
+                                    !userSeletedPfp && (
+                                        <p className='text-white text-md font-medium'>
+                                            {userSeletedUsername?.substring(0,1).toUpperCase()}
+                                        </p>
+                                    )
+                                }
                             </div>
                             <div className='flex flex-col'>
                                 <p className='text-xl text-white'>{userSeletedUsername}</p>
