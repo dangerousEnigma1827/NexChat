@@ -12,12 +12,14 @@ function Register() {
   let [username, setUsername] = useState()
   let [password, setPassword] = useState()
   let [email, setEmail] = useState()
+  let[lastMessageSent, setLastMessageSent] = useState({})
+  let[lastTimeMessageSent, setLastTimeMessageSent] = useState({})
 
   let hangleRegister = async () =>{
     if(username && email && password){
       try{
         let handleRegisterInFrontend = await axios.post('http://localhost:5000/api/auth/register', {
-          username, email, password
+          username, email, password,lastMessageSent , lastTimeMessageSent
         })
 
         navigate('/login')

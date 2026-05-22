@@ -13,6 +13,14 @@ let userSchema = new mongoose.Schema({
     password:{
         type:String,
         required:true
+    },
+    lastTimeMessageSent:{
+        type:Map,
+        of:String
+    },
+    lastMessageSent:{
+        type:Map,
+        of:String
     }
 },{
     timestamps:true

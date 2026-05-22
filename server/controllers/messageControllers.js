@@ -1,5 +1,6 @@
 import { get } from "mongoose";
 import Message from "../models/messageModels.js";
+import User from "../models/userModels.js";
 import io from '../server.js'
 
 export const getMessages = async (req,res) => {
@@ -25,10 +26,26 @@ export const getMessages = async (req,res) => {
 
 export const sendMessage = async (req,res)=>{
     try{
-        console.log("backend tak")
         let messageSent = await Message.create(req.body);
-        console.log(messageSent)
         res.json(messageSent)
+
+        let sendingUser = await User.findByIdAndUpdate(
+            messageSent.senderId,
+            {
+                $set:{
+                    [`lastTimeMessageSent.${messageSent.recieverId}`] : new Date()
+                }
+            }
+        );
+        let sendingUserMessage = await User.findByIdAndUpdate(
+            messageSent.senderId,
+            {
+                $set:{
+                    [`lastMessageSent.${messageSent.recieverId}`] : messageSent.message
+                }
+            }
+        );
+
         io.to(req.body.recieverId).emit("recieve_message", {
             "message":messageSent.message,
             "recieverId":messageSent.recieverId,
@@ -38,5 +55,26 @@ export const sendMessage = async (req,res)=>{
         console.log("sent to sender")
     }catch(err){
         console.log("error sending message to frontend from backend", err)
+    }
+}
+
+export const clearChatInBackend = async (req,res)=>{
+    try{
+        let clearedMessages = await Message.deleteMany({
+             $or:[
+                {
+                    senderId: req.params.currentUserId,
+                    recieverId: req.params.userSeleted
+                },
+                {
+                    recieverId: req.params.currentUserId,
+                    senderId: req.params.userSeleted
+                }
+            ]
+        })
+
+        res.json(clearedMessages)
+    }catch(err){
+        console.log("err deleting chatss in backend", err)
     }
 }

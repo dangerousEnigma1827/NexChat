@@ -5,6 +5,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import "flowbite";
 
 
 *, body{
@@ -33,4 +34,12 @@
 /* hover */
 ::-webkit-scrollbar-thumb:hover {
   background: #3b4258;
+}
+
+input:focus,
+button:focus,
+textarea:focus, input , button{
+  outline: none;
+  border: none;
+  box-shadow: none;
 }
