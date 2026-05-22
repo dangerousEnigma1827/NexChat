@@ -2,8 +2,7 @@ import mongoose from "mongoose";
 
 let messageSchema = new mongoose.Schema({
     "message":{
-        type:String,
-        required: true
+        type:String
     },
     "senderId":{
         type: mongoose.Schema.Types.ObjectId,
@@ -14,7 +13,13 @@ let messageSchema = new mongoose.Schema({
     },
     "chatId":{
         type:String
-    }
+    },
+    "isImage":{
+        type:Boolean
+    },
+    "imageList":[
+        String
+    ]
 }, {
     timestamps:true
 })

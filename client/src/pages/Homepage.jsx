@@ -20,6 +20,8 @@ function HomePage() {
     let scrollRef = useRef(null)
     let [logoutPopupOpen, setLogoutPopupOpen] = useState(false);
     let [dropdownOpen, setDropdownOpen] = useState(false);
+    let [imageList, setImageList] = useState([])
+    let [isImage, setIsImage] =useState(false)
 
     let getAllUsers = async () => {
         try{
@@ -64,7 +66,9 @@ function HomePage() {
                 {
                     message:message, 
                     senderId:currentUserId,
-                    recieverId: userSeleted
+                    recieverId: userSeleted,
+                    isImage:isImage,
+                    imageList
                 },
                 {
                     headers: {
@@ -102,14 +106,69 @@ function HomePage() {
         }
     }
 
+    let handleMediaSending = async (e) => {
+        if(e.target.files.length !== 0){
+
+            let uploadedImages = [];
+
+            for(let file of e.target.files){
+
+                let data = new FormData();
+
+                data.append("file", file);
+                data.append("upload_preset", "NexChatUploadPreset");
+                data.append("cloud_name", "dgv5nxqxx");
+
+                let res = await fetch(
+                    "https://api.cloudinary.com/v1_1/dgv5nxqxx/image/upload",
+                    {
+                        method:"POST",
+                        body:data
+                    }
+                );
+
+                let imageUploadurl = await res.json();
+
+                uploadedImages.push(imageUploadurl.url);
+            }
+
+            setImageList(uploadedImages);
+
+            let sentMessage = await axios.post(
+                "http://localhost:5000/api/messages/send",
+                {
+                    message:"",
+                    senderId:currentUserId,
+                    recieverId:userSeleted,
+                    isImage:true,
+                    imageList:uploadedImages
+                },
+                {
+                    headers:{
+                        Authorization:`Bearer ${token}`
+                    }
+                }
+            );
+
+            setMessage("")
+            setImageList([])
+
+            setAllMessagesBwTwo((prev)=>{
+                return [...prev, sentMessage.data]
+            });
+        }
+    }
+
     useEffect(()=>{
         getCurrentUser()
         getAllUsers()
     },[])
 
     useEffect(()=>{
-        getAllMessagesBwtwo()
-    }, [userSeleted])
+        if(userSeleted && currentUserId){
+            getAllMessagesBwtwo()
+        }
+    }, [userSeleted, currentUserId])
 
     useEffect(()=>{
         scrollRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -200,7 +259,7 @@ function HomePage() {
                 <div className='w-[100%] mt-6 flex flex-col items-center overflow-y-auto h-[75vh]'>
                     {
                         users.map((user, index)=>{
-                            return <div className={`h-[7vh] w-[100%] flex items-center justify-between mb-3 gap-2 cursor-pointer hover:bg-[#2b3142] rounded-md px-2 py-8 duration-500 transition-all ${user._id == userSeleted ? "bg-[#2b3142]" : ""}`} onClick={(e)=>{
+                            return <div key={user._id} className={`h-[7vh] w-[100%] flex items-center justify-between mb-3 gap-2 cursor-pointer hover:bg-[#2b3142] rounded-md px-2 py-8 duration-500 transition-all ${user._id == userSeleted ? "bg-[#2b3142]" : ""}`} onClick={(e)=>{
                                 setUserSeletec(user._id)
                                 setUserSeletectedUsername(user.username)
                                 setUserSeletectedPfp(user.pfp)
@@ -307,26 +366,52 @@ function HomePage() {
                                 allMessagesBwTwo.map((message, index)=>{
                                     return <div key={message._id}>
                                         {/* message */}
-                                        <div className={`w-full flex mb-4 ${ message.senderId === currentUserId? "justify-end": "justify-start"}`}>
-
-                                            <div className={`max-w-[45%] px-4 py-3 text-white break-words ${message.senderId === currentUserId? "bg-blue-500 mr-4 rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl": "bg-[#1d202f] ml-4 rounded-tr-2xl rounded-br-2xl rounded-bl-2xl"}`}>
-                                                {/* main text */}
-                                                <p className='text-[15px] leading-relaxed'>{message.message}</p>
-                                                <div className='flex justify-end mt-1'>
-                                                    {/* time ka part */}
-                                                    <span className='text-[11px] text-gray-300 font-light'>
-                                                        {
-                                                            new Date(message.createdAt)
-                                                            .toLocaleTimeString([], {
-                                                                hour: "2-digit",
-                                                                minute: "2-digit"
-                                                            })
-                                                        }
-                                                    </span>
+                                        {
+                                            !message.isImage && (
+                                                <div className={`w-full flex mb-4 ${ message.senderId === currentUserId? "justify-end": "justify-start"}`}>
+                                                    <div className={`max-w-[45%] px-4 py-3 text-white break-words ${message.senderId === currentUserId? "bg-blue-500 mr-4 rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl": "bg-[#1d202f] ml-4 rounded-tr-2xl rounded-br-2xl rounded-bl-2xl"}`}>
+                                                        {/* main text */}
+                                                        <p className='text-[15px] leading-relaxed'>{message.message}</p>
+                                                        <div className='flex justify-end mt-1'>
+                                                            {/* time ka part */}
+                                                            <span className='text-[11px] text-gray-300 font-light'>
+                                                                {
+                                                                    new Date(message.createdAt)
+                                                                    .toLocaleTimeString([], {
+                                                                        hour: "2-digit",
+                                                                        minute: "2-digit"
+                                                                    })
+                                                                }
+                                                            </span>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            )
+                                        }
 
-                                        </div>
+                                        {
+                                            message.isImage && (
+                                                    message.imageList.map((image, index)=>{
+                                                        return (
+                                                            <div key={index} className={`w-full flex mb-4 ${ message.senderId === currentUserId? "justify-end": "justify-start"}`}>
+                                                                <div className={`max-w-[45%] p-1 ${ message.senderId === currentUserId? "bg-blue-500 mr-4 rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl": "bg-[#1d202f] ml-4 rounded-tr-2xl rounded-br-2xl rounded-bl-2xl"}`}>
+                                                                    <img src={image} alt="chat-image" className='rounded-xl max-h-[350px] object-cover'/>
+                                                                    <div className='flex justify-end mt-1'>
+                                                                        <span className='text-[11px] text-gray-300 font-light'>
+                                                                            {
+                                                                                new Date(message.createdAt).toLocaleTimeString([], {
+                                                                                    hour: "2-digit",
+                                                                                    minute: "2-digit"
+                                                                                })
+                                                                            }
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        )
+                                                    })
+                                            )
+                                        }
 
                                     </div>
                                 })
@@ -338,7 +423,13 @@ function HomePage() {
                             {/* input wala */}
                         <div className='w-full h-[10vh] bg-[#1d202f] flex items-center justify-center'>
                             <div className='w-[80%] bg-[#141720] h-[7vh] rounded-md flex  items-center gap-2'>
-                                <Plus className='text-white cursor-pointer ml-6'/>
+                                <label>
+                                    <Plus className='text-white cursor-pointer ml-6' />
+                                    <input type="file" className='hidden' multiple onChange={(e)=>{
+                                        setImageList([])
+                                        handleMediaSending(e)
+                                    }}/>
+                                </label>
                                 <input type="text" placeholder='Write A Message!' className='outline-none  text-white w-[95%]  h-[8vh] text-md placeholder:text-gray-500 px-4 bg-transparent' value={message} onChange={(e)=>{setMessage(e.target.value)}} onKeyDown={(e)=>{
                                     if(e.key == "Enter"){
                                         sendMessageFunc()
