@@ -41,15 +41,16 @@ export const sendMessage = async (req,res)=>{
             messageSent.senderId,
             {
                 $set:{
-                    [`lastMessageSent.${messageSent.recieverId}`] : messageSent.message
+                    [`lastMessageSent.${messageSent.recieverId}`] : messageSent.text
                 }
             }
         );
 
         io.to(req.body.recieverId).emit("recieve_message", {
-            "message":messageSent.message,
+            "message":messageSent.text,
             "recieverId":messageSent.recieverId,
-            "senderId":messageSent.senderId
+            "senderId":messageSent.senderId,
+            "attachments":messageSent.attachments
         })
 
         console.log("sent to sender")
