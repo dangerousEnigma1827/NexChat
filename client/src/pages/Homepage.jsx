@@ -82,12 +82,7 @@ function HomePage() {
             )
 
             setAllMessagesBwTwo((prev)=>{
-                return [...prev, {
-                    text:text, 
-                    senderId:currentUserId,
-                    recieverId: userSeleted,
-                    attachments:attachments
-                }]
+                return [...prev, sendMessageFromFrontend.data]
             })
 
             setText("")
@@ -114,50 +109,45 @@ function HomePage() {
         }
     }
 
+    let uploadFile = async (file) => {
+        let data = new FormData();
+
+        data.append("file", file);
+        data.append("upload_preset", "NexChatUploadPreset");
+        data.append("cloud_name", "dgv5nxqxx");
+
+        let cloudinaryBaseUrl = 
+            file.type.includes("image") ? "https://api.cloudinary.com/v1_1/dgv5nxqxx/image/upload" : "https://api.cloudinary.com/v1_1/dgv5nxqxx/video/upload";
+        
+        let res = await fetch(
+            cloudinaryBaseUrl,
+            {
+                method:"POST",
+                body:data
+            }
+        );
+
+        let resObj = await res.json()
+
+        return{
+            url:resObj.secure_url || resObj.url,
+            type : file.type.includes("image") ? "image" : "video"
+        }
+    }
+
     let handleMedia = async (e) => {
-        let files = e.target.files;
+        let files = Array.from(e.target.files);
 
         let tempArr = []
-        for(let file of files){
-            let data = new FormData();
 
-            data.append("file", file);
-            data.append("upload_preset", "NexChatUploadPreset");
-            data.append("cloud_name", "dgv5nxqxx");
+        tempArr = await Promise.all(
+            files.map((file)=>{
+                return uploadFile(file);
+            })
+        )
 
-            let res = await fetch(
-                "https://api.cloudinary.com/v1_1/dgv5nxqxx/image/upload",
-                {
-                    method:"POST",
-                    body:data
-                }
-            );
-
-            let mediaUploadUrl = await res.json();
-            console.log(mediaUploadUrl)
-
-            if(file.type.includes("image")){
-                tempArr.push({
-                    url:mediaUploadUrl.url || mediaUploadUrl.secure_url ,
-                    type:"image"
-                })
-            }else if(file.type.includes("video")){
-                tempArr.push({
-                    url:mediaUploadUrl.url || mediaUploadUrl.secure_url,
-                    type:"video"
-                })
-            }
-        }
         setAttachments(tempArr)
-
-        setAllMessagesBwTwo((prev)=>{
-            return [...prev, {
-                text:text, 
-                senderId:currentUserId,
-                recieverId: userSeleted,
-                attachments:tempArr
-            }]
-        })
+        
 
         let sendMessageToBackend = await axios.post('http://localhost:5000/api/messages/send', {
             text:text, 
@@ -165,13 +155,13 @@ function HomePage() {
             recieverId: userSeleted,
             attachments : tempArr
             },
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                } 
-        
-            }
+            {headers: {Authorization: `Bearer ${token}`} }
         )
+
+        setAllMessagesBwTwo((prev)=>{
+            return [...prev, sendMessageToBackend.data]
+        })
+
         setAttachments([])
         setText("")
     }
@@ -384,27 +374,27 @@ function HomePage() {
                                     return <div key={message._id}>
                                         {
                                             message.attachments?.length != 0 && (
-                                                    message.attachments?.map((attachment, index)=>{
-                                                        return (
-                                                            <div key={index} className={`w-full flex mb-1 ${ message.senderId === currentUserId? "justify-end": "justify-start"}`}>
-                                                                <div className={`max-w-[45%] p-1 ${ message.senderId === currentUserId? "bg-blue-500 mr-4 rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl": "bg-[#1d202f] ml-4 rounded-tr-2xl rounded-br-2xl rounded-bl-2xl"}`}>
-                                                                    {
-                                                                        attachment.type == "image" && <img src={attachment.url} alt="chat-image" className='rounded-xl max-h-[350px] object-cover'/>
-                                                                    }
-                                                                    <div className='flex justify-end mt-1'>
-                                                                        <span className='text-[11px] text-gray-300 font-light'>
-                                                                            {
-                                                                                new Date(message.createdAt).toLocaleTimeString([], {
-                                                                                    hour: "2-digit",
-                                                                                    minute: "2-digit"
-                                                                                })
-                                                                            }
-                                                                        </span>
-                                                                    </div>
+                                                message.attachments?.map((attachment, index)=>{
+                                                    return (
+                                                        <div key={index} className={`w-full flex mb-1 ${ message.senderId === currentUserId? "justify-end": "justify-start"}`}>
+                                                            <div className={`max-w-[45%] p-1 ${ message.senderId === currentUserId? "bg-blue-500 mr-4 rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl": "bg-[#1d202f] ml-4 rounded-tr-2xl rounded-br-2xl rounded-bl-2xl"}`}>
+                                                                {
+                                                                    attachment.type == "image" && <img src={attachment.url} alt="chat-image" className=' cursor-pointer rounded-xl max-h-[350px] object-cover'/>
+                                                                }
+                                                                <div className='flex justify-end mt-1'>
+                                                                    <span className='text-[11px] text-gray-300 font-light'>
+                                                                        {
+                                                                            new Date(message.createdAt).toLocaleTimeString([], {
+                                                                                hour: "2-digit",
+                                                                                minute: "2-digit"
+                                                                            })
+                                                                        }
+                                                                    </span>
                                                                 </div>
                                                             </div>
-                                                        )
-                                                    })
+                                                        </div>
+                                                    )
+                                                })
                                             )
                                         }
                                         
