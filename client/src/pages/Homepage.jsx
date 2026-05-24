@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { MessageCircle, Search, Send, Plus } from "lucide-react";
-import {ChatsCircleIcon, ChatCircleTextIcon, SignOutIcon   } from "@phosphor-icons/react"
+import {ChatsCircleIcon, ChatCircleTextIcon, SignOutIcon,TrashIcon   } from "@phosphor-icons/react"
 import axios from 'axios'
 import {useNavigate} from 'react-router-dom'
 import socket from '../socket/socket';
@@ -20,7 +20,13 @@ function HomePage() {
 
     let [allMessagesBwTwo, setAllMessagesBwTwo] = useState([])
     let [onlineUsers, setOnlineUsers] = useState([])
+
+    //popups state
     let [logoutPopupOpen, setLogoutPopupOpen] = useState(false);
+    let [deletePopupOpen, setDeletePopupOpen] = useState(false);
+    let [clearChatPopupOpen, setClearChatPopupOpen] = useState(false);
+
+
     let [dropdownOpen, setDropdownOpen] = useState(false);
     let [dropArrowdownOpen, setDropArrowdownOpen] = useState(false);
     let [dropArrowdownId, setDropArrowdownId] = useState(null);
@@ -104,6 +110,8 @@ function HomePage() {
             let clearcharsBwTwo = await axios.post(`http://localhost:5000/api/messages/clearchat/${currentUserId}/${userSeleted}`, {}, {
                 headers: { Authorization: `Bearer ${token}` }
             })
+
+            getAllMessagesBwtwo()
 
             console.log("cleared chat")
         }catch(err){
@@ -215,14 +223,14 @@ function HomePage() {
         {/* logout popup */}
         {
             logoutPopupOpen && 
-            <div className='h-screen w-screen fixed inset-0 z-1000 flex justify-center items-center bg-black/40 transition-all duration-500 ease-in-out '>
-
-                <div className='h-[40vh] w-[30vw] rounded-md bg-[#232a3a]'>
-
+            <div className='h-screen w-screen fixed inset-0 z-1000 flex justify-center items-center bg-black/40 backdrop-blur-sm'>
+                <div className='h-[40vh] w-[30vw] rounded-2xl bg-[#232a3a] border border-[#31384d] shadow-2xl p-8'>
                     <div className='flex flex-col justify-center items-center h-full text-white px-8'>
-
+                        <div className='h-16 w-16 rounded-full p-2 bg-red-500/20 flex items-center justify-center mb-5'>
+                            <SignOutIcon size={32} color="#f44336" />
+                        </div>
                         <h1 className='text-2xl font-semibold mb-3'>Logout from NexChat?</h1>
-                        <p className='text-gray-400 text-sm text-center mb-8'>You will need to login again to access your chats and messages.</p>
+                        <p className='text-gray-400 text-sm text-center mb-8'>You will be logged out.</p>
 
                         <div className='flex gap-4'>
                             <button className='px-6 py-2 rounded-md bg-[#2b3142] hover:bg-[#3b4258] transition'
@@ -234,6 +242,61 @@ function HomePage() {
 
                     </div>
 
+                </div>
+
+            </div>
+        }
+
+        {/* delete */}
+
+        {/* delete popup */}
+        {
+            deletePopupOpen && 
+            <div className='h-screen w-screen fixed inset-0 z-[1000] flex justify-center items-center bg-black/40 backdrop-blur-sm'>
+                <div className='w-[28vw] rounded-2xl bg-[#232a3a] border border-[#31384d] shadow-2xl p-8'>
+                    <div className='flex flex-col items-center text-center text-white'>
+                        {/* icon */}
+                        <div className='h-16 w-16 rounded-full bg-red-500/20 flex items-center justify-center mb-5'>
+                            <TrashIcon size={32} color="#f44336" />
+                        </div>
+                        <h1 className='text-2xl font-semibold mb-2'>Delete Message?</h1>
+                        <p className='text-gray-400 text-sm leading-relaxed mb-8 max-w-[90%]'>This message will be deleted.</p>
+                        <div className='flex gap-4 w-full'>
+                            <button className='flex-1 py-3 rounded-xl bg-[#2b3142] hover:bg-[#3b4258] transition-all duration-200' onClick={() => {setDeletePopupOpen(false) 
+                                setDropArrowdownId(null)}}>Cancel</button>
+                            <button className='flex-1 py-3 rounded-xl bg-red-500 hover:bg-red-600 transition-all duration-200 font-medium'>Delete</button>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        }
+
+        {
+            clearChatPopupOpen && 
+            <div className='h-screen w-screen fixed inset-0 z-[1000] flex justify-center items-center bg-black/40 backdrop-blur-sm'>
+                <div className='w-[28vw] rounded-2xl bg-[#232a3a] border border-[#31384d] shadow-2xl p-8'>
+                    <div className='flex flex-col items-center text-center text-white'>
+                        {/* icon
+                        <div className='h-16 w-16 rounded-full bg-red-500/20 flex items-center justify-center mb-5'>
+                            <TrashIcon size={32} color="#f44336" />
+                        </div> */}
+                        <h1 className='text-2xl font-semibold mb-2'>Clear Chat?</h1>
+                        <p className='text-gray-400 text-sm leading-relaxed mb-8 max-w-[90%]'>All these messages will be deleted.</p>
+                        <div className='flex gap-4 w-full'>
+                            <button className='flex-1 py-3 rounded-xl bg-[#2b3142] hover:bg-[#3b4258] transition-all duration-200' onClick={() => {
+                                setClearChatPopupOpen(false)
+                                setDropdownOpen(false)
+                                }}>Cancel</button>
+                            <button className='flex-1 py-3 rounded-xl bg-red-500 hover:bg-red-600 transition-all duration-200 font-medium' onClick={(e)=>{
+                                setClearChatPopupOpen(false)
+                                setDropdownOpen(false)
+                                handleClearChat()
+                                getAllMessagesBwtwo()
+                            }}>Clear Chat</button>
+                        </div>
+                    </div>
                 </div>
 
             </div>
@@ -358,9 +421,7 @@ function HomePage() {
                                         <ul className="p-2 text-sm text-gray-300">
                                             <li><button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded-md transition-all">View Profile</button></li>
                                             <li><button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded-md transition-all" onClick={(e)=>{
-                                                setDropdownOpen(false)
-                                                handleClearChat()
-                                                getAllMessagesBwtwo()
+                                                setClearChatPopupOpen(true)
                                             }}>Clear Chat</button></li>
                                         </ul>
                                     </div>
@@ -393,7 +454,10 @@ function HomePage() {
                                                             }`}>
 
                                                                 <button 
-                                                                    onClick={() => setDropArrowdownId(attachment.url)}
+                                                                    onClick={() => {
+                                                                        if(dropArrowdownId == null) setDropArrowdownId(attachment.url)
+                                                                        else setDropArrowdownId(null)
+                                                                    }}
                                                                     className={`absolute top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 hover:opacity-100 bg-[#232a3a] rounded-full p-1 transition-all duration-200 z-20 ${
                                                                         message.senderId === currentUserId
                                                                         ? "-left-6"
@@ -412,8 +476,12 @@ function HomePage() {
                                                                             : "-right-56"
                                                                         }`}>
                                                                             <div className="p-2 text-sm text-gray-300 font-medium">
-                                                                                <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all">Delete </button>
+                                                                                {/* <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all">Edit</button> */}
+                                                                                <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all">Delete</button>
                                                                             </div>
+                                                                            {/* <div class="p-2 text-sm text-body font-medium"> */}
+                                                                                {/* <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all">Separated link</button> */}
+                                                                            {/* </div> */}
                                                                         </div>
                                                                     )
                                                                 }
@@ -448,7 +516,10 @@ function HomePage() {
                                                     message.senderId === currentUserId ? "bg-blue-500 mr-4 rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl": "bg-[#1d202f] ml-4 rounded-tr-2xl rounded-br-2xl rounded-bl-2xl"}`}>
 
                                                     <button 
-                                                        onClick={() => setDropArrowdownId(message._id)}
+                                                        onClick={() =>  {
+                                                            if(dropArrowdownId == null) setDropArrowdownId(message._id)
+                                                            else setDropArrowdownId(null)
+                                                        }}
                                                         className={`absolute top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 hover:opacity-100 bg-[#232a3a] rounded-full p-1 transition-all duration-200 z-20 ${
                                                             message.senderId === currentUserId
                                                             ? "-left-6"
@@ -465,8 +536,13 @@ function HomePage() {
                                                                 : "-right-56"
                                                             }`}>
                                                                 <div className="p-2 text-sm text-gray-300 font-medium">
-                                                                    <a href="#" className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all">Edit</a>
-                                                                    <a href="#" className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all">Delete</a>
+                                                                    <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all">Edit</button>
+                                                                    {/* <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all">Delete</button> */}
+                                                                </div>
+                                                                <div class="p-2 text-sm text-body font-medium">
+                                                                    <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all" onClick={(e)=>{
+                                                                        setDeletePopupOpen(true)
+                                                                    }}>Delete</button>
                                                                 </div>
                                                             </div>
                                                         )
