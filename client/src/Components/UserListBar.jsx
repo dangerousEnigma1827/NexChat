@@ -1,0 +1,66 @@
+import React from 'react'
+import { Search } from 'lucide-react'
+
+function UserListBar({users, userSeleted, setUserSeletec, setUserSeletectedUsername, setUserSeletectedPfp, onlineUsers}){
+  return (
+    <>
+    <div className='w-[100%] bg-[#141720] h-[7vh] rounded-md flex  items-center gap-2'>
+        <Search className='text-white ml-4' size={19}/>
+        <input type="text" placeholder='Seach Chats' className='outline-none bg-transparent text-white  h-[8vh] text-md placeholder:text-gray-500'/>
+    </div>
+
+    <div className='w-[100%] mt-6 flex flex-col items-center overflow-y-auto h-[75vh]'>
+        {
+            users.map((user, index)=>{
+                return <div key={user._id} className={`h-[7vh] w-[100%] flex items-center justify-between mb-3 gap-2 cursor-pointer hover:bg-[#2b3142] rounded-md px-2 py-8 duration-500 transition-all ${user._id == userSeleted ? "bg-[#2b3142]" : ""}`} onClick={(e)=>{
+                    setUserSeletec(user._id)
+                    setUserSeletectedUsername(user.username)
+                    setUserSeletectedPfp(user.pfp)
+                    console.log(user)
+                }}>
+                    <div className='flex items-center gap-4 '>
+
+                        <div className='relative'>
+                            <div className='rounded-full bg-[#141720] h-[7vh] w-[7vh] flex justify-center items-center text-center '>
+                                
+                                {user.pfp && <img src={user.pfp} className='h-full w-full object-cover rounded-full' />}
+                                {
+                                    !user.pfp && (
+                                        <p className='text-white text-md font-medium'>
+                                            {user.username?.substring(0,1).toUpperCase()}
+                                        </p>
+                                    )
+                                }
+                            </div>
+                            {
+                                onlineUsers.includes(user._id) && (
+                                    <div className='absolute bottom-0 right-0 h-3 w-3 bg-green-500 rounded-full border-2 border-[#212634]'></div>
+                                )
+                            }
+                        </div>
+
+                        <div className='flex flex-col min-w-0'>
+                            <div className='flex justify-between items-center'>
+                                <p className='text-xl text-white'>{user.username}</p>
+                            
+                                {/* <div className={`${user.lastTimeMessageSent[currentUserId] ? "text-[#64748b] opacity-100" : "text-blue-600 opacity-0"}`}>
+                                     <p>{new Date(user.lastTimeMessageSent[currentUserId]).toLocaleTimeString([], { 
+                                        hour:"2-digit",
+                                        minute:"2-digit"
+                                    })}</p>
+                                </div> */}
+                            </div>
+
+                            {/* <p className='text-[#94A3b8] font-sm truncate max-w-[250px]'>{user.lastMessageSent[currentUserId]}</p> */}
+                        </div>
+                    </div>
+                    
+                </div>
+            })
+        }
+    </div>
+    </>
+  )
+}
+
+export default UserListBar

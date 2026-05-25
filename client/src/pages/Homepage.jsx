@@ -4,6 +4,8 @@ import {ChatsCircleIcon, ChatCircleTextIcon, SignOutIcon,TrashIcon   } from "@ph
 import axios from 'axios'
 import {useNavigate} from 'react-router-dom'
 import socket from '../socket/socket';
+import SelectedGroupOrUser from '../Components/SelectedGroupOrUser';
+import UserListBar from '../Components/UserListBar';
 
 function HomePage() {
 
@@ -299,7 +301,6 @@ function HomePage() {
                             <button className='flex-1 py-3 rounded-xl bg-[#2b3142] hover:bg-[#3b4258] transition-all duration-200' onClick={() => {setDeletePopupOpen(false) 
                                 setDropArrowdownId(null)}}>Cancel</button>
                             <button className='flex-1 py-3 rounded-xl bg-red-500 hover:bg-red-600 transition-all duration-200 font-medium' onClick={(e)=>{
-                                
                                 handleDelete()
                                 setDeletePopupOpen(false) 
                                 setDropArrowdownId(null)
@@ -362,61 +363,7 @@ function HomePage() {
                 </div>
 
                 {/* search bar */}
-                <div className='w-[100%] bg-[#141720] h-[7vh] rounded-md flex  items-center gap-2'>
-                    <Search className='text-white ml-4' size={19}/>
-                    <input type="text" placeholder='Seach Chats' className='outline-none bg-transparent text-white  h-[8vh] text-md placeholder:text-gray-500'/>
-                </div>
-
-                <div className='w-[100%] mt-6 flex flex-col items-center overflow-y-auto h-[75vh]'>
-                    {
-                        users.map((user, index)=>{
-                            return <div key={user._id} className={`h-[7vh] w-[100%] flex items-center justify-between mb-3 gap-2 cursor-pointer hover:bg-[#2b3142] rounded-md px-2 py-8 duration-500 transition-all ${user._id == userSeleted ? "bg-[#2b3142]" : ""}`} onClick={(e)=>{
-                                setUserSeletec(user._id)
-                                setUserSeletectedUsername(user.username)
-                                setUserSeletectedPfp(user.pfp)
-                                console.log(user)
-                            }}>
-                               <div className='flex items-center gap-4 '>
-
-                                    <div className='relative'>
-                                        <div className='rounded-full bg-[#141720] h-[7vh] w-[7vh] flex justify-center items-center text-center '>
-                                            
-                                            {user.pfp && <img src={user.pfp} className='h-full w-full object-cover rounded-full' />}
-                                            {
-                                                !user.pfp && (
-                                                    <p className='text-white text-md font-medium'>
-                                                        {user.username?.substring(0,1).toUpperCase()}
-                                                    </p>
-                                                )
-                                            }
-                                        </div>
-                                        {
-                                            onlineUsers.includes(user._id) && (
-                                                <div className='absolute bottom-0 right-0 h-3 w-3 bg-green-500 rounded-full border-2 border-[#212634]'></div>
-                                            )
-                                        }
-                                    </div>
-
-                                    <div className='flex flex-col min-w-0'>
-                                        <div className='flex justify-between items-center'>
-                                            <p className='text-xl text-white'>{user.username}</p>
-                                        
-                                            <div className={`${user.lastTimeMessageSent[currentUserId] ? "text-[#64748b] opacity-100" : "text-blue-600 opacity-0"}`}>
-                                                {/* <p>{new Date(user.lastTimeMessageSent[currentUserId]).toLocaleTimeString([], { */}
-                                                    {/* hour:"2-digit", */}
-                                                    {/* minute:"2-digit" */}
-                                                {/* })}</p> */}
-                                            </div>
-                                        </div>
-
-                                        {/* <p className='text-[#94A3b8] font-sm truncate max-w-[250px]'>{user.lastMessageSent[currentUserId]}</p> */}
-                                    </div>
-                               </div>
-                               
-                            </div>
-                        })
-                    }
-                </div>
+                <UserListBar users={users} userSeleted={userSeleted} setUserSeletec={setUserSeletec} setUserSeletectedUsername={setUserSeletectedUsername} setUserSeletectedPfp={setUserSeletectedPfp} onlineUsers={onlineUsers}/>
             </div>
         </div>
 
@@ -427,47 +374,8 @@ function HomePage() {
                 }
                 {
                     userSeleted && <div className=''>
-                        <div className='w-full h-[10vh] bg-[#1d202f] flex items-center gap-4'>
-                            <div className='rounded-full bg-[#141720] h-[6vh] w-[6vh] flex justify-center items-center ml-6'>
-                                {
-                                    userSeletedPfp && (
-                                        <img src={userSeletedPfp} className='h-full w-full object-cover rounded-full' />
-                                    )
-                                }
-                                {
-                                    !userSeletedPfp && (
-                                        <p className='text-white text-md font-medium'>
-                                            {userSeletedUsername?.substring(0,1).toUpperCase()}
-                                        </p>
-                                    )
-                                }
-                            </div>
-                            <div className='flex flex-col'>
-                                <p className='text-xl text-white'>{userSeletedUsername}</p>
-                                <p className='text-sm text-gray-400'>{onlineUsers.includes(userSeleted) ? "Online" : "Offline"}</p>
-                            </div>
-
-                            {/* three dot wala */}
-                            <div className='relative ml-auto mr-6'>
-
-                                <button onClick={() => setDropdownOpen(!dropdownOpen)} className="text-white hover:bg-[#2b3142] rounded-md p-2 transition-all" type="button">
-                                    <svg className="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" strokeLinecap="round" strokeWidth="3" d="M12 6h.01M12 12h.01M12 18h.01"/></svg>
-                                </button>
-
-                                {
-                                    dropdownOpen &&
-                                    <div className="absolute right-0 mt-2 bg-[#232a3a] border border-[#31384d] rounded-md shadow-lg w-44 z-50">
-                                        <ul className="p-2 text-sm text-gray-300">
-                                            <li><button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded-md transition-all">View Profile</button></li>
-                                            <li><button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded-md transition-all" onClick={(e)=>{
-                                                setClearChatPopupOpen(true)
-                                            }}>Clear Chat</button></li>
-                                        </ul>
-                                    </div>
-                                }
-                            </div>
-
-                        </div>
+                        
+                        <SelectedGroupOrUser userSeletedPfp={userSeletedPfp} userSeletedUsername={userSeletedUsername} dropdownOpen={dropdownOpen} setDropdownOpen={setDropdownOpen} onlineUsers={onlineUsers} userSeleted={userSeleted} setClearChatPopupOpen={setClearChatPopupOpen}/>
 
                         <div className='h-[80vh] w-full overflow-y-auto'>
                             <div className='w-full py-6 pb-6'>
@@ -511,22 +419,22 @@ function HomePage() {
                                                                     </button>
 
                                                                     {
-                                                                        dropArrowdownId == attachment.url && (
-                                                                            <div className={`absolute top-1/2 -translate-y-1/2 z-10 bg-[#232a3a] border border-[#31384d] rounded-md divide-y divide-[#31384d] shadow-lg w-44 ${
-                                                                                message.senderId === currentUserId
-                                                                                ? "-left-56"
-                                                                                : "-right-56"
-                                                                            }`}>
-                                                                                <div className="p-2 text-sm text-gray-300 font-medium">
-                                                                                    {/* <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all">Edit</button> */}
-                                                                                    <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all" onClick={(e)=>{
-                                                                                    }}>Delete</button>
-                                                                                </div>
-                                                                                {/* <div class="p-2 text-sm text-body font-medium"> */}
-                                                                                    {/* <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all">Separated link</button> */}
-                                                                                {/* </div> */}
-                                                                            </div>
-                                                                        )
+                                                                        // dropArrowdownId == attachment.url && (
+                                                                        //     <div className={`absolute top-1/2 -translate-y-1/2 z-10 bg-[#232a3a] border border-[#31384d] rounded-md divide-y divide-[#31384d] shadow-lg w-44 ${
+                                                                        //         message.senderId === currentUserId
+                                                                        //         ? "-left-56"
+                                                                        //         : "-right-56"
+                                                                        //     }`}>
+                                                                        //         <div className="p-2 text-sm text-gray-300 font-medium">
+                                                                        //             {/* <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all">Edit</button> */}
+                                                                        //             <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all" onClick={(e)=>{
+                                                                        //             }}>Delete</button>
+                                                                        //         </div>
+                                                                        //         {/* <div class="p-2 text-sm text-body font-medium"> */}
+                                                                        //             {/* <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all">Separated link</button> */}
+                                                                        //         {/* </div> */}
+                                                                        //     </div>
+                                                                        // )
                                                                     }
 
                                                                     {
@@ -537,17 +445,16 @@ function HomePage() {
                                                                                 : "-right-56"
                                                                             }`}>
                                                                                 <div className="p-2 text-sm text-gray-300 font-medium">
-                                                                                    <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all">Edit</button>
-                                                                                    {/* <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all">Delete</button> */}
-                                                                                </div>
-                                                                                <div class="p-2 text-sm text-body font-medium">
-                                                                                    <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all" onClick={(e)=>{
+                                                                                    <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] text-white rounded transition-all" onClick={(e)=>{
                                                                                         setDeletePopupOpen(true)
                                                                                     }}>Delete For All</button>
-                                                                                    <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all" onClick={(e)=>{
+                                                                                    <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] text-white rounded transition-all" onClick={(e)=>{
                                                                                         setDeletePopupOpen(true)
                                                                                     }}>Delete For Me</button>
                                                                                 </div>
+                                                                                {/* <div class="p-2 text-sm text-body font-medium">
+                                                                                    
+                                                                                </div> */}
                                                                             </div>
                                                                         )
                                                                     }
@@ -562,9 +469,6 @@ function HomePage() {
                                                                                     <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all" onClick={(e)=>{
                                                                                         setDeletePopupOpen(true)
                                                                                     }}>Delete For Me</button>
-                                                                                </div>
-                                                                                <div class="p-2 text-sm text-body font-medium">
-                                                                                    {/* seperated line contned ehre */}
                                                                                 </div>
                                                                             </div>
                                                                         )
