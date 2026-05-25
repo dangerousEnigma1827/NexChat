@@ -6,6 +6,9 @@ import {useNavigate} from 'react-router-dom'
 import socket from '../socket/socket';
 import SelectedGroupOrUser from '../Components/SelectedGroupOrUser';
 import UserListBar from '../Components/UserListBar';
+import InputArea from '../Components/InputArea';
+import NexChatIcon from '../Components/NexChatIcon';
+import LeftMostBar from '../Components/LeftMostBar';
 
 function HomePage() {
 
@@ -344,28 +347,17 @@ function HomePage() {
 
 
         <div className='flex w-full h-screen'>
-            <div className='w-[4vw] min-h-[100vh] bg-[#141720] flex flex-col items-center justify-between '>
-                <div className='mt-6 mb-6 h-screen flex flex-col justify-between'>
-                    <ChatCircleTextIcon size={25} color="#ffffff" weight="fill" className='cursor-pointer' />
-                    <SignOutIcon size={25} color="#ffffff" weight="fill" className='cursor-pointer' onClick={(e)=>{
-                        setLogoutPopupOpen(true)
-                    }} />
-
-                </div>
-            </div>
+            
+            <LeftMostBar setLogoutPopupOpen={setLogoutPopupOpen}/>
 
             <div className='w-[25vw] bg-[#212634] min-h-[100vh] flex  flex-col items-center'>
-            {/* //inner content */}
-            <div className='w-[90%] mt-5'>
-                <div className='flex gap-2 items-center w-[100%] mb-5'>
-                    <ChatsCircleIcon size={32} color="#3b82f6" weight="fill" className='' />
-                    <p className='text-white title text-3xl font-normal '>NexChat</p>
-                </div>
+                <div className='w-[90%] mt-5'>
+                    <NexChatIcon/>
 
-                {/* search bar */}
-                <UserListBar users={users} userSeleted={userSeleted} setUserSeletec={setUserSeletec} setUserSeletectedUsername={setUserSeletectedUsername} setUserSeletectedPfp={setUserSeletectedPfp} onlineUsers={onlineUsers}/>
+                    {/* //users list */}
+                    <UserListBar users={users} userSeleted={userSeleted} setUserSeletec={setUserSeletec} setUserSeletectedUsername={setUserSeletectedUsername} setUserSeletectedPfp={setUserSeletectedPfp} onlineUsers={onlineUsers}/>
+                </div>
             </div>
-        </div>
 
             <div className='w-[71vw] bg-[#141720] min-h-[100vh]'>
                 {
@@ -417,25 +409,6 @@ function HomePage() {
                                                                             <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 9-7 7-7-7"/>
                                                                         </svg>
                                                                     </button>
-
-                                                                    {
-                                                                        // dropArrowdownId == attachment.url && (
-                                                                        //     <div className={`absolute top-1/2 -translate-y-1/2 z-10 bg-[#232a3a] border border-[#31384d] rounded-md divide-y divide-[#31384d] shadow-lg w-44 ${
-                                                                        //         message.senderId === currentUserId
-                                                                        //         ? "-left-56"
-                                                                        //         : "-right-56"
-                                                                        //     }`}>
-                                                                        //         <div className="p-2 text-sm text-gray-300 font-medium">
-                                                                        //             {/* <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all">Edit</button> */}
-                                                                        //             <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all" onClick={(e)=>{
-                                                                        //             }}>Delete</button>
-                                                                        //         </div>
-                                                                        //         {/* <div class="p-2 text-sm text-body font-medium"> */}
-                                                                        //             {/* <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all">Separated link</button> */}
-                                                                        //         {/* </div> */}
-                                                                        //     </div>
-                                                                        // )
-                                                                    }
 
                                                                     {
                                                                         dropArrowdownId == attachment.url && message.senderId == currentUserId && (
@@ -587,33 +560,13 @@ function HomePage() {
                                     </div>
                                 })
                             }
+
                             <div className="scrollbelow" ref={scrollRef}></div>
                             </div>
+
                         </div>
 
-                            {/* input wala */}
-                        <div className='w-full h-[10vh] bg-[#1d202f] flex items-center justify-center'>
-                            <div className='w-[80%] bg-[#141720] h-[7vh] rounded-md flex  items-center gap-2'>
-                                <label>
-                                    <Plus className='text-white cursor-pointer ml-6' />
-                                    <input type="file" className='hidden' multiple onChange={(e)=>{
-                                        // console.log(e.target.files)
-                                        handleMedia(e)
-                                    }}/>
-                                </label>
-                                <input type="text" placeholder='Write A Message!' className='outline-none  text-white w-[95%]  h-[8vh] text-md placeholder:text-gray-500 px-4 bg-transparent' value={text} onChange={(e)=>{setText(e.target.value)}} onKeyDown={(e)=>{
-                                    if(e.key == "Enter"){
-                                        sendMessageFunc()
-                                        setText("")
-                                    }
-                                }}/>
-                                <Send className={`text-white mr-6 ${text?.trim() != "" ? "cursor-pointer" : "cursor-not-allowed"}`} onClick={(e)=>{
-                                    sendMessageFunc()
-                                    setText("")
-                                }}/>
-                            </div>
-                        </div>
-
+                        <InputArea text={text} setText={setText} sendMessageFunc={sendMessageFunc} handleMedia={handleMedia} />
                     </div>
                 }
             </div>
