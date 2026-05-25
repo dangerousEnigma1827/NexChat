@@ -18,7 +18,6 @@ export const getMessages = async (req,res) => {
             ]
         })
         res.json(getAllMessagesFromBackend)
-        console.log(getAllMessagesFromBackend)
     }catch(err){
         console.log("error while getting all messages", err)
     }
@@ -46,14 +45,7 @@ export const sendMessage = async (req,res)=>{
             }
         );
 
-        io.to(req.body.recieverId).emit("recieve_message", {
-            "message":messageSent.text,
-            "recieverId":messageSent.recieverId,
-            "senderId":messageSent.senderId,
-            "attachments":messageSent.attachments
-        })
-
-        console.log("sent to sender")
+        io.to(req.body.recieverId).emit("recieve_message", messageSent)
     }catch(err){
         console.log("error sending message to frontend from backend", err)
     }
@@ -77,5 +69,23 @@ export const clearChatInBackend = async (req,res)=>{
         res.json(clearedMessages)
     }catch(err){
         console.log("err deleting chatss in backend", err)
+    }
+}
+
+export const deleteFromBackendController = async (req,res) => {
+    try{
+        let type = req.params.typeOf
+        if(type == "text"){
+            console.log("1")
+            let deletefrombackend = await Message.findByIdAndUpdate(req.params.messageToDelete,{
+                text : "This Message Was Deleted",
+                isDeletedForEveryone:true
+            })
+            console.log("2")
+
+            res.json(deletefrombackend)
+        }
+    }catch(err){
+        console.log("error deleting form frontend")
     }
 }

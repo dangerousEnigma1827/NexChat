@@ -10,6 +10,7 @@ function HomePage() {
     let token = localStorage.getItem('token')
     let navigate = useNavigate()
     let scrollRef = useRef(null)
+    let dropdownref = useRef(null)
 
 
     let [users, setUsers] = useState([]);
@@ -30,6 +31,7 @@ function HomePage() {
     let [dropdownOpen, setDropdownOpen] = useState(false);
     let [dropArrowdownOpen, setDropArrowdownOpen] = useState(false);
     let [dropArrowdownId, setDropArrowdownId] = useState(null);
+    let [messageToDelete, setMessageToDelete] = useState(null);
 
     // message schema ke liye
     let [messageType, setMessageText] = useState("text")
@@ -145,20 +147,18 @@ function HomePage() {
         }
     }
 
+
+
     let handleMedia = async (e) => {
         let files = Array.from(e.target.files);
-
         let tempArr = []
-
         tempArr = await Promise.all(
             files.map((file)=>{
                 return uploadFile(file);
             })
         )
-
         setAttachments(tempArr)
         
-
         let sendMessageToBackend = await axios.post('http://localhost:5000/api/messages/send', {
             text:text, 
             senderId:currentUserId,
@@ -171,9 +171,27 @@ function HomePage() {
         setAllMessagesBwTwo((prev)=>{
             return [...prev, sendMessageToBackend.data]
         })
-
         setAttachments([])
         setText("")
+    }
+
+
+
+    let handleDelete = async (e) => {
+        try{
+            console.log(messageToDelete)
+            let typeOf = messageToDelete.startsWith("http") ? "attachment" : "text";
+            console.log("3")
+            let deletefromfr = await axios.delete(`http://localhost:5000/api/messages/delete/${messageToDelete}/${typeOf}`,{
+                headers:{Authorization: `Bearer ${token}`}
+            })
+            console.log("4")
+            console.log(deletefromfr.data)
+            getAllMessagesBwtwo();
+
+        }catch(err){
+            console.log("error deleting from frontend", err)
+        }
     }
 
     useEffect(()=>{
@@ -214,6 +232,22 @@ function HomePage() {
             socket.off("recieve_message")
         }
     }, [currentUserId])
+
+
+    useEffect(()=>{
+        let handleClick = (e) => {
+            if(!dropdownref?.current?.contains(e.target)){
+                setDropArrowdownId(null)
+            }
+        }
+        
+        document.addEventListener('mousedown', handleClick);
+
+
+        return () => {
+            document.removeEventListener('mousedown', handleClick)
+        }
+    }, [dropArrowdownId])
 
     
 
@@ -264,7 +298,12 @@ function HomePage() {
                         <div className='flex gap-4 w-full'>
                             <button className='flex-1 py-3 rounded-xl bg-[#2b3142] hover:bg-[#3b4258] transition-all duration-200' onClick={() => {setDeletePopupOpen(false) 
                                 setDropArrowdownId(null)}}>Cancel</button>
-                            <button className='flex-1 py-3 rounded-xl bg-red-500 hover:bg-red-600 transition-all duration-200 font-medium'>Delete</button>
+                            <button className='flex-1 py-3 rounded-xl bg-red-500 hover:bg-red-600 transition-all duration-200 font-medium' onClick={(e)=>{
+                                
+                                handleDelete()
+                                setDeletePopupOpen(false) 
+                                setDropArrowdownId(null)
+                            }}>Delete</button>
                         </div>
 
                     </div>
@@ -363,14 +402,14 @@ function HomePage() {
                                             <p className='text-xl text-white'>{user.username}</p>
                                         
                                             <div className={`${user.lastTimeMessageSent[currentUserId] ? "text-[#64748b] opacity-100" : "text-blue-600 opacity-0"}`}>
-                                                <p>{new Date(user.lastTimeMessageSent[currentUserId]).toLocaleTimeString([], {
-                                                    hour:"2-digit",
-                                                    minute:"2-digit"
-                                                })}</p>
+                                                {/* <p>{new Date(user.lastTimeMessageSent[currentUserId]).toLocaleTimeString([], { */}
+                                                    {/* hour:"2-digit", */}
+                                                    {/* minute:"2-digit" */}
+                                                {/* })}</p> */}
                                             </div>
                                         </div>
 
-                                        <p className='text-[#94A3b8] font-sm truncate max-w-[250px]'>{user.lastMessageSent[currentUserId]}</p>
+                                        {/* <p className='text-[#94A3b8] font-sm truncate max-w-[250px]'>{user.lastMessageSent[currentUserId]}</p> */}
                                     </div>
                                </div>
                                
@@ -453,38 +492,87 @@ function HomePage() {
                                                                 : "bg-[#1d202f] ml-4 rounded-tr-2xl rounded-br-2xl rounded-bl-2xl"
                                                             }`}>
 
-                                                                <button 
-                                                                    onClick={() => {
-                                                                        if(dropArrowdownId == null) setDropArrowdownId(attachment.url)
-                                                                        else setDropArrowdownId(null)
-                                                                    }}
-                                                                    className={`absolute top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 hover:opacity-100 bg-[#232a3a] rounded-full p-1 transition-all duration-200 z-20 ${
-                                                                        message.senderId === currentUserId
-                                                                        ? "-left-6"
-                                                                        : "-right-6"
-                                                                    }`}>
-                                                                    <svg className="w-4 h-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 9-7 7-7-7"/>
-                                                                    </svg>
-                                                                </button>
+                                                                <div>
+                                                                    <button 
+                                                                        onClick={() => {
+                                                                            if(dropArrowdownId == null) setDropArrowdownId(attachment.url)
+                                                                            else setDropArrowdownId(null)
 
-                                                                {
-                                                                    dropArrowdownId == attachment.url && (
-                                                                        <div className={`absolute top-1/2 -translate-y-1/2 z-10 bg-[#232a3a] border border-[#31384d] rounded-md divide-y divide-[#31384d] shadow-lg w-44 ${
+                                                                            setMessageToDelete(attachment.url)
+                                                                        }}
+                                                                        className={`absolute top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 hover:opacity-100 bg-[#232a3a] rounded-full p-1 transition-all duration-200 z-20 ${
                                                                             message.senderId === currentUserId
-                                                                            ? "-left-56"
-                                                                            : "-right-56"
+                                                                            ? "-left-6"
+                                                                            : "-right-6"
                                                                         }`}>
-                                                                            <div className="p-2 text-sm text-gray-300 font-medium">
-                                                                                {/* <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all">Edit</button> */}
-                                                                                <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all">Delete</button>
+                                                                        <svg className="w-4 h-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 9-7 7-7-7"/>
+                                                                        </svg>
+                                                                    </button>
+
+                                                                    {
+                                                                        dropArrowdownId == attachment.url && (
+                                                                            <div className={`absolute top-1/2 -translate-y-1/2 z-10 bg-[#232a3a] border border-[#31384d] rounded-md divide-y divide-[#31384d] shadow-lg w-44 ${
+                                                                                message.senderId === currentUserId
+                                                                                ? "-left-56"
+                                                                                : "-right-56"
+                                                                            }`}>
+                                                                                <div className="p-2 text-sm text-gray-300 font-medium">
+                                                                                    {/* <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all">Edit</button> */}
+                                                                                    <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all" onClick={(e)=>{
+                                                                                    }}>Delete</button>
+                                                                                </div>
+                                                                                {/* <div class="p-2 text-sm text-body font-medium"> */}
+                                                                                    {/* <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all">Separated link</button> */}
+                                                                                {/* </div> */}
                                                                             </div>
-                                                                            {/* <div class="p-2 text-sm text-body font-medium"> */}
-                                                                                {/* <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all">Separated link</button> */}
-                                                                            {/* </div> */}
-                                                                        </div>
-                                                                    )
-                                                                }
+                                                                        )
+                                                                    }
+
+                                                                    {
+                                                                        dropArrowdownId == attachment.url && message.senderId == currentUserId && (
+                                                                            <div className={`absolute top-1/2 -translate-y-1/2 z-10 bg-[#232a3a] border border-[#31384d] rounded-md divide-y divide-[#31384d] shadow-lg w-44 ${
+                                                                                message.senderId === currentUserId
+                                                                                ? "-left-56"
+                                                                                : "-right-56"
+                                                                            }`}>
+                                                                                <div className="p-2 text-sm text-gray-300 font-medium">
+                                                                                    <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all">Edit</button>
+                                                                                    {/* <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all">Delete</button> */}
+                                                                                </div>
+                                                                                <div class="p-2 text-sm text-body font-medium">
+                                                                                    <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all" onClick={(e)=>{
+                                                                                        setDeletePopupOpen(true)
+                                                                                    }}>Delete For All</button>
+                                                                                    <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all" onClick={(e)=>{
+                                                                                        setDeletePopupOpen(true)
+                                                                                    }}>Delete For Me</button>
+                                                                                </div>
+                                                                            </div>
+                                                                        )
+                                                                    }
+                                                                    {
+                                                                        dropArrowdownId == attachment.url && message.senderId != currentUserId && (
+                                                                            <div className={`absolute top-1/2 -translate-y-1/2 z-10 bg-[#232a3a] border border-[#31384d] rounded-md divide-y divide-[#31384d] shadow-lg w-44 ${
+                                                                                message.senderId === currentUserId
+                                                                                ? "-left-56"
+                                                                                : "-right-56"
+                                                                            }`}>
+                                                                                <div className="p-2 text-sm text-gray-300 font-medium">
+                                                                                    <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all" onClick={(e)=>{
+                                                                                        setDeletePopupOpen(true)
+                                                                                    }}>Delete For Me</button>
+                                                                                </div>
+                                                                                <div class="p-2 text-sm text-body font-medium">
+                                                                                    {/* seperated line contned ehre */}
+                                                                                </div>
+                                                                            </div>
+                                                                        )
+                                                                    }
+
+
+
+                                                                </div>
 
                                                                 {
                                                                     attachment.type == "image" && (
@@ -515,40 +603,67 @@ function HomePage() {
                                                 <div className={`group relative overflow-visible max-w-[45%] px-4 py-3 text-white break-words ${
                                                     message.senderId === currentUserId ? "bg-blue-500 mr-4 rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl": "bg-[#1d202f] ml-4 rounded-tr-2xl rounded-br-2xl rounded-bl-2xl"}`}>
 
-                                                    <button 
-                                                        onClick={() =>  {
-                                                            if(dropArrowdownId == null) setDropArrowdownId(message._id)
-                                                            else setDropArrowdownId(null)
-                                                        }}
-                                                        className={`absolute top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 hover:opacity-100 bg-[#232a3a] rounded-full p-1 transition-all duration-200 z-20 ${
-                                                            message.senderId === currentUserId
-                                                            ? "-left-6"
-                                                            : "-right-6"
-                                                        }`}>
-                                                        <svg className="w-4 h-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 9-7 7-7-7"/></svg>
-                                                    </button>
+                                                    <div ref={dropdownref}>
+                                                        <button
+                                                            onClick={() =>  {
+                                                                if(dropArrowdownId == null) setDropArrowdownId(message._id)
+                                                                else setDropArrowdownId(null)
 
-                                                    {
-                                                        dropArrowdownId == message._id && (
-                                                            <div className={`absolute top-1/2 -translate-y-1/2 z-10 bg-[#232a3a] border border-[#31384d] rounded-md divide-y divide-[#31384d] shadow-lg w-44 ${
+                                                                setMessageToDelete(message._id)
+                                                            }}
+                                                            className={`absolute top-1/2 -translate-y-1/2 opacity-0 ${message.isDeletedForEveryone == false ? "group-hover:opacity-100 hover:opacity-100" : "opacity-0"} bg-[#232a3a] rounded-full p-1 transition-all duration-200 z-20 ${
                                                                 message.senderId === currentUserId
-                                                                ? "-left-56"
-                                                                : "-right-56"
+                                                                ? "-left-6"
+                                                                : "-right-6"
                                                             }`}>
-                                                                <div className="p-2 text-sm text-gray-300 font-medium">
-                                                                    <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all">Edit</button>
-                                                                    {/* <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all">Delete</button> */}
-                                                                </div>
-                                                                <div class="p-2 text-sm text-body font-medium">
-                                                                    <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all" onClick={(e)=>{
-                                                                        setDeletePopupOpen(true)
-                                                                    }}>Delete</button>
-                                                                </div>
-                                                            </div>
-                                                        )
-                                                    }
+                                                            <svg className="w-4 h-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 9-7 7-7-7"/></svg>
+                                                        </button>
 
-                                                    <p className='text-[15px] leading-relaxed'>{message.text}</p>
+                                                        {
+                                                            dropArrowdownId == message._id && message.senderId == currentUserId  &&(
+                                                                <div className={`absolute top-1/2 -translate-y-1/2 z-10 bg-[#232a3a] border border-[#31384d] rounded-md divide-y divide-[#31384d] shadow-lg w-44 ${
+                                                                    message.senderId === currentUserId
+                                                                    ? "-left-56"
+                                                                    : "-right-56"
+                                                                }`}>
+                                                                    <div className="p-2 text-sm text-gray-300 font-medium">
+                                                                        <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all">Edit</button>
+                                                                        {/* <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all">Delete</button> */}
+                                                                    </div>
+                                                                    <div class="p-2 text-sm text-body font-medium">
+                                                                        <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all" onClick={(e)=>{
+                                                                            setDeletePopupOpen(true)
+                                                                        }}>Delete For All</button>
+                                                                        <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all" onClick={(e)=>{
+                                                                            setDeletePopupOpen(true)
+                                                                        }}>Delete For Me</button>
+                                                                    </div>
+                                                                </div>
+                                                            )
+                                                        }
+                                                        {
+                                                            dropArrowdownId == message._id && message.senderId != currentUserId && (
+                                                                <div className={`absolute top-1/2 -translate-y-1/2 z-10 bg-[#232a3a] border border-[#31384d] rounded-md divide-y divide-[#31384d] shadow-lg w-44 ${
+                                                                    message.senderId === currentUserId
+                                                                    ? "-left-56"
+                                                                    : "-right-56"
+                                                                }`}>
+                                                                    <div className="p-2 text-sm text-gray-300 font-medium">
+                                                                        <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all" onClick={(e)=>{
+                                                                            setDeletePopupOpen(true)
+                                                                        }}>Delete For Me</button>
+                                                                    </div>
+                                                                    <div class="p-2 text-sm text-body font-medium">
+                                                                        {/* seperated line contned ehre */}
+                                                                    </div>
+                                                                </div>
+                                                            )
+                                                        }
+                                                    </div>
+
+                                                    <p className={`text-[15px] leading-relaxed ${message.isDeletedForEveryone? "text-gray-300 italic opacity-70": "text-white"}`}>
+                                                        {message.text}
+                                                    </p>
 
                                                     <div className='flex justify-end mt-1'>
                                                         <span className='text-[11px] text-gray-300 font-light'>

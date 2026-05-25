@@ -22,7 +22,15 @@ let messageSchema = new mongoose.Schema({
     "chatId":{
         type:String
     },
-    "attachments" : [attachmentSchema]
+    "attachments" : [attachmentSchema],
+    "isDeletedForEveryone" : {
+        type:Boolean,
+        default:false
+    },
+    "isDeletedForMe" : {
+        type:Boolean,
+        default:false
+    }
 }, {
     timestamps:true
 })
