@@ -6,6 +6,6 @@ const router = express.Router()
 router.get('/getMessages/:currentUserId/:userSeleted', protectRoute, getMessages)
 router.post('/clearchat/:currentUserId/:userSeleted', protectRoute, clearChatInBackend)
 router.post('/send', protectRoute, sendMessage)
-router.delete('/delete/:messageToDelete/:typeOf', protectRoute, deleteFromBackendController)
+router.delete('/delete', protectRoute, deleteFromBackendController)
 
 export default router;

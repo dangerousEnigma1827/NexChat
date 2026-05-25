@@ -36,7 +36,10 @@ function HomePage() {
     let [dropdownOpen, setDropdownOpen] = useState(false);
     let [dropArrowdownOpen, setDropArrowdownOpen] = useState(false);
     let [dropArrowdownId, setDropArrowdownId] = useState(null);
+
+
     let [messageToDelete, setMessageToDelete] = useState(null);
+    let [attachmentUrlForDeletion , setAttachmentUrlForDeletion] = useState("")
 
     // message schema ke liye
     let [messageType, setMessageText] = useState("text")
@@ -87,7 +90,8 @@ function HomePage() {
                     text:text, 
                     senderId:currentUserId,
                     recieverId: userSeleted,
-                    attachments:attachments
+                    attachments:attachments,
+                    
                 },
                 {
                     headers: {
@@ -114,9 +118,13 @@ function HomePage() {
 
     let handleClearChat = async (req,res) => {
         try{
-            let clearcharsBwTwo = await axios.post(`http://localhost:5000/api/messages/clearchat/${currentUserId}/${userSeleted}`, {}, {
-                headers: { Authorization: `Bearer ${token}` }
-            })
+            let clearcharsBwTwo = await axios.post(`http://localhost:5000/api/messages/clearchat/${currentUserId}/${userSeleted}`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+            )
 
             getAllMessagesBwtwo()
 
@@ -148,7 +156,8 @@ function HomePage() {
 
         return{
             url:resObj.secure_url || resObj.url,
-            type : file.type.includes("image") ? "image" : "video"
+            type : file.type.includes("image") ? "image" : "video",
+            isDeletedForEveryone:false
         }
     }
 
@@ -186,10 +195,23 @@ function HomePage() {
         try{
             console.log(messageToDelete)
             let typeOf = messageToDelete.startsWith("http") ? "attachment" : "text";
-            console.log("3")
-            let deletefromfr = await axios.delete(`http://localhost:5000/api/messages/delete/${messageToDelete}/${typeOf}`,{
-                headers:{Authorization: `Bearer ${token}`}
-            })
+            
+            if(attachmentUrlForDeletion != ""){
+                typeOf = "attachment"
+            }else{
+                typeOf = "true"
+            }
+
+            let deletefromfr = await axios.delete(`http://localhost:5000/api/messages/delete`,
+                {
+                    data:{
+                        typeOf,
+                        messageToDelete,
+                        attachmentUrlForDeletion
+                    },
+                        headers:{Authorization: `Bearer ${token}`}
+                }
+            )
             console.log("4")
             console.log(deletefromfr.data)
             getAllMessagesBwtwo();
@@ -239,20 +261,20 @@ function HomePage() {
     }, [currentUserId])
 
 
-    useEffect(()=>{
-        let handleClick = (e) => {
-            if(!dropdownref?.current?.contains(e.target)){
-                setDropArrowdownId(null)
-            }
-        }
+    // useEffect(()=>{
+    //     let handleClick = (e) => {
+    //         if(!dropdownref?.current?.contains(e.target)){
+    //             setDropArrowdownId(null)
+    //         }
+    //     }
         
-        document.addEventListener('mousedown', handleClick);
+    //     document.addEventListener('mousedown', handleClick);
 
 
-        return () => {
-            document.removeEventListener('mousedown', handleClick)
-        }
-    }, [dropArrowdownId])
+    //     return () => {
+    //         document.removeEventListener('mousedown', handleClick)
+    //     }
+    // }, [dropArrowdownId])
 
     
 
@@ -286,8 +308,6 @@ function HomePage() {
             </div>
         }
 
-        {/* delete */}
-
         {/* delete popup */}
         {
             deletePopupOpen && 
@@ -307,6 +327,7 @@ function HomePage() {
                                 handleDelete()
                                 setDeletePopupOpen(false) 
                                 setDropArrowdownId(null)
+                                setAttachmentUrlForDeletion("")
                             }}>Delete</button>
                         </div>
 
@@ -378,27 +399,24 @@ function HomePage() {
                                             message.attachments?.length != 0 && (
                                                 message.attachments?.map((attachment, index)=>{
                                                    return (
-                                                        <div 
-                                                            key={index} 
-                                                            className={`w-full flex mb-2 ${
-                                                                message.senderId === currentUserId
-                                                                ? "justify-end"
-                                                                : "justify-start"
-                                                            }`}
-                                                        >
+                                                        <div key={index} className={`w-full flex mb-2 ${message.senderId === currentUserId? "justify-end": "justify-start"}`} ref={dropdownref}>
                                                             <div className={`group relative overflow-visible max-w-[45%] p-1 ${
                                                                 message.senderId === currentUserId
                                                                 ? "bg-blue-500 mr-4 rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl"
                                                                 : "bg-[#1d202f] ml-4 rounded-tr-2xl rounded-br-2xl rounded-bl-2xl"
                                                             }`}>
 
-                                                                <div>
+                                                                <div >
                                                                     <button 
                                                                         onClick={() => {
-                                                                            if(dropArrowdownId == null) setDropArrowdownId(attachment.url)
+                                                                            if(dropArrowdownId == null){
+                                                                                setDropArrowdownId(attachment.url)
+                                                                                console.log("set")
+                                                                            }
                                                                             else setDropArrowdownId(null)
 
-                                                                            setMessageToDelete(attachment.url)
+                                                                            setMessageToDelete(message._id)
+                                                                            setAttachmentUrlForDeletion(attachment.url)
                                                                         }}
                                                                         className={`absolute top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 hover:opacity-100 bg-[#232a3a] rounded-full p-1 transition-all duration-200 z-20 ${
                                                                             message.senderId === currentUserId
@@ -412,22 +430,16 @@ function HomePage() {
 
                                                                     {
                                                                         dropArrowdownId == attachment.url && message.senderId == currentUserId && (
-                                                                            <div className={`absolute top-1/2 -translate-y-1/2 z-10 bg-[#232a3a] border border-[#31384d] rounded-md divide-y divide-[#31384d] shadow-lg w-44 ${
-                                                                                message.senderId === currentUserId
-                                                                                ? "-left-56"
-                                                                                : "-right-56"
-                                                                            }`}>
+                                                                            <div className={`absolute top-1/2 -translate-y-1/2 z-10 bg-[#232a3a] border border-[#31384d] rounded-md divide-y divide-[#31384d] shadow-lg w-44 ${message.senderId === currentUserId? "-left-56": "-right-56"}`}>
                                                                                 <div className="p-2 text-sm text-gray-300 font-medium">
                                                                                     <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] text-white rounded transition-all" onClick={(e)=>{
                                                                                         setDeletePopupOpen(true)
                                                                                     }}>Delete For All</button>
                                                                                     <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] text-white rounded transition-all" onClick={(e)=>{
+                                                                                        console.log("1")
                                                                                         setDeletePopupOpen(true)
                                                                                     }}>Delete For Me</button>
                                                                                 </div>
-                                                                                {/* <div class="p-2 text-sm text-body font-medium">
-                                                                                    
-                                                                                </div> */}
                                                                             </div>
                                                                         )
                                                                     }
@@ -447,13 +459,18 @@ function HomePage() {
                                                                         )
                                                                     }
 
-
-
                                                                 </div>
 
                                                                 {
-                                                                    attachment.type == "image" && (
+                                                                    attachment.type == "image" && !attachment.isDeletedForEveryone && (
                                                                         <img src={attachment.url}  alt="chat-image"  className='cursor-pointer rounded-xl max-h-[350px] object-cover'/>
+                                                                    )
+                                                                }
+                                                                {
+                                                                    attachment.type == "image" && attachment.isDeletedForEveryone && (
+                                                                        <p className={`text-[15px] leading-relaxed text-gray-300 italic opacity-70 p-1`}>
+                                                                        This Message Was Deleted
+                                                                        </p>
                                                                     )
                                                                 }
 
@@ -475,6 +492,8 @@ function HomePage() {
                                             )
                                         }
                                         
+
+
                                         { message.text != "" && 
                                             (<div className={`w-full flex mb-1 ${ message.senderId === currentUserId? "justify-end": "justify-start"}`}>
                                                 <div className={`group relative overflow-visible max-w-[45%] px-4 py-3 text-white break-words ${
@@ -487,6 +506,7 @@ function HomePage() {
                                                                 else setDropArrowdownId(null)
 
                                                                 setMessageToDelete(message._id)
+                                                                setAttachmentUrlForDeletion("")
                                                             }}
                                                             className={`absolute top-1/2 -translate-y-1/2 opacity-0 ${message.isDeletedForEveryone == false ? "group-hover:opacity-100 hover:opacity-100" : "opacity-0"} bg-[#232a3a] rounded-full p-1 transition-all duration-200 z-20 ${
                                                                 message.senderId === currentUserId
@@ -505,7 +525,6 @@ function HomePage() {
                                                                 }`}>
                                                                     <div className="p-2 text-sm text-gray-300 font-medium">
                                                                         <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all">Edit</button>
-                                                                        {/* <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all">Delete</button> */}
                                                                     </div>
                                                                     <div class="p-2 text-sm text-body font-medium">
                                                                         <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all" onClick={(e)=>{

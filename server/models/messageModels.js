@@ -5,6 +5,10 @@ let attachmentSchema = new mongoose.Schema({
     type:{
         type:String,
         enum:["image", "video", "audio", "file"]
+    },
+    isDeletedForEveryone:{
+        type:Boolean,
+        default:false
     }
 })
 
@@ -24,10 +28,6 @@ let messageSchema = new mongoose.Schema({
     },
     "attachments" : [attachmentSchema],
     "isDeletedForEveryone" : {
-        type:Boolean,
-        default:false
-    },
-    "isDeletedForMe" : {
         type:Boolean,
         default:false
     }

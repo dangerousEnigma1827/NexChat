@@ -74,13 +74,29 @@ export const clearChatInBackend = async (req,res)=>{
 
 export const deleteFromBackendController = async (req,res) => {
     try{
-        let type = req.params.typeOf
+        let type = req.body.typeOf
+        console.log(type)
         if(type == "text"){
             console.log("1")
-            let deletefrombackend = await Message.findByIdAndUpdate(req.params.messageToDelete,{
+            let deletefrombackend = await Message.findByIdAndUpdate(req.body.messageToDelete,{
                 text : "This Message Was Deleted",
                 isDeletedForEveryone:true
-            })
+            }, {new:true})
+            console.log("2")
+            res.json(deletefrombackend)
+        }
+
+        if(type == "attachment"){
+            let deletefrombackend = await Message.findOneAndUpdate({
+                _id : req.body.messageToDelete,
+                "attachments.url" : req.body.attachmentUrlForDeletion
+            },
+            {
+                $set:{
+                    "attachments.$.isDeletedForEveryone" : true,
+                    "attachments.$.url":""
+                }
+            }, {new:true})
             console.log("2")
 
             res.json(deletefrombackend)
