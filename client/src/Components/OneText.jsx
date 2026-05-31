@@ -1,6 +1,6 @@
 import React from 'react'
 
-function OneText({message ,dropArrowdownId, setDropArrowdownId, setMessageToDelete, setAttachmentUrlForDeletion, currentUserId, dropdownref, setDeletePopupOpen}) {
+function OneText({message ,dropArrowdownId, setDropArrowdownId, setMessageToDelete, setAttachmentUrlForDeletion, currentUserId, dropdownref, setDeletePopupOpen, setEditPopupOpen, setMessageToDeleteText, setMessageToDeleteTime}) {
   return (
     <>
     <div className={`w-full flex mb-1 ${ message.senderId === currentUserId? "justify-end": "justify-start"}`}>
