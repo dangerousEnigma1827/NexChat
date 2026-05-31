@@ -105,3 +105,21 @@ export const deleteFromBackendController = async (req,res) => {
         console.log("error deleting form frontend")
     }
 }
+
+export const editMessageController = async (req,res)=>{
+    try{
+        let editFromBackend = await Message.findByIdAndUpdate(
+            req.body.messageId, 
+            {
+                $set:{
+                    text : req.body.editedText,
+                    isEdited:true
+                }
+            }
+        )
+
+        res.json(editFromBackend)
+    }catch(err){
+        console.log("error occured editing message in backend", err)
+    }
+}

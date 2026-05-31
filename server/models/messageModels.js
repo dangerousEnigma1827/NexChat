@@ -30,6 +30,10 @@ let messageSchema = new mongoose.Schema({
     "isDeletedForEveryone" : {
         type:Boolean,
         default:false
+    },
+    "isEdited": {
+        type:Boolean,
+        default:false
     }
 }, {
     timestamps:true
