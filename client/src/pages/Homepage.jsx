@@ -31,6 +31,7 @@ function HomePage() {
     let [logoutPopupOpen, setLogoutPopupOpen] = useState(false);
     let [deletePopupOpen, setDeletePopupOpen] = useState(false);
     let [clearChatPopupOpen, setClearChatPopupOpen] = useState(false);
+    let [editPopupOpen, setEditPopupOpen] = useState(true);
 
 
     let [dropdownOpen, setDropdownOpen] = useState(false);
@@ -45,6 +46,10 @@ function HomePage() {
     let [messageType, setMessageText] = useState("text")
     let [text, setText] = useState("")
     let [attachments, setAttachments] = useState([])
+
+    //edit states
+    let [messagesToDeleteText, setMessageToDeleteText] = useState("")
+    let [messagesToDeleteTime, setMessageToDeleteTime] = useState()
 
     let getAllUsers = async () => {
         try{
@@ -194,12 +199,16 @@ function HomePage() {
     let handleDelete = async (e) => {
         try{
             console.log(messageToDelete)
+            console.log(attachmentUrlForDeletion)
+
             let typeOf = messageToDelete.startsWith("http") ? "attachment" : "text";
             
-            if(attachmentUrlForDeletion != ""){
+            if(attachmentUrlForDeletion){
+                console.log("attachment")
                 typeOf = "attachment"
             }else{
-                typeOf = "true"
+                console.log("text")
+                typeOf = "text"
             }
 
             let deletefromfr = await axios.delete(`http://localhost:5000/api/messages/delete`,
@@ -219,6 +228,15 @@ function HomePage() {
         }catch(err){
             console.log("error deleting from frontend", err)
         }
+    }
+
+    let handleEdit = async () => {
+        let editMessageFromFr = await axios.post('http://localhost:5000/api/messages/edit', {
+
+        }, 
+        {
+            headers:{Authorization: `Bearer ${token}`}
+        })
     }
 
     useEffect(()=>{
@@ -281,7 +299,6 @@ function HomePage() {
   return (
     //top most parent
     <div>
-        {/* logout popup */}
         {
             logoutPopupOpen && 
             <div className='h-screen w-screen fixed inset-0 z-1000 flex justify-center items-center bg-black/40 backdrop-blur-sm'>
@@ -308,7 +325,6 @@ function HomePage() {
             </div>
         }
 
-        {/* delete popup */}
         {
             deletePopupOpen && 
             <div className='h-screen w-screen fixed inset-0 z-[1000] flex justify-center items-center bg-black/40 backdrop-blur-sm'>
@@ -330,10 +346,8 @@ function HomePage() {
                                 setAttachmentUrlForDeletion("")
                             }}>Delete</button>
                         </div>
-
                     </div>
                 </div>
-
             </div>
         }
 
@@ -361,6 +375,72 @@ function HomePage() {
                             }}>Clear Chat</button>
                         </div>
                     </div>
+                </div>
+
+            </div>
+        }
+
+        {
+            editPopupOpen && 
+            <div className='h-screen w-screen fixed inset-0 flex justify-center items-center bg-black/40 backdrop-blur-sm z-[100000]'>
+                <div className='h-[60vh] w-[30vw] rounded-2xl bg-[#232a3a] border border-[#31384d] shadow-2xl p-8'>
+                    <div className='flex flex-col items-center h-full text-white px-8'>
+                        <h1 className='text-xl font-semibold mb-3'>Edit Message</h1>
+
+                        {/* preview of message */}
+                        <div className='overflow-auto bg-red-500 w-[28vw] h-[40%] flex justify-center items-center'>
+                            <div className='h-[100%] w-[80%] flex justify-center items-center py-5'>
+
+                                <div className={`group relative overflow-visible min-w-[60%] my-200 text-white px-4 py-2 break-words bg-blue-500 rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl min-h-[100%] `}>
+
+                                    <p className={`text-[15px] leading-relaxed text-white`}>{messagesToDeleteText}</p>
+                                    <div className='flex justify-end mt-1'>
+                                        <span className='text-[11px] text-gray-300 font-light'>
+                                            {new Date(messagesToDeleteTime).toLocaleTimeString([],{
+                                                hour:"2-digit",
+                                                minute : "2-digit"
+                                            })}
+                                        </span>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+
+                        {/* //edit box */}
+                        <div className='overflow-auto bg-pink-500 w-[28vw] h-[40%] flex justify-center items-center'>
+                            <div className='h-[80%] w-[80%] flex justify-center items-center'>
+
+                                {/* <div className={`group relative overflow-visible min-w-[60%] px-4 py-3 text-white break-words bg-blue-500 mr-4 rounded-tl-2xl rounded-tr-2xl rounded-bl-2xl `}>
+
+                                    <p className={`text-[15px] leading-relaxed text-white`}>{messagesToDeleteText}</p>
+                                    <div className='flex justify-end mt-1'>
+                                        <span className='text-[11px] text-gray-300 font-light'>
+                                            {new Date(messagesToDeleteTime).toLocaleTimeString([],{
+                                                hour:"2-digit",
+                                                minute : "2-digit"
+                                            })}
+                                        </span>
+                                    </div>
+
+                                </div> */}
+
+                            </div>
+                        </div>
+
+
+                        <div className='flex gap-4'>
+                            <button className='px-6 py-2 rounded-md bg-[#2b3142] hover:bg-[#3b4258] transition'
+                                onClick={() => {
+                                    setEditPopupOpen(false)
+                                }}>Discard</button>
+                            <button className='px-6 py-2 rounded-md bg-blue-500 hover:[] transition'>Edit</button>
+                        </div>
+
+                    </div>
+
                 </div>
 
             </div>
@@ -524,7 +604,11 @@ function HomePage() {
                                                                     : "-right-56"
                                                                 }`}>
                                                                     <div className="p-2 text-sm text-gray-300 font-medium">
-                                                                        <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all">Edit</button>
+                                                                        <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all" onClick={(e)=>{
+                                                                            setEditPopupOpen(true)
+                                                                            setMessageToDeleteText(message.text)
+                                                                            setMessageToDeleteTime(message.createdAt)
+                                                                        }}>Edit</button>
                                                                     </div>
                                                                     <div class="p-2 text-sm text-body font-medium">
                                                                         <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded transition-all" onClick={(e)=>{
