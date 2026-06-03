@@ -1,5 +1,7 @@
+import axios from 'axios'
 import { Search, X } from 'lucide-react'
-import React from 'react'
+import React, { useState } from 'react'
+import toast from 'react-hot-toast'
 
 function StartAChat({
   setStartAChat,
@@ -7,15 +9,27 @@ function StartAChat({
   setUserSearchText
 }) {
 
-  // Handle Search
-  const handleSearchUser = () => {
+  let token = localStorage.getItem('token')
 
-    if (!userSearchText.trim()) return;
+  let [usernameSearchResults, setUsernameSearchResutls] = useState([])
 
-    console.log("Searching for:", userSearchText);
+  const handleSearchUser = async () => {
 
-    // Your backend API call here
-    // axios.get(...)
+    try {
+
+      let searchUserFromFr = await axios.post(
+        "http://localhost:5000/api/users/search",
+        { userSearchText },
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      )
+
+      setUsernameSearchResutls(searchUserFromFr.data)
+
+    } catch (err) {
+      console.log("error getting user list", err)
+    }
   }
 
   return (
@@ -26,43 +40,117 @@ function StartAChat({
 
           <div className='flex flex-col h-full text-white'>
 
+            {/* HEADER */}
             <div className='flex justify-between items-center mb-6'>
+
               <div className='w-[24px]' />
-              <h1 className='text-[1.3rem] font-semibold tracking-wide'>Find Users</h1>
-              <X size={22} className='text-gray-400 hover:text-red-500 cursor-pointer transition-all duration-300' onClick={() => {
-                  setStartAChat(false)
-                }}/>
+
+              <h1 className='text-[1.3rem] font-semibold tracking-wide'>
+                Find Users
+              </h1>
+
+              <X
+                size={22}
+                className='text-gray-400 hover:text-red-500 cursor-pointer transition-all duration-300'
+                onClick={() => {
+                    setStartAChat(false)
+                    setUserSearchText("")
+                    setUsernameSearchResutls([])
+                }}
+              />
+
             </div>
 
+            {/* SEARCH BAR */}
             <div className='w-full h-[58px] bg-[#141720] rounded-xl border border-[#2b3245] flex items-center px-4 gap-3 transition-all duration-300'>
 
-              <Search size={20} className='text-gray-400'/>
-              <input type="text" value={userSearchText} placeholder='Search users...' className='flex-1 bg-transparent outline-none text-[15px] text-white placeholder:text-gray-500'
-                onChange={(e) => {
-                  setUserSearchText(e.target.value)
-                }}
+              <Search size={20} className='text-gray-400' />
+
+              <input
+                type="text"
+                value={userSearchText}
+                placeholder='Search users...'
+                className='flex-1 bg-transparent outline-none text-[15px] text-white placeholder:text-gray-500'
+                onChange={(e) => setUserSearchText(e.target.value)}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    handleSearchUser()
-                  }
-                }}/>
+                  if (e.key === "Enter") handleSearchUser()
+                }}
+              />
 
               {
                 userSearchText?.length > 0 && (
-                  <X size={18} className='text-gray-400 hover:text-red-500 cursor-pointer transition-all duration-300' onClick={() => {
-                      setUserSearchText("")
-                    }}/>
+                  <X
+                    size={18}
+                    className='text-gray-400 hover:text-red-500 cursor-pointer transition-all duration-300'
+                    onClick={() =>{
+                        setUserSearchText("")
+                        setUsernameSearchResutls([])
+                    }}
+                  />
                 )
               }
+
             </div>
 
-            <button className='w-full h-[52px] bg-[#4c7dff] hover:bg-[#3f6ee8] rounded-xl mt-4 font-medium text-[15px] transition-all duration-300 active:scale-[0.98]' onClick={handleSearchUser}>Search</button>
+            {/* SEARCH BUTTON */}
+            <button
+              className='w-full h-[52px] bg-[#4c7dff] hover:bg-[#3f6ee8] rounded-xl mt-4 font-medium text-[15px] transition-all duration-300 active:scale-[0.98]'
+              onClick={handleSearchUser}
+            >
+              Search
+            </button>
 
-            <div className='flex-1 mt-5 bg-[#141720] rounded-2xl border border-[#2b3245] overflow-hidden'>
-              <div className='w-full h-full flex flex-col justify-center items-center text-gray-500 gap-2'>
-                <Search size={32} className='opacity-60' />
-                <p className='text-[15px]'>Search for users to start chatting</p>
-              </div>
+            <div className='flex-1 mt-5 bg-[#141720] rounded-2xl border border-[#2b3245] overflow-y-auto'>
+
+              {
+                usernameSearchResults.length === 0 ? (
+
+                  <div className='w-full h-full flex flex-col justify-center items-center text-gray-500 gap-2'>
+
+                    <Search size={32} className='opacity-60' />
+
+                    <p className='text-[15px]'>
+                      Search for users to start chatting
+                    </p>
+
+                  </div>
+
+                ) : (
+
+                  <div className='w-[100%] flex flex-col items-center p-2'>
+
+                    {
+                      usernameSearchResults.map((user) => {
+                        return (
+                          <div key={user._id} className='h-[7vh] w-[100%] flex items-center justify-between mb-3 gap-2 cursor-pointer hover:bg-[#2b3142] rounded-md px-2 py-8 transition-all duration-300'
+                            onClick={() => {
+                              console.log("selected user:", user)
+                                setStartAChat(false)
+                            }}>
+
+                            <div className='flex items-center gap-4'>
+                              <div className='relative'>
+                                <div className='rounded-full bg-[#141720] h-[7vh] w-[7vh] flex justify-center items-center overflow-hidden'>
+                                  {
+                                    user.pfp ? (<img src={user.pfp} className='h-full w-full object-cover rounded-full'/>) : (<p className='text-white text-md font-medium'>{user.username?.substring(0, 1).toUpperCase()}</p>)
+                                  }
+                                </div>
+                              </div>
+
+                              <div className='flex flex-col min-w-0'>
+                                <p className='text-xl text-white truncate'>{user.username}</p>
+                              </div>
+                            </div>
+                          </div>
+                        )
+                      })
+                    }
+
+                  </div>
+
+                )
+              }
+
             </div>
 
           </div>

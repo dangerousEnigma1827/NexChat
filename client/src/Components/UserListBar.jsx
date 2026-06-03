@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Search } from 'lucide-react'
 
 function UserListBar({users, userSeleted, setUserSeletec, setUserSeletectedUsername, setUserSeletectedPfp, onlineUsers, setStartAChat}){
+    
   return (
     <>
     <div className='w-[100%] bg-[#141720] h-[7vh] rounded-md flex  items-center gap-2 mb-2'>

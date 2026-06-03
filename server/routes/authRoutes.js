@@ -1,5 +1,5 @@
 import express from "express";
-import { register, login, me, allUsers } from "../controllers/authControllers.js";
+import { register, login, me, allUsers} from "../controllers/authControllers.js";
 import protectRoute from "../middlewares/authMiddlewares.js";
 
 const router = express.Router();
