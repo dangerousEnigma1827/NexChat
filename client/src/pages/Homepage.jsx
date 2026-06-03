@@ -14,6 +14,7 @@ import LogoutPopup from '../Components/Popups/LogoutPopup';
 import DeletePopup from '../Components/Popups/DeletePopup';
 import ClearChatPopup from '../Components/Popups/ClearChatPopup';
 import EditPopup from '../Components/Popups/EditPopup';
+import StartAChat from '../Components/Popups/StartAChat';
 
 function HomePage() {
 
@@ -37,6 +38,7 @@ function HomePage() {
     let [deletePopupOpen, setDeletePopupOpen] = useState(false);
     let [clearChatPopupOpen, setClearChatPopupOpen] = useState(false);
     let [editPopupOpen, setEditPopupOpen] = useState(false);
+    let [startAChat, setStartAChat] = useState(true)
 
 
     let [dropdownOpen, setDropdownOpen] = useState(false);
@@ -56,6 +58,10 @@ function HomePage() {
     let [messagesToDeleteText, setMessageToDeleteText] = useState("")
     let [messagesToDeleteTime, setMessageToDeleteTime] = useState()
     let [editedText, setEditedText] = useState("")
+
+
+    //start chat ke liye 
+    let [userSearchText, setUserSearchText] = useState("")
 
     let getAllUsers = async () => {
         try{
@@ -331,6 +337,10 @@ function HomePage() {
             editPopupOpen && 
            <EditPopup messagesToDeleteText={messagesToDeleteText} messagesToDeleteTime={messagesToDeleteTime} setEditedText={setEditedText} handleEdit={handleEdit} setDropArrowdownId={setDropArrowdownId} editedText={editedText} setEditPopupOpen={setEditPopupOpen}/>
         }
+        {
+            startAChat && 
+            <StartAChat setStartAChat={setStartAChat} userSearchText={userSearchText} setUserSearchText={setUserSearchText}/>
+        }
 
 
         <div className='flex w-full h-screen'>
@@ -342,7 +352,7 @@ function HomePage() {
                     <NexChatIcon/>
 
                     {/* //users list */}
-                    <UserListBar users={users} userSeleted={userSeleted} setUserSeletec={setUserSeletec} setUserSeletectedUsername={setUserSeletectedUsername} setUserSeletectedPfp={setUserSeletectedPfp} onlineUsers={onlineUsers}/>
+                    <UserListBar users={users} userSeleted={userSeleted} setUserSeletec={setUserSeletec} setUserSeletectedUsername={setUserSeletectedUsername} setUserSeletectedPfp={setUserSeletectedPfp} onlineUsers={onlineUsers} setStartAChat={setStartAChat}/>
                 </div>
             </div>
 

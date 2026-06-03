@@ -1,15 +1,20 @@
 import React from 'react'
 import { Search } from 'lucide-react'
 
-function UserListBar({users, userSeleted, setUserSeletec, setUserSeletectedUsername, setUserSeletectedPfp, onlineUsers}){
+function UserListBar({users, userSeleted, setUserSeletec, setUserSeletectedUsername, setUserSeletectedPfp, onlineUsers, setStartAChat}){
   return (
     <>
-    <div className='w-[100%] bg-[#141720] h-[7vh] rounded-md flex  items-center gap-2'>
+    <div className='w-[100%] bg-[#141720] h-[7vh] rounded-md flex  items-center gap-2 mb-2'>
         <Search className='text-white ml-4' size={19}/>
         <input type="text" placeholder='Seach Chats' className='outline-none bg-transparent text-white  h-[8vh] text-md placeholder:text-gray-500'/>
     </div>
+    <div className='w-[100%] bg-[#141720] rounded-md flex items-center justify-center'>
+        <button className='h-[8vh] w-full bg-[#4c7dff] transition-all duration-300 active:scale-98 hover:bg-[#3f6ee8] text-white flex justify-center items-center rounded-lg text-md cursor-pointer border-none' onClick={(e)=>{
+            setStartAChat(true)
+        }}>Start New Chat</button>
+    </div>
 
-    <div className='w-[100%] mt-6 flex flex-col items-center overflow-y-auto h-[75vh]'>
+    <div className='w-[100%] mt-6 flex flex-col items-center overflow-y-auto '>
         {
             users.map((user, index)=>{
                 return <div key={user._id} className={`h-[7vh] w-[100%] flex items-center justify-between mb-3 gap-2 cursor-pointer hover:bg-[#2b3142] rounded-md px-2 py-8 duration-500 transition-all ${user._id == userSeleted ? "bg-[#2b3142]" : ""}`} onClick={(e)=>{
