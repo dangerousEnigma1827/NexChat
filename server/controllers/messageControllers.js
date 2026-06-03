@@ -115,8 +115,14 @@ export const editMessageController = async (req,res)=>{
                     text : req.body.editedText,
                     isEdited:true
                 }
-            }
+            }, {new:true}
         )
+
+        // console.log("1")
+        // console.log(editFromBackend)
+        let recieverId = editFromBackend.recieverId;
+
+        io.to(recieverId).emit("recieve_message", editFromBackend)
 
         res.json(editFromBackend)
     }catch(err){

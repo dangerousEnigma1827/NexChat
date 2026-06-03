@@ -71,7 +71,12 @@ function OneText({message ,dropArrowdownId, setDropArrowdownId, setMessageToDele
                 {message.text}
             </p>
 
-            <div className='flex justify-end mt-1'>
+            <div className='flex justify-end mt-1 gap-2'>
+                <span className='text-[11px] text-gray-300 font-light'>
+                    {
+                        message.isEdited ? "Edited" : ""
+                    }
+                </span>
                 <span className='text-[11px] text-gray-300 font-light'>
                     {
                         new Date(message.createdAt).toLocaleTimeString([], {
@@ -80,6 +85,7 @@ function OneText({message ,dropArrowdownId, setDropArrowdownId, setMessageToDele
                         })
                     }
                 </span>
+                
             </div>
 
         </div>
