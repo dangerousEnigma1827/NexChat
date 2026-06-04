@@ -5,7 +5,7 @@ import axios from 'axios'
 import {useNavigate} from 'react-router-dom'
 import socket from '../socket/socket';
 import SelectedGroupOrUser from '../Components/SelectedGroupOrUser';
-import UserListBar from '../Components/UserListBar';
+import ConversationListBar from '../Components/ConversationListBar';
 import InputArea from '../Components/InputArea';
 import NexChatIcon from '../Components/NexChatIcon';
 import LeftMostBar from '../Components/LeftMostBar';
@@ -25,7 +25,8 @@ function HomePage() {
 
 
     let [users, setUsers] = useState([]);
-    let [userSeleted, setUserSeletec] = useState(false)
+    let [conversations, setConversations] = useState([]);
+    let [userSeleted, setUserSeletec] = useState(null)
     let [userSeletedUsername, setUserSeletectedUsername] = useState(false)
     let [userSeletedPfp, setUserSeletectedPfp] = useState(null)
     let [currentUserId, setUserId] = useState(null)
@@ -38,7 +39,7 @@ function HomePage() {
     let [deletePopupOpen, setDeletePopupOpen] = useState(false);
     let [clearChatPopupOpen, setClearChatPopupOpen] = useState(false);
     let [editPopupOpen, setEditPopupOpen] = useState(false);
-    let [startAChat, setStartAChat] = useState(true)
+    let [startAChat, setStartAChat] = useState(false)
 
 
     let [dropdownOpen, setDropdownOpen] = useState(false);
@@ -63,13 +64,14 @@ function HomePage() {
     //start chat ke liye 
     let [userSearchText, setUserSearchText] = useState("")
 
-    let getAllUsers = async () => {
+    let getAllConversationsInFr = async () => {
         try{
-            let allUswrsInFrontend = await axios.get('http://localhost:5000/api/auth/allUsers', {
+            let getAllConversationsInFrReq = await axios.get('http://localhost:5000/api/conversations/', {
                 headers: { Authorization: `Bearer ${token}` }
             })
-            setUsers(allUswrsInFrontend.data)
-            console.log(allUswrsInFrontend.data[0].lastMessageSent)
+
+            setConversations(getAllConversationsInFrReq.data)
+            console.log(getAllConversationsInFrReq)
         }catch(err){
             console.log("error occured getting all users ",err)
         }
@@ -81,6 +83,7 @@ function HomePage() {
                 headers: { Authorization: `Bearer ${token}` }
             })
             setUserId(getcurrentuserinfo.data._id)
+            console.log("done")
         }catch(err){
             console.log("error occured getting current user", err);
         }
@@ -260,7 +263,7 @@ function HomePage() {
 
     useEffect(()=>{
         getCurrentUser()
-        getAllUsers()
+        getAllConversationsInFr()
     },[])
 
     useEffect(()=>{
@@ -313,8 +316,6 @@ function HomePage() {
     //     }
     // }, [dropArrowdownId])
 
-    
-
   return (
     //top most parent
     <div>
@@ -339,7 +340,7 @@ function HomePage() {
         }
         {
             startAChat && 
-            <StartAChat setStartAChat={setStartAChat} userSearchText={userSearchText} setUserSearchText={setUserSearchText}/>
+            <StartAChat setStartAChat={setStartAChat} userSearchText={userSearchText} setUserSearchText={setUserSearchText} currentUserId={currentUserId} userSeleted={userSeleted} setUserSeletec={setUserSeletec} setUserSeletectedUsername={setUserSeletectedUsername} setUserSeletectedPfp={setUserSeletectedPfp} getAllConversationsInFr={getAllConversationsInFr}/>
         }
 
 
@@ -352,7 +353,7 @@ function HomePage() {
                     <NexChatIcon/>
 
                     {/* //users list */}
-                    <UserListBar users={users} userSeleted={userSeleted} setUserSeletec={setUserSeletec} setUserSeletectedUsername={setUserSeletectedUsername} setUserSeletectedPfp={setUserSeletectedPfp} onlineUsers={onlineUsers} setStartAChat={setStartAChat}/>
+                    <ConversationListBar users={users} conversations={conversations} userSeleted={userSeleted} setUserSeletec={setUserSeletec} setUserSeletectedUsername={setUserSeletectedUsername} setUserSeletectedPfp={setUserSeletectedPfp} onlineUsers={onlineUsers} setStartAChat={setStartAChat} currentUserId={currentUserId}/>
                 </div>
             </div>
 
@@ -371,7 +372,7 @@ function HomePage() {
                                 {
                                 allMessagesBwTwo.map((message, index)=>{
 
-                                    return <OneMessage message={message} dropdownref={dropdownref} dropArrowdownId={dropArrowdownId} setDropArrowdownId={setDropArrowdownId} setAttachmentUrlForDeletion={setAttachmentUrlForDeletion} setDeletePopupOpen={setDeletePopupOpen} currentUserId={currentUserId} setMessageToDelete={setMessageToDelete} setEditPopupOpen={setEditPopupOpen} setMessageToDeleteTime={setMessageToDeleteTime} setMessageToDeleteText={setMessageToDeleteText}/>
+                                    return <OneMessage key={message._id} message={message} dropdownref={dropdownref} dropArrowdownId={dropArrowdownId} setDropArrowdownId={setDropArrowdownId} setAttachmentUrlForDeletion={setAttachmentUrlForDeletion} setDeletePopupOpen={setDeletePopupOpen} currentUserId={currentUserId} setMessageToDelete={setMessageToDelete} setEditPopupOpen={setEditPopupOpen} setMessageToDeleteTime={setMessageToDeleteTime} setMessageToDeleteText={setMessageToDeleteText}/>
 
                                 })
                             }

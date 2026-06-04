@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { Search } from 'lucide-react'
 
-function UserListBar({users, userSeleted, setUserSeletec, setUserSeletectedUsername, setUserSeletectedPfp, onlineUsers, setStartAChat}){
-    
+function ConversationListBar({users, userSeleted, setUserSeletec, setUserSeletectedUsername, setUserSeletectedPfp, onlineUsers, setStartAChat, conversations, currentUserId}){
+    // console.log(conversations[0].participants[0])
   return (
     <>
     <div className='w-[100%] bg-[#141720] h-[7vh] rounded-md flex  items-center gap-2 mb-2'>
@@ -17,7 +17,9 @@ function UserListBar({users, userSeleted, setUserSeletec, setUserSeletectedUsern
 
     <div className='w-[100%] mt-6 flex flex-col items-center overflow-y-auto '>
         {
-            users.map((user, index)=>{
+            conversations.map((conversation, index)=>{
+                let user=conversation.participants[0]
+                console.log(user)
                 return <div key={user._id} className={`h-[7vh] w-[100%] flex items-center justify-between mb-3 gap-2 cursor-pointer hover:bg-[#2b3142] rounded-md px-2 py-8 duration-500 transition-all ${user._id == userSeleted ? "bg-[#2b3142]" : ""}`} onClick={(e)=>{
                     setUserSeletec(user._id)
                     setUserSeletectedUsername(user.username)
@@ -69,4 +71,4 @@ function UserListBar({users, userSeleted, setUserSeletec, setUserSeletectedUsern
   )
 }
 
-export default UserListBar
+export default ConversationListBar

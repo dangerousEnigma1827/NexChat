@@ -10,7 +10,7 @@ function OneMessage({message, currentUserId, dropArrowdownId, setDropArrowdownId
             message.attachments?.length != 0 && (
                 message.attachments?.map((attachment, index)=>{
                     return (
-                        <OneAttachment message={message} dropdownref={dropdownref} dropArrowdownId={dropArrowdownId} setDropArrowdownId={setDropArrowdownId} setAttachmentUrlForDeletion={setAttachmentUrlForDeletion} setDeletePopupOpen={setDeletePopupOpen} currentUserId={currentUserId} setMessageToDelete={setMessageToDelete} attachment={attachment} index={index}/>
+                        <OneAttachment key={index} message={message} dropdownref={dropdownref} dropArrowdownId={dropArrowdownId} setDropArrowdownId={setDropArrowdownId} setAttachmentUrlForDeletion={setAttachmentUrlForDeletion} setDeletePopupOpen={setDeletePopupOpen} currentUserId={currentUserId} setMessageToDelete={setMessageToDelete} attachment={attachment} index={index}/>
                     )
                 })
             )
