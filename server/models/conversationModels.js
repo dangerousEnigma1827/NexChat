@@ -27,7 +27,15 @@ let conversationSchema = new mongoose.Schema({
             ref: "User",
             default: null
         }
-    ]
+    ],
+    lastMessageSent:{
+        type:String,
+        default:""
+    },
+    lastTimeMessageSent:{
+        type: String,
+        default:""
+    }
 },{
     timestamps:true
 })

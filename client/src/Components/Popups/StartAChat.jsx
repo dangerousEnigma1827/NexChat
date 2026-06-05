@@ -100,9 +100,10 @@ function StartAChat({setStartAChat,userSearchText, setUserSearchText, currentUse
                                 setUserSeletec(user._id)
                                 selectedUser = user._id
                                 handlestartConversation()
+                                
                                 getAllConversationsInFr()
-
                                 setStartAChat(false)
+                                getAllConversationsInFr()
                                 setUserSeletectedUsername(user.username)
                                 setUserSeletectedPfp(user.pfp)
                                 setUserSearchText("")

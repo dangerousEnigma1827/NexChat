@@ -19,12 +19,12 @@ let messageSchema = new mongoose.Schema({
     "senderId":{
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
-    },"recieverId":{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User"
     },
-    "chatId":{
-        type:String
+    "conversationId":{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Conversation",
+        required:true,
+        default:""
     },
     "attachments" : [attachmentSchema],
     "isDeletedForEveryone" : {

@@ -64,6 +64,8 @@ function HomePage() {
     //start chat ke liye 
     let [userSearchText, setUserSearchText] = useState("")
 
+    let [conversationId, setConversationId] = useState(null)
+
     let getAllConversationsInFr = async () => {
         try{
             let getAllConversationsInFrReq = await axios.get('http://localhost:5000/api/conversations/', {
@@ -71,7 +73,6 @@ function HomePage() {
             })
 
             setConversations(getAllConversationsInFrReq.data)
-            console.log(getAllConversationsInFrReq)
         }catch(err){
             console.log("error occured getting all users ",err)
         }
@@ -83,7 +84,6 @@ function HomePage() {
                 headers: { Authorization: `Bearer ${token}` }
             })
             setUserId(getcurrentuserinfo.data._id)
-            console.log("done")
         }catch(err){
             console.log("error occured getting current user", err);
         }
@@ -91,12 +91,10 @@ function HomePage() {
 
     let getAllMessagesBwtwo = async () =>{
         try{
-            let getallmessagesinfr = await axios.get(`http://localhost:5000/api/messages/getMessages/${currentUserId}/${userSeleted}`, {
+            let getallmessagesinAConvofr = await axios.get(`http://localhost:5000/api/conversations/allMessagesOfAConversation/${conversationId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             })
-
-            setAllMessagesBwTwo(getallmessagesinfr.data)
-            console.log(getallmessagesinfr.data)
+            setAllMessagesBwTwo(getallmessagesinAConvofr.data)
         }catch(err){
             console.log("error getting messages between two users", err)
         }
@@ -109,9 +107,8 @@ function HomePage() {
                 {
                     text:text, 
                     senderId:currentUserId,
-                    recieverId: userSeleted,
+                    conversationId,
                     attachments:attachments,
-                    
                 },
                 {
                     headers: {
@@ -209,16 +206,12 @@ function HomePage() {
 
     let handleDelete = async (e) => {
         try{
-            console.log(messageToDelete)
-            console.log(attachmentUrlForDeletion)
 
             let typeOf = messageToDelete.startsWith("http") ? "attachment" : "text";
             
             if(attachmentUrlForDeletion){
-                console.log("attachment")
                 typeOf = "attachment"
             }else{
-                console.log("text")
                 typeOf = "text"
             }
 
@@ -232,8 +225,6 @@ function HomePage() {
                         headers:{Authorization: `Bearer ${token}`}
                 }
             )
-            console.log("4")
-            console.log(deletefromfr.data)
             getAllMessagesBwtwo();
 
         }catch(err){
@@ -284,7 +275,6 @@ function HomePage() {
         })
 
         socket.on("recieve_message", (messageData)=>{
-            console.log("got this shi", messageData)
             setAllMessagesBwTwo((prev)=>{
                 return [...prev, messageData]
             })
@@ -353,7 +343,7 @@ function HomePage() {
                     <NexChatIcon/>
 
                     {/* //users list */}
-                    <ConversationListBar users={users} conversations={conversations} userSeleted={userSeleted} setUserSeletec={setUserSeletec} setUserSeletectedUsername={setUserSeletectedUsername} setUserSeletectedPfp={setUserSeletectedPfp} onlineUsers={onlineUsers} setStartAChat={setStartAChat} currentUserId={currentUserId}/>
+                    <ConversationListBar users={users} conversations={conversations} userSeleted={userSeleted} setUserSeletec={setUserSeletec} setUserSeletectedUsername={setUserSeletectedUsername} setUserSeletectedPfp={setUserSeletectedPfp} onlineUsers={onlineUsers} setStartAChat={setStartAChat} currentUserId={currentUserId} setConversationId={setConversationId}/>
                 </div>
             </div>
 
@@ -371,6 +361,8 @@ function HomePage() {
                             <div className='w-full py-6 pb-6'>
                                 {
                                 allMessagesBwTwo.map((message, index)=>{
+
+                                    console.log(message)
 
                                     return <OneMessage key={message._id} message={message} dropdownref={dropdownref} dropArrowdownId={dropArrowdownId} setDropArrowdownId={setDropArrowdownId} setAttachmentUrlForDeletion={setAttachmentUrlForDeletion} setDeletePopupOpen={setDeletePopupOpen} currentUserId={currentUserId} setMessageToDelete={setMessageToDelete} setEditPopupOpen={setEditPopupOpen} setMessageToDeleteTime={setMessageToDeleteTime} setMessageToDeleteText={setMessageToDeleteText}/>
 

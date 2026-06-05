@@ -1,5 +1,6 @@
 import userModels from '../models/userModels.js'
 import conversationModels from '../models/conversationModels.js'
+import Message from '../models/messageModels.js'
 
 export const conversationAdd = async (req,res) => {
     try{
@@ -28,8 +29,6 @@ export const conversationAdd = async (req,res) => {
 
 export const getAllConversations = async (req,res) => {
     try{
-        console.log("hello")
-        console.log(req.user.userId)
         let allconversations = await conversationModels.find(
             {
                 participants : req.user.userId
@@ -39,5 +38,20 @@ export const getAllConversations = async (req,res) => {
         res.json(allconversations)
     }catch(err){
         console.log("error getting all convos", err)
+    }
+}
+
+export const getAllMessagesOfAConversation = async (req,res) => {
+    try{
+        let allmessagesOfAConversationReq = await Message.find(
+            {
+                conversationId : req.params.conversationId
+            }
+        )
+        console.log("wertyu")
+        console.log(allmessagesOfAConversationReq)
+        res.json(allmessagesOfAConversationReq)
+    }catch(err){
+        console.log("error getting all messages of a convo", err)
     }
 }
