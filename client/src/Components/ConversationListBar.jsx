@@ -23,7 +23,6 @@ function ConversationListBar({users, userSeleted, setUserSeletec, setUserSeletec
                     setUserSeletec(user._id)
                     setUserSeletectedUsername(user.username)
                     setUserSeletectedPfp(user.pfp)
-                    console.log(user)
                 }}>
                     <div className='flex items-center gap-4 '>
 

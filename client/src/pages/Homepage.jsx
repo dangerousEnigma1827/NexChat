@@ -261,7 +261,7 @@ function HomePage() {
         if(userSeleted && currentUserId){
             getAllMessagesBwtwo()
         }
-    }, [userSeleted, currentUserId])
+    }, [userSeleted, currentUserId, conversationId])
 
     useEffect(()=>{
         scrollRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -330,7 +330,7 @@ function HomePage() {
         }
         {
             startAChat && 
-            <StartAChat setStartAChat={setStartAChat} userSearchText={userSearchText} setUserSearchText={setUserSearchText} currentUserId={currentUserId} userSeleted={userSeleted} setUserSeletec={setUserSeletec} setUserSeletectedUsername={setUserSeletectedUsername} setUserSeletectedPfp={setUserSeletectedPfp} getAllConversationsInFr={getAllConversationsInFr}/>
+            <StartAChat setStartAChat={setStartAChat} userSearchText={userSearchText} setUserSearchText={setUserSearchText} currentUserId={currentUserId} userSeleted={userSeleted} setUserSeletec={setUserSeletec} setUserSeletectedUsername={setUserSeletectedUsername} setUserSeletectedPfp={setUserSeletectedPfp} getAllConversationsInFr={getAllConversationsInFr} setConversationId={setConversationId} getAllMessagesBwtwo={getAllMessagesBwtwo}/>
         }
 
 
@@ -361,9 +361,6 @@ function HomePage() {
                             <div className='w-full py-6 pb-6'>
                                 {
                                 allMessagesBwTwo.map((message, index)=>{
-
-                                    console.log(message)
-
                                     return <OneMessage key={message._id} message={message} dropdownref={dropdownref} dropArrowdownId={dropArrowdownId} setDropArrowdownId={setDropArrowdownId} setAttachmentUrlForDeletion={setAttachmentUrlForDeletion} setDeletePopupOpen={setDeletePopupOpen} currentUserId={currentUserId} setMessageToDelete={setMessageToDelete} setEditPopupOpen={setEditPopupOpen} setMessageToDeleteTime={setMessageToDeleteTime} setMessageToDeleteText={setMessageToDeleteText}/>
 
                                 })

@@ -3,12 +3,14 @@ import { Search, X } from 'lucide-react'
 import React, { useState } from 'react'
 import toast from 'react-hot-toast'
 
-function StartAChat({setStartAChat,userSearchText, setUserSearchText, currentUserId, setUserSeletec, setUserSeletectedUsername, setUserSeletectedPfp, getAllConversationsInFr}){
+function StartAChat({setStartAChat,userSearchText, setUserSearchText, currentUserId, setUserSeletec, setUserSeletectedUsername, setUserSeletectedPfp, getAllConversationsInFr, setConversationId, getAllMessagesBwtwo}){
 
   let token = localStorage.getItem('token')
   let [usernameSearchResults, setUsernameSearchResutls] = useState([])
   let [selectedUserFromSearch, setSelectedUserFromSearch] = useState(null)
   let selectedUser;
+
+  let newConversation="123456";
 
   const handleSearchUser = async () => {
     try {
@@ -32,6 +34,16 @@ function StartAChat({setStartAChat,userSearchText, setUserSearchText, currentUse
         }, {
           headers: { Authorization: `Bearer ${token}` }
         })
+
+        newConversation = startConversationFromFr.data._id
+
+        getAllConversationsInFr()
+        setConversationId(newConversation)
+        getAllMessagesBwtwo()
+        
+        setStartAChat(false)
+        setUserSearchText("")
+        setUsernameSearchResutls([])
     }catch(err){
         console.log("error starting convo from frontend ", err)
     }
@@ -91,23 +103,15 @@ function StartAChat({setStartAChat,userSearchText, setUserSearchText, currentUse
                   <div className='w-[100%] flex flex-col items-center p-2'>
                     {
                       usernameSearchResults.map((user) => {
-                        console.log(user._id , " ", currentUserId)
                         return (
                           <div key={user._id} className={`  ${user._id != currentUserId ? '':'hidden'} h-[7vh] w-[100%] flex items-center justify-between mb-3 gap-2 cursor-pointer hover:bg-[#2b3142] rounded-md px-2 py-8 transition-all duration-300`}
                             onClick={() => {
-                                console.log("selected user:", user._id)
                                 setSelectedUserFromSearch(user._id)
                                 setUserSeletec(user._id)
                                 selectedUser = user._id
-                                handlestartConversation()
-                                
-                                getAllConversationsInFr()
-                                setStartAChat(false)
-                                getAllConversationsInFr()
                                 setUserSeletectedUsername(user.username)
                                 setUserSeletectedPfp(user.pfp)
-                                setUserSearchText("")
-                                setUsernameSearchResutls([])
+                                handlestartConversation()
                             }}>
 
                             <div className='flex items-center gap-4'>

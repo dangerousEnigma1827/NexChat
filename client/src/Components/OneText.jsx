@@ -74,7 +74,7 @@ function OneText({message ,dropArrowdownId, setDropArrowdownId, setMessageToDele
             <div className='flex justify-end mt-1 gap-2'>
                 <span className='text-[11px] text-gray-300 font-light'>
                     {
-                        message.isEdited ? "Edited" : ""
+                        (message.isEdited && !message.isDeletedForEveryone )? "Edited" : ""
                     }
                 </span>
                 <span className='text-[11px] text-gray-300 font-light'>
