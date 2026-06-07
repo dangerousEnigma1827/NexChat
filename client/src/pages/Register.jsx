@@ -108,9 +108,6 @@ function Register() {
                     Upload Image
                     <input type="file" className='hidden' onChange={(e)=>{handlePfp(e)}}/>
                 </label>
-
-                {/* <p className='text-gray-400 text-sm text-center max-w-[250px]'>Choose a cool profile picture to personalize your account.</p> */}
-
               </div>
 
               {/* right of bottom */}

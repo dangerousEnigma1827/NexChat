@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { MessageCircle, Search, Send, Plus } from "lucide-react";
+import { MessageCircle, Search, Send, Plus, UsersRound } from "lucide-react";
 import {ChatsCircleIcon, ChatCircleTextIcon, SignOutIcon,TrashIcon   } from "@phosphor-icons/react"
 import axios from 'axios'
 import {useNavigate} from 'react-router-dom'
@@ -15,6 +15,8 @@ import DeletePopup from '../Components/Popups/DeletePopup';
 import ClearChatPopup from '../Components/Popups/ClearChatPopup';
 import EditPopup from '../Components/Popups/EditPopup';
 import StartAChat from '../Components/Popups/StartAChat';
+import CreateGroupPopup from '../Components/Popups/CreateGroupPopup';
+import SelectUsersForGroupPopup from '../Components/Popups/SelectUsersForGroupPopup';
 
 function HomePage() {
 
@@ -40,11 +42,17 @@ function HomePage() {
     let [clearChatPopupOpen, setClearChatPopupOpen] = useState(false);
     let [editPopupOpen, setEditPopupOpen] = useState(false);
     let [startAChat, setStartAChat] = useState(false)
+    let [createGroupPopupOpen, setCreateGroupPopupOpen] = useState(false)
+    let [selectUsersForGroupPopupOpen, setSelectUsersForGroupPopupOpen] = useState(false)
 
 
+    //flowbit dropdowns
     let [dropdownOpen, setDropdownOpen] = useState(false);
-    let [dropArrowdownOpen, setDropArrowdownOpen] = useState(false);
+    let [dropdownNextToNexChatIcon, setDropdownNextToNextChatIcon] = useState(false)
+    //arrow button for flowbite dropdown on each message (same state for all but open and close on the basis of id of message)
     let [dropArrowdownId, setDropArrowdownId] = useState(null);
+    //this was on the basis of true and flase but cant use it as there are multiple such arrow buttons
+    // let [dropArrowdownOpen, setDropArrowdownOpen] = useState(false);
 
 
     let [messageToDelete, setMessageToDelete] = useState(null);
@@ -63,7 +71,6 @@ function HomePage() {
 
     //start chat ke liye 
     let [userSearchText, setUserSearchText] = useState("")
-
     let [conversationId, setConversationId] = useState(null)
 
     let getAllConversationsInFr = async () => {
@@ -332,15 +339,42 @@ function HomePage() {
             startAChat && 
             <StartAChat setStartAChat={setStartAChat} userSearchText={userSearchText} setUserSearchText={setUserSearchText} currentUserId={currentUserId} userSeleted={userSeleted} setUserSeletec={setUserSeletec} setUserSeletectedUsername={setUserSeletectedUsername} setUserSeletectedPfp={setUserSeletectedPfp} getAllConversationsInFr={getAllConversationsInFr} setConversationId={setConversationId} getAllMessagesBwtwo={getAllMessagesBwtwo}/>
         }
+        {
+            createGroupPopupOpen && 
+            <CreateGroupPopup setSelectUsersForGroupPopupOpen={setSelectUsersForGroupPopupOpen} setCreateGroupPopupOpen={setCreateGroupPopupOpen}/>
+        }
+
+        {
+            selectUsersForGroupPopupOpen &&
+            <SelectUsersForGroupPopup setSelectUsersForGroupPopupOpen={setSelectUsersForGroupPopupOpen}/>
+        }
 
 
         <div className='flex w-full h-screen'>
             
-            <LeftMostBar setLogoutPopupOpen={setLogoutPopupOpen}/>
+            <LeftMostBar setLogoutPopupOpen={setLogoutPopupOpen} setCreateGroupPopupOpen={setCreateGroupPopupOpen}/>
 
             <div className='w-[25vw] bg-[#212634] min-h-[100vh] flex  flex-col items-center'>
                 <div className='w-[90%] mt-5'>
-                    <NexChatIcon/>
+                    <div className='flex justify-between w-[100%]'>
+                        <NexChatIcon/>
+                        {/* <div className='relative ml-auto mr-6'>
+                            <button onClick={() => setDropdownNextToNextChatIcon(!dropdownNextToNexChatIcon)} className="text-white hover:bg-[#2b3142] rounded-md p-2 transition-all" type="button">
+                                <svg className="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" strokeLinecap="round" strokeWidth="3" d="M12 6h.01M12 12h.01M12 18h.01"/></svg>
+                            </button>
+                            {
+                                dropdownNextToNexChatIcon &&
+                                <div className="absolute right-0 mt-2 bg-[#232a3a] border border-[#31384d] rounded-md shadow-lg w-40 z-50">
+                                    <ul className="p-2 text-sm text-gray-300">
+                                        <button className="inline-flex items-center w-full gap-4 p-2 hover:bg-[#2b3142] hover:text-white rounded-md transition-all">New Group<UsersRound size={20}/></button>
+                                        {/* <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded-md transition-all" onClick={(e)=>{
+                                            setClearChatPopupOpen(true)
+                                        }}>Clear Chat</button> */}
+                                    {/* </ul> */}
+                                {/* </div> */}
+                            {/* } */}
+                        {/* </div> */}
+                    </div>
 
                     {/* //users list */}
                     <ConversationListBar users={users} conversations={conversations} userSeleted={userSeleted} setUserSeletec={setUserSeletec} setUserSeletectedUsername={setUserSeletectedUsername} setUserSeletectedPfp={setUserSeletectedPfp} onlineUsers={onlineUsers} setStartAChat={setStartAChat} currentUserId={currentUserId} setConversationId={setConversationId}/>

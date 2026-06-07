@@ -34,7 +34,6 @@ export const getAllConversations = async (req,res) => {
                 participants : req.user.userId
             }
         ).populate("participants")
-        console.log(allconversations)
         res.json(allconversations)
     }catch(err){
         console.log("error getting all convos", err)
@@ -48,10 +47,31 @@ export const getAllMessagesOfAConversation = async (req,res) => {
                 conversationId : req.params.conversationId
             }
         )
-        console.log("wertyu")
-        console.log(allmessagesOfAConversationReq)
         res.json(allmessagesOfAConversationReq)
     }catch(err){
         console.log("error getting all messages of a convo", err)
+    }
+}
+
+export const getAllSingleUsers = async (req,res)=>{
+    try{
+        console.log("qwertyuiolkjhgfdsazxcvbnm")
+
+        let allSingleUsersReq = await conversationModels.find({
+            participants: req.user.userId
+        }).populate('participants')
+
+        let allSingleUsersArr = []
+
+        allSingleUsersReq.forEach((conversation)=>{
+            conversation.participants.forEach((participant)=>{
+                if(participant._id != req.user.userId){
+                    allSingleUsersArr.push(participant)
+                }
+            })
+        })
+        res.json(allSingleUsersArr)
+    }catch(err){
+        console.log("error while getting all singl users", err)
     }
 }
