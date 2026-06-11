@@ -2,11 +2,10 @@ import React from 'react'
 import { useState } from 'react'
 import {ChatsCircleIcon, ChatCircleTextIcon, KeyIcon, EnvelopeIcon, UserIcon, CloudArrowUpIcon, ArrowRightIcon} from "@phosphor-icons/react"
 
-function CreateGroupPopup({setCreateGroupPopupOpen, setSelectUsersForGroupPopupOpen}) {
+function CreateGroupPopup({setCreateGroupPopupOpen, setSelectUsersForGroupPopupOpen, groupName, groupDescription,
+    setGroupName, setGroupDescription}) {
 
     let [cloudinaryUrl, setCloudinaryUrl] = useState(null)
-    let [groupName, setGroupName] = useState("")
-    let [groupDescription, setGroupDescription] = useState("")
 
     let handlePfp = async (e) =>{
         let file = e.target.files[0]

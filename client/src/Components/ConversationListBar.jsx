@@ -48,17 +48,9 @@ function ConversationListBar({users, userSeleted, setUserSeletec, setUserSeletec
                         <div className='flex flex-col min-w-0'>
                             <div className='flex justify-between items-center'>
                                 <p className='text-xl text-white'>{user.username}</p>
-                            
-                                {/* <div className={`${user.lastTimeMessageSent[currentUserId] ? "text-[#64748b] opacity-100" : "text-blue-600 opacity-0"}`}>
-                                     <p>{new Date(user.lastTimeMessageSent[currentUserId]).toLocaleTimeString([], { 
-                                        hour:"2-digit",
-                                        minute:"2-digit"
-                                    })}</p>
-                                </div> */}
                             </div>
-
-                            {/* <p className='text-[#94A3b8] font-sm truncate max-w-[250px]'>{user.lastMessageSent[currentUserId]}</p> */}
                         </div>
+
                     </div>
                     
                 </div>

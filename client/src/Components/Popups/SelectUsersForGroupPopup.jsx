@@ -5,7 +5,8 @@ import { ArrowLeftIcon, Search, X } from 'lucide-react'
 function SelectUsersForGroupPopup({
     setSelectUsersForGroupPopupOpen,
     setCreateGroupPopupOpen,
-    groupName, groupDescription
+    groupName, groupDescription,
+    setGroupName, setGroupDescription
 }) {
 
     const token = localStorage.getItem('token')
@@ -57,14 +58,15 @@ function SelectUsersForGroupPopup({
         try{
             let createAGroupInFr = await axios.post('http://localhost:5000/api/conversations/createGroup', {
                 participants : selectedUsers,
-                groupName,
-                grou
+                groupName:groupName,
+                groupDescription:groupDescription
             }, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             })
             console.log("done creating group")
+            setSelectUsersForGroupPopupOpen(false);
         }catch(err){
             console.log("error creating group", err)
         }

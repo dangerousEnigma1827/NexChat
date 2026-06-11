@@ -73,6 +73,10 @@ function HomePage() {
     let [userSearchText, setUserSearchText] = useState("")
     let [conversationId, setConversationId] = useState(null)
 
+
+    let [groupName, setGroupName] = useState("")
+    let [groupDescription, setGroupDescription] = useState("")
+
     let getAllConversationsInFr = async () => {
         try{
             let getAllConversationsInFrReq = await axios.get('http://localhost:5000/api/conversations/', {
@@ -341,12 +345,12 @@ function HomePage() {
         }
         {
             createGroupPopupOpen && 
-            <CreateGroupPopup setSelectUsersForGroupPopupOpen={setSelectUsersForGroupPopupOpen} setCreateGroupPopupOpen={setCreateGroupPopupOpen}/>
+            <CreateGroupPopup setSelectUsersForGroupPopupOpen={setSelectUsersForGroupPopupOpen} setCreateGroupPopupOpen={setCreateGroupPopupOpen} groupName={groupName} setGroupName={setGroupName}setGroupDescription={setGroupDescription} groupDescription={groupDescription}/>
         }
 
         {
             selectUsersForGroupPopupOpen &&
-            <SelectUsersForGroupPopup setSelectUsersForGroupPopupOpen={setSelectUsersForGroupPopupOpen}/>
+            <SelectUsersForGroupPopup setSelectUsersForGroupPopupOpen={setSelectUsersForGroupPopupOpen} groupName={groupName} setGroupName={setGroupName}setGroupDescription={setGroupDescription} groupDescription={groupDescription}/>
         }
 
 
