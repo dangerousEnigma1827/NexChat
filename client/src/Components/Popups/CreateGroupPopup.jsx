@@ -13,20 +13,20 @@ function CreateGroupPopup({setCreateGroupPopupOpen, setSelectUsersForGroupPopupO
         if(!file){
 
         }else{
-        let data = new FormData()
-        data.append("file", file)
-        data.append("upload_preset", "NexChatUploadPreset")
-        data.append("cloud_name", "dgv5nxqxx")
+            let data = new FormData()
+            data.append("file", file)
+            data.append("upload_preset", "NexChatUploadPreset")
+            data.append("cloud_name", "dgv5nxqxx")
 
 
-        let res = await fetch("https://api.cloudinary.com/v1_1/dgv5nxqxx/image/upload", {
-            method:"POST",
-            body: data
-        })
+            let res = await fetch("https://api.cloudinary.com/v1_1/dgv5nxqxx/image/upload", {
+                method:"POST",
+                body: data
+            })
 
-        const imageUploadurl = await res.json()
-        console.log(imageUploadurl)
-        setCloudinaryUrl(imageUploadurl.url)
+            const imageUploadurl = await res.json()
+            console.log(imageUploadurl)
+            setCloudinaryUrl(imageUploadurl.url)
         }
     }
 
@@ -74,9 +74,10 @@ function CreateGroupPopup({setCreateGroupPopupOpen, setSelectUsersForGroupPopupO
             <div className='flex justify-end mt-8 gap-3'>
                 <button className='px-5 py-3 rounded-xl bg-[#2e3548] text-gray-300 hover:bg-[#394158] transition' onClick={(e)=>{setCreateGroupPopupOpen(false)}}>Cancel</button>
 
-                <button className='px-6 py-3 rounded-xl bg-[#3b82f6] hover:bg-[#2563eb] text-white flex items-center gap-2 transition shadow-lg shadow-blue-500/20' onClick={(e)=>{
+                <button className='px-6 py-3 rounded-xl bg-[#3b82f6] hover:bg-[#2563eb] text-white flex items-center gap-2 transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed' disabled={groupName.trim() == "" || groupDescription.trim() == ""} onClick={(e)=>{
                     setCreateGroupPopupOpen(false)
                     setSelectUsersForGroupPopupOpen(true)
+
                 }}>Next<ArrowRightIcon size={20}/></button>
             </div>
         </div>

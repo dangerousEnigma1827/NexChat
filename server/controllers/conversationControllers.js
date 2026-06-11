@@ -6,7 +6,7 @@ export const conversationAdd = async (req,res) => {
     try{
         let doesConvoexist = await conversationModels.find({
             participants: {
-                $all:[req.user._id, req.body.selectedUserFromSearch],
+                $all:[req.user.userId, req.body.selectedUserFromSearch],
                 $size:2
             }
         })
@@ -24,6 +24,23 @@ export const conversationAdd = async (req,res) => {
         
     }catch(err){
         console.log("error starting convo in bckd", err)
+    }
+}
+
+export const createNewGroup = async (req,res)=>{
+    try{
+        let addAGroup = await conversationModels.create({
+            type:"group",
+            participants : req.body.participants,
+            groupName : req.body.groupName,
+            groupIcon : req.body.groupIcon,
+            groupAdmin : req.user.userId
+        })
+
+        console.log("done creating group in backend")
+        res.json(addAGroup)
+    }catch(err){
+        console.log("error adding group", err)
     }
 }
 
