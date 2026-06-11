@@ -6,6 +6,7 @@ function SelectUsersForGroupPopup({
     setSelectUsersForGroupPopupOpen,
     setCreateGroupPopupOpen,
     groupName, groupDescription,
+    currentUserId,
     setGroupName, setGroupDescription
 }) {
 
@@ -48,16 +49,21 @@ function SelectUsersForGroupPopup({
 
             setSelectedUsers(newUsers)
         }else{
+            console.log("abc")
             setSelectedUsers((prev)=>{
                 return [...prev, userId]
             })
+
+            console.log("cdf")
         }
     }
 
     const handleCreateGroup = async () => {
         try{
+            let finalarr = [...selectedUsers, currentUserId]
+
             let createAGroupInFr = await axios.post('http://localhost:5000/api/conversations/createGroup', {
-                participants : selectedUsers,
+                participants : finalarr,
                 groupName:groupName,
                 groupDescription:groupDescription
             }, {
@@ -65,8 +71,9 @@ function SelectUsersForGroupPopup({
                     Authorization: `Bearer ${token}`
                 }
             })
-            console.log("done creating group")
+            console.log("1111")
             setSelectUsersForGroupPopupOpen(false);
+            console.log("done creating group")
         }catch(err){
             console.log("error creating group", err)
         }

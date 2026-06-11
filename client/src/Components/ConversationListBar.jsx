@@ -24,7 +24,8 @@ function ConversationListBar({users, userSeleted, setUserSeletec, setUserSeletec
                     setUserSeletectedUsername(user.username)
                     setUserSeletectedPfp(user.pfp)
                 }}>
-                    <div className='flex items-center gap-4 '>
+                    {conversation.type=="private" && 
+                        <div className='flex items-center gap-4 '>
 
                         <div className='relative'>
                             <div className='rounded-full bg-[#141720] h-[7vh] w-[7vh] flex justify-center items-center text-center '>
@@ -51,7 +52,34 @@ function ConversationListBar({users, userSeleted, setUserSeletec, setUserSeletec
                             </div>
                         </div>
 
-                    </div>
+                        </div>
+                    }
+                    {conversation.type=="group" && 
+                        <div className='flex items-center gap-4 '>
+
+                        <div className='relative'>
+                            <div className='rounded-full bg-[#141720] h-[7vh] w-[7vh] flex justify-center items-center text-center '>
+                                
+                                {conversation.groupIcon && <img src={conversation.groupIcon} className='h-full w-full object-cover rounded-full' />}
+                                {
+                                    !conversation.groupIcon && (
+                                        <p className='text-white text-md font-medium'>
+                                            {conversation.groupName?.substring(0,1).toUpperCase()}
+                                        </p>
+                                    )
+                                }
+                            </div>
+                        </div>
+
+                        <div className='flex flex-col min-w-0'>
+                            <div className='flex justify-between items-center'>
+                                <p className='text-xl text-white'>{conversation.groupName}</p>
+                            </div>
+                        </div>
+
+                        </div>
+                    }
+                    
                     
                 </div>
             })

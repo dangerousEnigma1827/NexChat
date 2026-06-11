@@ -51,6 +51,8 @@ export const getAllConversations = async (req,res) => {
                 participants : req.user.userId
             }
         ).populate("participants")
+
+        console.log(allconversations)
         res.json(allconversations)
     }catch(err){
         console.log("error getting all convos", err)
