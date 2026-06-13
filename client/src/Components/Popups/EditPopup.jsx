@@ -34,7 +34,7 @@ function EditPopup({messagesToDeleteText, messagesToDeleteTime, setEditedText, h
                 {/* //edit box */}
                 <div className='overflow-auto w-[100%] h-[40%] flex justify-center items-center rounded-xl'>
                     <div className='h-[100%] w-[100%] flex justify-center items-center'>
-                        <textarea type="text" placeholder='Write A Message!' className='outline-none border-none rounded-xl text-white max-w-[100%] min-w-[100%] h-[100%] text-md placeholder:text-gray-500 px-4 bg-[#141720]' value={editedText} onChange={(e)=>{
+                        <textarea type="text" placeholder='Write Down The Edited Message!' className='outline-none border-none rounded-xl text-white max-w-[100%] min-w-[100%] h-[100%] text-md placeholder:text-gray-500 px-4 bg-[#141720]' value={editedText} onChange={(e)=>{
                             setEditedText(e.target.value)
                         }}/>
                     </div>

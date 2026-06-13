@@ -50,7 +50,7 @@ export const getAllConversations = async (req,res) => {
             {
                 participants : req.user.userId
             }
-        ).populate("participants")
+        ).populate("participants").populate("lastMessageSentBy")
 
         console.log(allconversations)
         res.json(allconversations)
@@ -94,3 +94,12 @@ export const getAllSingleUsers = async (req,res)=>{
         console.log("error while getting all singl users", err)
     }
 }
+
+// export const updateLastConversation = async (req,res)=>{
+//     try{
+//         console.log("poiuy")
+        
+//     }catch(err){
+//         console.log("error updating las conversation", err)
+//     }
+// }

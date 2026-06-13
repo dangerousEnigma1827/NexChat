@@ -14,14 +14,6 @@ let userSchema = new mongoose.Schema({
         type:String,
         required:true
     },
-    lastTimeMessageSent:{
-        type:Map,
-        of:String
-    },
-    lastMessageSent:{
-        type:Map,
-        of:String
-    },
     pfp:{
         type:String
     }

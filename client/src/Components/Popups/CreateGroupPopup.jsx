@@ -46,7 +46,7 @@ function CreateGroupPopup({setCreateGroupPopupOpen, setSelectUsersForGroupPopupO
                             :
                             (
                                 <div className='h-full w-full bg-[#11151f] flex flex-col items-center justify-center gap-2'>
-                                    <CloudArrowUpIcon size={55} color="#3b82f6" className='group-hover:scale-110 transition'/>
+                                    {/* <CloudArrowUpIcon size={55} color="#3b82f6" className='group-hover:scale-110 transition'/> */}
                                     <p className='text-xs text-gray-400'>Upload Group Icon</p>
                                 </div>
                             )

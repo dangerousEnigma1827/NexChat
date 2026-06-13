@@ -3,7 +3,7 @@ import { Search, X } from 'lucide-react'
 import React, { useState } from 'react'
 import toast from 'react-hot-toast'
 
-function StartAChat({setStartAChat,userSearchText, setUserSearchText, currentUserId, setUserSeletec, setUserSeletectedUsername, setUserSeletectedPfp, getAllConversationsInFr, setConversationId, getAllMessagesBwtwo}){
+function StartAChat({setStartAChat,userSearchText, setUserSearchText, currentUserId, setConversationSelected, setConversationSelectedtedUsername, setConversationSelectedtedPfp, getAllConversationsInFr, setConversationId, getAllMessagesBwtwo}){
 
   let token = localStorage.getItem('token')
   let [usernameSearchResults, setUsernameSearchResutls] = useState([])
@@ -107,10 +107,10 @@ function StartAChat({setStartAChat,userSearchText, setUserSearchText, currentUse
                           <div key={user._id} className={`  ${user._id != currentUserId ? '':'hidden'} h-[7vh] w-[100%] flex items-center justify-between mb-3 gap-2 cursor-pointer hover:bg-[#2b3142] rounded-md px-2 py-8 transition-all duration-300`}
                             onClick={() => {
                                 setSelectedUserFromSearch(user._id)
-                                setUserSeletec(user._id)
+                                setConversationSelected(user._id)
                                 selectedUser = user._id
-                                setUserSeletectedUsername(user.username)
-                                setUserSeletectedPfp(user.pfp)
+                                setConversationSelectedtedUsername(user.username)
+                                setConversationSelectedtedPfp(user.pfp)
                                 handlestartConversation()
                             }}>
 

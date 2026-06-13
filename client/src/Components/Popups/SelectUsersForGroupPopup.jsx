@@ -88,7 +88,7 @@ function SelectUsersForGroupPopup({
                 <div className='flex items-center justify-between mb-6'>
                     <div>
                         <h1 className='text-2xl font-bold text-white'>Select Users</h1>
-                        <p className='text-sm text-gray-400 mt-1'>Choose members for your group</p>
+                        {/* <p className='text-sm text-gray-400 mt-1'>Choose members for your group</p> */}
                     </div>
 
                     <button className='text-gray-400 hover:text-white transition-all cursor-pointer'
@@ -101,11 +101,11 @@ function SelectUsersForGroupPopup({
 
                 <div className='w-full bg-[#141720] h-[58px] rounded-xl flex items-center gap-3 px-4 mb-5 border border-[#2e3548]'>
                     <Search size={18} className='text-gray-400' />
-                    <input type='text' className='flex-1 bg-transparent outline-none text-white placeholder:text-gray-500' placeholder='Search users...' value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}/>
+                    <input type='text' className='flex-1 bg-transparent outline-none text-white placeholder:text-gray-500' value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}/>
                 </div>
 
                 <div className='mb-3'>
-                    <p className='text-sm text-gray-400'>Selected: {selectedUsers.length}</p>
+                    {/* <p className='text-sm text-gray-400'>Selected: {selectedUsers.length}</p> */}
                 </div>
 
                 <div className='flex-1 overflow-y-auto pr-1'>
@@ -114,7 +114,7 @@ function SelectUsersForGroupPopup({
                             filteredUsers.map((user) => {
                                 const isSelected = selectedUsers.includes(user._id)
                                 return (
-                                    <div key={user._id} onClick={() => handleUserSelect(user._id)} className={`h-[75px] w-full flex items-center justify-between px-4 mb-2 rounded-xl cursor-pointer transition-all duration-300 ${isSelected? 'bg-[#4c7dff20] border border-[#4c7dff]': 'hover:bg-[#2b3142]'}`}>
+                                    <div key={user._id} onClick={() => handleUserSelect(user._id)} className={`h-[75px] w-full flex items-center justify-between px-4 mb-2 rounded-xl cursor-pointer transition-all duration-300 ${isSelected? ' border border-[#4c7dff]': 'hover:bg-[#2b3142]'}`}>
                                         <div className='flex items-center gap-4'>
                                             <div className='rounded-full bg-[#141720] h-[52px] w-[52px] flex justify-center items-center overflow-hidden shrink-0'>
                                                 {

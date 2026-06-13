@@ -4,7 +4,7 @@ import {ChatsCircleIcon, ChatCircleTextIcon, SignOutIcon,TrashIcon   } from "@ph
 import axios from 'axios'
 import {useNavigate} from 'react-router-dom'
 import socket from '../socket/socket';
-import SelectedGroupOrUser from '../Components/SelectedGroupOrUser';
+import SelectedConversation from '../Components/SelectedConversation';
 import ConversationListBar from '../Components/ConversationListBar';
 import InputArea from '../Components/InputArea';
 import NexChatIcon from '../Components/NexChatIcon';
@@ -28,9 +28,9 @@ function HomePage() {
 
     let [users, setUsers] = useState([]);
     let [conversations, setConversations] = useState([]);
-    let [userSeleted, setUserSeletec] = useState(null)
-    let [userSeletedUsername, setUserSeletectedUsername] = useState(false)
-    let [userSeletedPfp, setUserSeletectedPfp] = useState(null)
+    let [conversationSelected, setConversationSelected] = useState(null)
+    let [conversationSelectedUsername, setConversationSelectedtedUsername] = useState(false)
+    let [conversationSelectedPfp, setConversationSelectedtedPfp] = useState(null)
     let [currentUserId, setUserId] = useState(null)
 
     let [allMessagesBwTwo, setAllMessagesBwTwo] = useState([])
@@ -74,8 +74,15 @@ function HomePage() {
     let [conversationId, setConversationId] = useState(null)
 
 
+    //group realted info
     let [groupName, setGroupName] = useState("")
     let [groupDescription, setGroupDescription] = useState("")
+    let [isconversationAGroup, setIsConversationAGroup] = useState(false)
+    let [groupMembers, setGroupMembers] = useState()
+    let [groupAdmins, setGroupAdmins] = useState()
+
+    //side bar
+    let [isSideBarOpen, setIsSideBarOpen] = useState(false)
 
     let getAllConversationsInFr = async () => {
         try{
@@ -132,6 +139,21 @@ function HomePage() {
                 return [...prev, sendMessageFromFrontend.data]
             })
 
+            setConversations((prev)=>{
+                return prev.map((oneConversation,index)=>{
+                    if(oneConversation._id == conversationId){
+                        return{
+                            ...oneConversation,
+                            lastMessageSent:text,
+                            lastTimeMessageSent:new Date(),
+                            lastMessageSentBy: currentUserId
+                        }
+                    }else{
+                        return oneConversation
+                    }
+                })
+            })
+
             setText("")
             setAttachments([])
         }catch(err){
@@ -146,17 +168,14 @@ function HomePage() {
 
     let handleClearChat = async (req,res) => {
         try{
-            let clearcharsBwTwo = await axios.post(`http://localhost:5000/api/messages/clearchat/${currentUserId}/${userSeleted}`,
+            let clearChatReq = await axios.post(`http://localhost:5000/api/messages/clearchat/${conversationId}`,
+            {},
             {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
-            }
-            )
-
+            })
             getAllMessagesBwtwo()
-
-            console.log("cleared chat")
         }catch(err){
             console.log("error clearing chats in frotnend", err)
         }
@@ -202,7 +221,7 @@ function HomePage() {
         let sendMessageToBackend = await axios.post('http://localhost:5000/api/messages/send', {
             text:text, 
             senderId:currentUserId,
-            recieverId: userSeleted,
+            recieverId: conversationSelected,
             attachments : tempArr
             },
             {headers: {Authorization: `Bearer ${token}`} }
@@ -269,10 +288,10 @@ function HomePage() {
     },[])
 
     useEffect(()=>{
-        if(userSeleted && currentUserId){
+        if(conversationId && currentUserId){
             getAllMessagesBwtwo()
         }
-    }, [userSeleted, currentUserId, conversationId])
+    }, [conversationSelected, currentUserId, conversationId])
 
     useEffect(()=>{
         scrollRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -341,7 +360,7 @@ function HomePage() {
         }
         {
             startAChat && 
-            <StartAChat setStartAChat={setStartAChat} userSearchText={userSearchText} setUserSearchText={setUserSearchText} currentUserId={currentUserId} userSeleted={userSeleted} setUserSeletec={setUserSeletec} setUserSeletectedUsername={setUserSeletectedUsername} setUserSeletectedPfp={setUserSeletectedPfp} getAllConversationsInFr={getAllConversationsInFr} setConversationId={setConversationId} getAllMessagesBwtwo={getAllMessagesBwtwo}/>
+            <StartAChat setStartAChat={setStartAChat} userSearchText={userSearchText} setUserSearchText={setUserSearchText} currentUserId={currentUserId} conversationSelected={conversationSelected} setConversationSelected={setConversationSelected} setConversationSelectedtedUsername={setConversationSelectedtedUsername} setConversationSelectedtedPfp={setConversationSelectedtedPfp} getAllConversationsInFr={getAllConversationsInFr} setConversationId={setConversationId} getAllMessagesBwtwo={getAllMessagesBwtwo}/>
         }
         {
             createGroupPopupOpen && 
@@ -381,28 +400,27 @@ function HomePage() {
                     </div>
 
                     {/* //users list */}
-                    <ConversationListBar users={users} conversations={conversations} userSeleted={userSeleted} setUserSeletec={setUserSeletec} setUserSeletectedUsername={setUserSeletectedUsername} setUserSeletectedPfp={setUserSeletectedPfp} onlineUsers={onlineUsers} setStartAChat={setStartAChat} currentUserId={currentUserId} setConversationId={setConversationId}/>
+                    <ConversationListBar users={users} conversations={conversations} conversationSelected={conversationSelected} setConversationSelected={setConversationSelected} setConversationSelectedtedUsername={setConversationSelectedtedUsername} setConversationSelectedtedPfp={setConversationSelectedtedPfp} onlineUsers={onlineUsers} setStartAChat={setStartAChat} currentUserId={currentUserId} setConversationId={setConversationId} setIsConversationAGroup={setIsConversationAGroup} setGroupAdmins={setGroupAdmins} setGroupMembers={setGroupMembers}/>
                 </div>
             </div>
 
             <div className='w-[71vw] bg-[#141720] min-h-[100vh]'>
                 {
-                    !userSeleted && <div>
+                    !conversationSelected && <div>
                     </div>
                 }
                 {
-                    userSeleted && <div className=''>
+                    conversationSelected && <div className=''>
                         
-                        <SelectedGroupOrUser userSeletedPfp={userSeletedPfp} userSeletedUsername={userSeletedUsername} dropdownOpen={dropdownOpen} setDropdownOpen={setDropdownOpen} onlineUsers={onlineUsers} userSeleted={userSeleted} setClearChatPopupOpen={setClearChatPopupOpen}/>
+                        <SelectedConversation conversationSelectedPfp={conversationSelectedPfp} conversationSelectedUsername={conversationSelectedUsername} dropdownOpen={dropdownOpen} setDropdownOpen={setDropdownOpen} onlineUsers={onlineUsers} conversationSelected={conversationSelected} setClearChatPopupOpen={setClearChatPopupOpen} isconversationAGroup={isconversationAGroup} groupMembers={groupMembers} setIsSideBarOpen={setIsSideBarOpen}/>
 
                         <div className='h-[80vh] w-full overflow-y-auto'>
                             <div className='w-full py-6 pb-6'>
                                 {
-                                allMessagesBwTwo.map((message, index)=>{
-                                    return <OneMessage key={message._id} message={message} dropdownref={dropdownref} dropArrowdownId={dropArrowdownId} setDropArrowdownId={setDropArrowdownId} setAttachmentUrlForDeletion={setAttachmentUrlForDeletion} setDeletePopupOpen={setDeletePopupOpen} currentUserId={currentUserId} setMessageToDelete={setMessageToDelete} setEditPopupOpen={setEditPopupOpen} setMessageToDeleteTime={setMessageToDeleteTime} setMessageToDeleteText={setMessageToDeleteText}/>
-
-                                })
-                            }
+                                    allMessagesBwTwo.map((message, index)=>{
+                                        return <OneMessage key={message._id} message={message} dropdownref={dropdownref} dropArrowdownId={dropArrowdownId} setDropArrowdownId={setDropArrowdownId} setAttachmentUrlForDeletion={setAttachmentUrlForDeletion} setDeletePopupOpen={setDeletePopupOpen} currentUserId={currentUserId} setMessageToDelete={setMessageToDelete} setEditPopupOpen={setEditPopupOpen} setMessageToDeleteTime={setMessageToDeleteTime} setMessageToDeleteText={setMessageToDeleteText}/>
+                                    })
+                                }   
 
                             <div className="scrollbelow" ref={scrollRef}></div>
                             </div>
@@ -413,6 +431,13 @@ function HomePage() {
                     </div>
                 }
             </div>
+
+
+            <div className={`w-[25vw] bg-[#212634] min-h-[100vh] flex  flex-col items-center ${isSideBarOpen ? "translate-x-0" : "translate-x-full"} duration-500 top-0 right-0 fixed`}>
+                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quia porro veniam mollitia pariatur aut nisi, ad dolorem delectus animi minus consectetur velit rerum molestias similique obcaecati iure nemo ex reiciendis odit quidem magnam? Iure, atque. Reprehenderit praesentium laudantium placeat quae quasi harum ab reiciendis delectus itaque est iusto quos aperiam, et officia a autem nostrum eius ex officiis sequi natus laborum doloremque. Non impedit aliquid accusantium neque, perspiciatis magni repellat provident eum quis laudantium, eaque, consequuntur sint asperiores voluptatibus. Itaque iusto facilis excepturi doloribus corrupti, et consectetur impedit pariatur explicabo magnam ut neque exercitationem necessitatibus, debitis inventore laudantium quod hic assumenda ullam. Quam doloribus molestias, aliquid amet tenetur cumque omnis aperiam autem minus itaque! Quis quibusdam sunt quam voluptas, rem, quisquam reiciendis delectus cum totam temporibus tempora accusantium atque similique omnis, recusandae quaerat? Fuga ipsum laborum laboriosam eaque? Earum sed quasi reiciendis explicabo dicta voluptatibus cumque magni. Similique cupiditate nihil doloremque, tempora at labore sunt earum aut tempore officiis velit molestias omnis nesciunt dolore cum consectetur, pariatur voluptates vel eum autem, architecto sit quasi! Nihil eveniet hic dolorem magni odit in deleniti, quas commodi. Nobis fuga, in repudiandae quae sunt aliquid molestias reprehenderit ut, nam, ratione minima! Reiciendis, fuga nemo.
+            </div>
+
+
         </div>
     </div>
   )
