@@ -2,7 +2,8 @@ import React, { useState } from 'react'
 import { Search } from 'lucide-react'
 import useTime from '../Hooks/useTime'
 
-function ConversationListBar({users, conversationSelected, setConversationSelected, setConversationSelectedtedUsername, setConversationSelectedtedPfp, onlineUsers, setStartAChat, conversations, currentUserId, setConversationId, setIsConversationAGroup, setGroupMembers, setGroupAdmins}){
+function ConversationListBar({users, conversationSelected, setConversationSelected, setConversationSelectedtedUsername, setConversationSelectedtedPfp, onlineUsers, setStartAChat, conversations, currentUserId, setConversationId, setIsConversationAGroup, setGroupMembers, setGroupAdmins, setUserSelectedIdIfNotGroup}){
+
 
     let {formatTime} = useTime()
   return (
@@ -20,22 +21,24 @@ function ConversationListBar({users, conversationSelected, setConversationSelect
     <div className='w-[100%] mt-6 flex flex-col items-center overflow-y-auto '>
         {
             conversations.map((conversation, index)=>{
-                // let user=conversation.participants[0] !== currentUserId ? conversation.participants[1] : conversation.participants[0]
-                console.log(conversation)
                 let user = conversation.participants.find((participant)=>{
                     return participant._id != currentUserId
                 })
-                return <div key={index} className={`h-[7vh] w-[100%] flex items-center justify-between mb-3 gap-2 cursor-pointer hover:bg-[#2b3142] rounded-md px-2 py-8 duration-500 transition-all ${(user._id == conversationSelected) || (conversation._id == conversationSelected) ? "bg-[#2b3142]" : ""}`} onClick={(e)=>{
+                return <div key={index} className={`h-[7vh] w-[100%] flex items-center justify-between mb-3 gap-2 cursor-pointer hover:bg-[#2b3142] rounded-md px-2 py-8 duration-500 transition-all ${(conversation._id == conversationSelected) ? "bg-[#2b3142]" : ""}`} onClick={(e)=>{
                     if(conversation.type=="private"){
-                        setIsConversationAGroup(false)
+                        setUserSelectedIdIfNotGroup(user._id)
+                        setConversationSelected(conversation._id)
                         setConversationId(conversation._id)
-                        setConversationSelected(user._id)
+
+                        setIsConversationAGroup(false)
                         setConversationSelectedtedUsername(user.username)
                         setConversationSelectedtedPfp(user.pfp)
                     }else{
-                        setIsConversationAGroup(true)
-                        setConversationId(conversation._id)
+                        setUserSelectedIdIfNotGroup(null)
                         setConversationSelected(conversation._id)
+                        setConversationId(conversation._id)
+
+                        setIsConversationAGroup(true)
                         setConversationSelectedtedUsername(conversation.groupName)
                         setConversationSelectedtedPfp(conversation.groupIcon)
                         setGroupMembers(conversation.participants)

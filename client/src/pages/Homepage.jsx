@@ -17,6 +17,7 @@ import EditPopup from '../Components/Popups/EditPopup';
 import StartAChat from '../Components/Popups/StartAChat';
 import CreateGroupPopup from '../Components/Popups/CreateGroupPopup';
 import SelectUsersForGroupPopup from '../Components/Popups/SelectUsersForGroupPopup';
+import SideOverlay from '../Components/SideOverlay';
 
 function HomePage() {
 
@@ -46,7 +47,7 @@ function HomePage() {
     let [selectUsersForGroupPopupOpen, setSelectUsersForGroupPopupOpen] = useState(false)
 
 
-    //flowbit dropdowns
+    //flowbite dropdowns
     let [dropdownOpen, setDropdownOpen] = useState(false);
     let [dropdownNextToNexChatIcon, setDropdownNextToNextChatIcon] = useState(false)
     //arrow button for flowbite dropdown on each message (same state for all but open and close on the basis of id of message)
@@ -80,9 +81,12 @@ function HomePage() {
     let [isconversationAGroup, setIsConversationAGroup] = useState(false)
     let [groupMembers, setGroupMembers] = useState()
     let [groupAdmins, setGroupAdmins] = useState()
-
-    //side bar
+    
     let [isSideBarOpen, setIsSideBarOpen] = useState(false)
+    let [userSelectedIdIfNotGroup, setUserSelectedIdIfNotGroup] = useState(null)
+
+    //refs
+    let sideOverlayRef = useRef(null)
 
     let getAllConversationsInFr = async () => {
         try{
@@ -320,6 +324,18 @@ function HomePage() {
         }
     }, [currentUserId])
 
+    useEffect(()=>{
+        let handleClick = (e) => {
+            if(isSideBarOpen && !sideOverlayRef.current.contains(e.target)){
+                setIsSideBarOpen(false)
+            }
+        }
+        document.addEventListener('mousedown', handleClick)
+
+        return  () => {
+            document.removeEventListener('mousedown', handleClick)
+        }
+    })
 
     // useEffect(()=>{
     //     let handleClick = (e) => {
@@ -381,26 +397,10 @@ function HomePage() {
                 <div className='w-[90%] mt-5'>
                     <div className='flex justify-between w-[100%]'>
                         <NexChatIcon/>
-                        {/* <div className='relative ml-auto mr-6'>
-                            <button onClick={() => setDropdownNextToNextChatIcon(!dropdownNextToNexChatIcon)} className="text-white hover:bg-[#2b3142] rounded-md p-2 transition-all" type="button">
-                                <svg className="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" strokeLinecap="round" strokeWidth="3" d="M12 6h.01M12 12h.01M12 18h.01"/></svg>
-                            </button>
-                            {
-                                dropdownNextToNexChatIcon &&
-                                <div className="absolute right-0 mt-2 bg-[#232a3a] border border-[#31384d] rounded-md shadow-lg w-40 z-50">
-                                    <ul className="p-2 text-sm text-gray-300">
-                                        <button className="inline-flex items-center w-full gap-4 p-2 hover:bg-[#2b3142] hover:text-white rounded-md transition-all">New Group<UsersRound size={20}/></button>
-                                        {/* <button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded-md transition-all" onClick={(e)=>{
-                                            setClearChatPopupOpen(true)
-                                        }}>Clear Chat</button> */}
-                                    {/* </ul> */}
-                                {/* </div> */}
-                            {/* } */}
-                        {/* </div> */}
                     </div>
 
                     {/* //users list */}
-                    <ConversationListBar users={users} conversations={conversations} conversationSelected={conversationSelected} setConversationSelected={setConversationSelected} setConversationSelectedtedUsername={setConversationSelectedtedUsername} setConversationSelectedtedPfp={setConversationSelectedtedPfp} onlineUsers={onlineUsers} setStartAChat={setStartAChat} currentUserId={currentUserId} setConversationId={setConversationId} setIsConversationAGroup={setIsConversationAGroup} setGroupAdmins={setGroupAdmins} setGroupMembers={setGroupMembers}/>
+                    <ConversationListBar users={users} conversations={conversations} conversationSelected={conversationSelected} setConversationSelected={setConversationSelected} setConversationSelectedtedUsername={setConversationSelectedtedUsername} setConversationSelectedtedPfp={setConversationSelectedtedPfp} onlineUsers={onlineUsers} setStartAChat={setStartAChat} currentUserId={currentUserId} setConversationId={setConversationId} setIsConversationAGroup={setIsConversationAGroup} setGroupAdmins={setGroupAdmins} setGroupMembers={setGroupMembers} setUserSelectedIdIfNotGroup={setUserSelectedIdIfNotGroup}/>
                 </div>
             </div>
 
@@ -433,10 +433,10 @@ function HomePage() {
             </div>
 
 
-            <div className={`w-[25vw] bg-[#212634] min-h-[100vh] flex  flex-col items-center ${isSideBarOpen ? "translate-x-0" : "translate-x-full"} duration-500 top-0 right-0 fixed`}>
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quia porro veniam mollitia pariatur aut nisi, ad dolorem delectus animi minus consectetur velit rerum molestias similique obcaecati iure nemo ex reiciendis odit quidem magnam? Iure, atque. Reprehenderit praesentium laudantium placeat quae quasi harum ab reiciendis delectus itaque est iusto quos aperiam, et officia a autem nostrum eius ex officiis sequi natus laborum doloremque. Non impedit aliquid accusantium neque, perspiciatis magni repellat provident eum quis laudantium, eaque, consequuntur sint asperiores voluptatibus. Itaque iusto facilis excepturi doloribus corrupti, et consectetur impedit pariatur explicabo magnam ut neque exercitationem necessitatibus, debitis inventore laudantium quod hic assumenda ullam. Quam doloribus molestias, aliquid amet tenetur cumque omnis aperiam autem minus itaque! Quis quibusdam sunt quam voluptas, rem, quisquam reiciendis delectus cum totam temporibus tempora accusantium atque similique omnis, recusandae quaerat? Fuga ipsum laborum laboriosam eaque? Earum sed quasi reiciendis explicabo dicta voluptatibus cumque magni. Similique cupiditate nihil doloremque, tempora at labore sunt earum aut tempore officiis velit molestias omnis nesciunt dolore cum consectetur, pariatur voluptates vel eum autem, architecto sit quasi! Nihil eveniet hic dolorem magni odit in deleniti, quas commodi. Nobis fuga, in repudiandae quae sunt aliquid molestias reprehenderit ut, nam, ratione minima! Reiciendis, fuga nemo.
+            <div className={`w-[25vw] bg-[#212634] min-h-[100vh] flex  flex-col items-center duration-500 top-0 right-0 fixed ${!isSideBarOpen? "translate-x-full" : "translate-x-0"}`}  ref={sideOverlayRef}>
+                <SideOverlay setIsSideBarOpen={setIsSideBarOpen} userA={userSelectedIdIfNotGroup} userB={currentUserId} conversationSelectedPfp={conversationSelectedPfp} conversationSelectedUsername={conversationSelectedUsername} onlineUsers={onlineUsers} conversationSelected={conversationSelected} 
+                isconversationAGroup={isconversationAGroup}/>
             </div>
-
 
         </div>
     </div>

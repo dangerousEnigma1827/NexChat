@@ -11,7 +11,6 @@ export const conversationAdd = async (req,res) => {
             }
         })
         if(!doesConvoexist[0]){
-            console.log("new created")
             let newconvo = await conversationModels.create({
                 type:"private",
                 participants: [req.user.userId, req.body.selectedUserFromSearch],
@@ -37,7 +36,6 @@ export const createNewGroup = async (req,res)=>{
             groupAdmin : req.user.userId
         })
 
-        console.log("done creating group in backend")
         res.json(addAGroup)
     }catch(err){
         console.log("error adding group", err)
@@ -52,7 +50,6 @@ export const getAllConversations = async (req,res) => {
             }
         ).populate("participants").populate("lastMessageSentBy")
 
-        console.log(allconversations)
         res.json(allconversations)
     }catch(err){
         console.log("error getting all convos", err)
@@ -74,7 +71,6 @@ export const getAllMessagesOfAConversation = async (req,res) => {
 
 export const getAllSingleUsers = async (req,res)=>{
     try{
-        console.log("qwertyuiolkjhgfdsazxcvbnm")
 
         let allSingleUsersReq = await conversationModels.find({
             participants: req.user.userId
@@ -95,11 +91,24 @@ export const getAllSingleUsers = async (req,res)=>{
     }
 }
 
-// export const updateLastConversation = async (req,res)=>{
-//     try{
-//         console.log("poiuy")
-        
-//     }catch(err){
-//         console.log("error updating las conversation", err)
-//     }
-// }
+export const getAllCommonGroups = async (req,res)=>{
+    const {userA, userB} = req.params
+    console.log(userA + " " + userB)
+    try{
+        let response = await conversationModels.find({
+            type:"group",
+            participants:{
+                $all : [req.params.userA, req.params.userB],
+            }
+        }).populate("participants")
+
+        console.log(response)
+        res.json(response)
+    }catch(err){
+        return res.status(500).json({
+            status:false,
+            message:"Error getting all common groups",
+            error:err.message
+        })
+    }
+}
