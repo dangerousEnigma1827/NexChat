@@ -3,8 +3,6 @@ import { Search } from 'lucide-react'
 import {ChatsCircleIcon, ChatCircleTextIcon, KeyIcon, EnvelopeIcon, UserIcon, CloudArrowUpIcon} from "@phosphor-icons/react"
 import { useNavigate } from 'react-router-dom'
 import toast from "react-hot-toast";
-import axios from 'axios';
-
 
 function Register() {
   
@@ -21,7 +19,7 @@ function Register() {
   let hangleRegister = async () =>{
     if(username && email && password){
       try{
-        let handleRegisterInFrontend = await axios.post('http://localhost:5000/api/auth/register', {
+        let handleRegisterInFrontend = await api.post('http://localhost:5000/api/auth/register', {
           username, email, password,lastMessageSent , lastTimeMessageSent, "pfp":cloudinaryUrl
         })
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { X,Users } from "lucide-react";
+import { X,Users, UsersRound } from "lucide-react";
 import { getCommonGroups } from "../Services/groupServices";
 
 function SideOverlay({ setIsSideBarOpen, userA, userB , conversationSelectedUsername, conversationSelectedPfp, onlineUsers, conversationSelected, isconversationAGroup}) {
@@ -25,8 +25,7 @@ function SideOverlay({ setIsSideBarOpen, userA, userB , conversationSelectedUser
   return (
     <>
     {!isconversationAGroup && <div className="h-full w-full bg-[#212634] text-white relative">
-
-      <div className="flex items-center gap-3 h-[10vh] px-4 border-b border-[#2a3040] bg-[#212634]">
+      <div className="flex items-center gap-3 h-[10vh] px-4 border-b border-[#2a3040]">
         <X
           className="hover:bg-[#2b3142] rounded-full p-2 cursor-pointer transition"
           size={36}
@@ -35,17 +34,25 @@ function SideOverlay({ setIsSideBarOpen, userA, userB , conversationSelectedUser
         <p className="text-lg font-semibold">User Info</p>
       </div>
 
-      <div className="p-6 flex flex-col items-center bg-[#212634] min-h-[90vh]">
+      <div className="p-6 flex flex-col items-center bg-[#212634] min-h-[90vh] w-[95%]">
 
-        <img
-          src={conversationSelectedPfp}
-          className="w-28 h-28 rounded-full border-4 border-[#2b3142] object-cover"
-        />
+        <div className="flex flex-col border-b border-[#2a3040] w-full">
+          {
+            conversationSelectedPfp && 
+            <img
+              src={conversationSelectedPfp}
+              className="w-28 h-28 rounded-full border-4 border-[#2b3142] object-cover"/>
+          }
+          {
+            !conversationSelectedPfp && 
+            <div className="flex justify-center items-center rounded-full w-28 h-28 text-center bg-[#141720]"><UsersRound/></div>
+          }
 
-        <h2 className="mt-4 text-xl font-semibold">{conversationSelectedUsername}</h2>
-        <p className="text-gray-400 text-sm">{onlineUsers?.includes(conversationSelected) ? "Online" : "Offline"}</p>
+          <h2 className="mt-4 text-xl font-semibold">{conversationSelectedUsername}</h2>
+          <p className="text-gray-400 text-sm">{onlineUsers?.includes(conversationSelected) ? "Online" : "Offline"}</p>
+        </div>
 
-        <div className="w-full mt-8">
+        <div className="w-full mt-8 border-b border-[#2a3040]">
           <h3 className="font-semibold mb-3">Common Groups</h3>
           <div className="space-y-2">
             {commonGroups.length === 0 && (
@@ -88,10 +95,12 @@ function SideOverlay({ setIsSideBarOpen, userA, userB , conversationSelectedUser
               </div>
             </div>
           </div>
-
         </div>
+
       </div>
-    </div>}
+    </div>
+    }
+
     {isconversationAGroup && <div className="h-full w-full bg-[#212634] text-white relative">
 
       <div className="flex items-center gap-3 h-[10vh] px-4 border-b border-[#2a3040] bg-[#212634]">
@@ -105,15 +114,23 @@ function SideOverlay({ setIsSideBarOpen, userA, userB , conversationSelectedUser
 
       <div className="p-6 flex flex-col items-center bg-[#212634] min-h-[90vh]">
 
-        <img
-          src={conversationSelectedPfp}
-          className="w-28 h-28 rounded-full border-4 border-[#2b3142] object-cover"
-        />
+        <div className="flex flex-col border-b border-b-[]">
+          {
+          conversationSelectedPfp && 
+          <img
+            src={conversationSelectedPfp}
+            className="w-28 h-28 rounded-full border-4 border-[#2b3142] object-cover"/>
+          }
+          {
+            !conversationSelectedPfp && 
+            <div className="flex justify-center items-center rounded-full w-28 h-28 text-center bg-[#141720]"><UsersRound/></div>
+          }
 
-        <h2 className="mt-4 text-xl font-semibold">{conversationSelectedUsername}</h2>
-        <p className="text-gray-400 text-sm">{onlineUsers?.includes(conversationSelected) ? "Online" : "Offline"}</p>
+          <h2 className="mt-4 text-xl font-semibold">{conversationSelectedUsername}</h2>
+          <p className="text-gray-400 text-sm">{onlineUsers?.includes(conversationSelected) ? "Online" : "Offline"}</p>
+        </div>
 
-        <div className="w-full mt-8">
+        <div className="w-full mt-8 ">
           <h3 className="font-semibold mb-3">Common Groups</h3>
           <div className="space-y-2">
             {commonGroups.length === 0 && (

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Search } from 'lucide-react'
+import { Search, UserRound } from 'lucide-react'
 import useTime from '../Hooks/useTime'
 
 function ConversationListBar({users, conversationSelected, setConversationSelected, setConversationSelectedtedUsername, setConversationSelectedtedPfp, onlineUsers, setStartAChat, conversations, currentUserId, setConversationId, setIsConversationAGroup, setGroupMembers, setGroupAdmins, setUserSelectedIdIfNotGroup}){
@@ -42,78 +42,87 @@ function ConversationListBar({users, conversationSelected, setConversationSelect
                         setConversationSelectedtedUsername(conversation.groupName)
                         setConversationSelectedtedPfp(conversation.groupIcon)
                         setGroupMembers(conversation.participants)
+                        console.log(conversation.participants)
                         setGroupAdmins(conversation.admins)
                     }
                 }}>
 
-
                 {conversation.type == "private" && (
-                <div className='flex items-center gap-4 w-full'>
-                    <div className='relative'>
-                        <div className='rounded-full bg-[#141720] h-[7vh] w-[7vh] flex justify-center items-center text-center'>
-                            {user.pfp ? (
-                                <img
-                                    src={user.pfp}
-                                    className='h-full w-full object-cover rounded-full'
-                                />
-                            ) : (
-                                <p className='text-white text-md font-medium'>
-                                    {user.username?.substring(0, 1).toUpperCase()}
-                                </p>
+                    <div className='flex items-center gap-4 w-full'>
+                        <div className='relative'>
+                            <div className='rounded-full bg-[#141720] h-[7vh] w-[7vh] flex justify-center items-center text-center'>
+                                {user.pfp ? (
+                                    <img
+                                        src={user.pfp}
+                                        className='h-full w-full object-cover rounded-full'
+                                    />
+                                ) : (
+                                    <div className='h-full w-full flex justify-center items-center object-cover'>
+                                        <UserRound/>
+                                    </div>
+                                )}
+                            </div>
+
+                            {onlineUsers.includes(user._id) && (
+                                <div className='absolute bottom-0 right-0 h-3 w-3 bg-green-500 rounded-full border-2 border-[#212634]' />
                             )}
                         </div>
+                        <div className='flex flex-col min-w-0 flex-1'>
 
-                        {onlineUsers.includes(user._id) && (
-                            <div className='absolute bottom-0 right-0 h-3 w-3 bg-green-500 rounded-full border-2 border-[#212634]' />
-                        )}
-                    </div>
-                    <div className='flex flex-col min-w-0 flex-1'>
+                            <div className='flex justify-between items-center w-full'>
+                                <p className='text-white text-lg font-medium truncate'>
+                                    {user.username}
+                                </p>
 
-                        <div className='flex justify-between items-center w-full'>
-                            <p className='text-white text-lg font-medium truncate'>
-                                {user.username}
+                                <p className='text-xs text-gray-400 whitespace-nowrap ml-2'>
+                                    {formatTime(conversation.lastTimeMessageSent)}
+                                </p>
+                            </div>
+
+                            <p className='text-sm text-gray-400 truncate'>
+                                {conversation.lastMessageSent
+                                    ? `${conversation.lastMessageSentBy == currentUserId ? "You" : user.username}: ${conversation.lastMessageSent}`
+                                    : ""}
                             </p>
 
-                            <p className='text-xs text-gray-400 whitespace-nowrap ml-2'>
-                                {formatTime(conversation.lastTimeMessageSent)}
-                            </p>
                         </div>
-
-                        <p className='text-sm text-gray-400 truncate'>
-                            {conversation.lastMessageSent
-                                ? `${conversation.lastMessageSentBy == currentUserId ? "You" : user.username}: ${conversation.lastMessageSent}`
-                                : ""}
-                        </p>
-
                     </div>
-                </div>
                 )}
-                    {conversation.type=="group" && 
-                        <div className='flex items-center gap-4 '>
 
-                        <div className='relative'>
-                            <div className='rounded-full bg-[#141720] h-[7vh] w-[7vh] flex justify-center items-center text-center '>
-                                
-                                {conversation.groupIcon && <img src={conversation.groupIcon} className='h-full w-full object-cover rounded-full' />}
-                                {
-                                    !conversation.groupIcon && (
-                                        <p className='text-white text-md font-medium'>
-                                            {conversation.groupName?.substring(0,1).toUpperCase()}
-                                        </p>
-                                    )
-                                }
-                            </div>
-                        </div>
+                {conversation.type=="group" && 
+                    <div className='flex items-center gap-4 '>
 
-                        <div className='flex flex-col min-w-0'>
-                            <div className='flex justify-between items-center'>
-                                <p className='text-xl text-white'>{conversation.groupName}</p>
-                            </div>
-                        </div>
+                    <div className='relative'>
+                        <div className='rounded-full bg-[#141720] h-[8vh] w-[8vh] flex justify-center items-center text-center '>
+                            
+                            {
+                                conversation.groupIcon && 
+                                    <img src={conversation.groupIcon} className='h-full w-full object-cover rounded-full'/>
+                            }
 
+                            {
+                                !conversation.groupIcon && 
+                                    <div className='h-full w-full flex justify-center items-center object-cover border-1 text-white border-[#2b3142]'>
+                                        <UserRound/>
+                                    </div>
+                            }
                         </div>
-                    }
-                    
+                    </div>
+
+                    <div className='flex flex-col min-w-0'>
+                        <div className='flex justify-between items-center'>
+                            <p className='text-xl text-white'>{conversation.groupName}</p>
+                        </div>
+                        <div className='flex justify-between items-center text-gray-400 truncate text-sm'>
+                            {
+                                conversation.participants.map((p)=>{
+                                    return p.username
+                                }).join(", ")
+                            }
+                        </div>
+                    </div>
+                    </div>
+                }
                     
                 </div>
             })

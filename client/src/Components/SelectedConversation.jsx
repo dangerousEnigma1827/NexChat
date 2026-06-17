@@ -23,7 +23,7 @@ function SelectedConversation({conversationSelectedPfp, conversationSelectedUser
 
   return (
     <div className='w-full h-[10vh] bg-[#1d202f] flex items-center gap-4' onClick={(e)=>{setIsSideBarOpen(true)}}>
-        <div className='rounded-full bg-[#141720] h-[6vh] w-[6vh] flex justify-center items-center ml-6'>
+        <div className='rounded-full bg-[#141720] h-[7vh] w-[7vh] flex justify-center items-center ml-6'>
             {
                 conversationSelectedPfp && (
                     <img src={conversationSelectedPfp} className='h-full w-full object-cover rounded-full' />

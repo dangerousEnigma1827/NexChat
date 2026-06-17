@@ -4,6 +4,7 @@ import { Toaster } from 'react-hot-toast'
 import Register from './pages/Register'
 import HomePage from './pages/HomePage'
 import Login from './pages/Login'
+import ProtectedRoutes from './Components/ProtectedRoutes'
 
 function App() {
   return(
@@ -12,7 +13,7 @@ function App() {
      <Routes>
         <Route path='/register' element={<Register/>}/>
         <Route path='/login' element={<Login/>}/>
-        <Route path='/' element={<HomePage/>}/>
+        <Route path='/' element={<ProtectedRoutes><HomePage/></ProtectedRoutes>}/>
       </Routes> 
     </>
   )

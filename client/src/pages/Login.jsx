@@ -4,7 +4,7 @@ import { useState } from 'react'
 import {ChatsCircleIcon, ChatCircleTextIcon, KeyIcon, EnvelopeIcon, UserIcon} from "@phosphor-icons/react"
 import { useNavigate } from 'react-router-dom'
 import toast from "react-hot-toast";
-import axios from 'axios';
+import api from '../api/apiInstance'
 
 function Login() {
   
@@ -16,7 +16,7 @@ function Login() {
   let handleLogin = async () =>{
     if(email && password){
         try{
-            let handleLoginInFrontend = await axios.post('http://localhost:5000/api/auth/login', {
+            let handleLoginInFrontend = await api.post('http://localhost:5000/api/auth/login', {
                 email,password
             })
 
