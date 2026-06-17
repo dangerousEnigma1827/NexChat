@@ -15,7 +15,7 @@ function Register() {
   let hangleRegister = async () => {
     if (username && email && password) {
       try {
-        await api.post('http://localhost:5000/api/auth/register', {
+        await api.post('/auth/register', {
           username,
           email,
           password,
@@ -60,7 +60,7 @@ function Register() {
   <div className='h-screen w-screen bg-[#141720] flex justify-center items-center px-4'>
 
     {/* main container */}
-    <div className='bg-[#212634] rounded-md w-full max-w-4xl flex flex-col'>
+    <div className='bg-[#212634] rounded-md w-full max-w-3xl flex flex-col'>
 
       {/* top */}
       <div className='w-[95%] mt-10 mb-3 flex flex-col items-center gap-2 mx-auto'>

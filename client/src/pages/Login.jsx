@@ -14,7 +14,7 @@ function Login() {
   let handleLogin = async () => {
     if (email && password) {
       try {
-        let res = await api.post('http://localhost:5000/api/auth/login', {
+        let res = await api.post('/auth/login', {
           email, password
         })
 

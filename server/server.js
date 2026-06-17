@@ -14,7 +14,11 @@ dotenv.config();
 connectDB()
 
 const app = express();
-app.use(cors());
+
+app.use(cors({
+  origin: "*",
+  credentials: true
+}));
 app.use(express.json());
 
 app.get("/", (req, res) => {
@@ -30,16 +34,15 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: "*"
-  },
+    origin: "*",
+    methods: ["GET", "POST"]
+  }
 });
 
 socketHandler(io)
-
 export default io;
 
-
 const PORT = process.env.PORT || 5000;
-server.listen(PORT, () => {
+server.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 });

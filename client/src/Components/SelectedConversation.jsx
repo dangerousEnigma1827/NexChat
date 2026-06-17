@@ -1,8 +1,9 @@
 import React from 'react'
 import axios from 'axios'
 import { useState, useEffect } from 'react'
+import { ArrowLeft } from 'lucide-react'
 
-function SelectedConversation({conversationSelectedPfp, conversationSelectedUsername, dropdownOpen, setDropdownOpen, onlineUsers, conversationSelected, setClearChatPopupOpen, isconversationAGroup, groupMembers, setIsSideBarOpen}) {
+function SelectedConversation({conversationSelectedPfp, conversationSelectedUsername, dropdownOpen, setDropdownOpen, onlineUsers, conversationSelected, setClearChatPopupOpen, isconversationAGroup, groupMembers, setIsSideBarOpen, setConversationSelected}) {
 
     let [currentUserName, setCurrentUserName] = useState(null)
     let token = localStorage.getItem('token')
@@ -22,39 +23,44 @@ function SelectedConversation({conversationSelectedPfp, conversationSelectedUser
     }, [conversationSelected])
 
   return (
-    <div className='w-full h-[10vh] bg-[#1d202f] flex items-center gap-4' onClick={(e)=>{setIsSideBarOpen(true)}}>
-        <div className='rounded-full bg-[#141720] h-[7vh] w-[7vh] flex justify-center items-center ml-6'>
-            {
-                conversationSelectedPfp && (
-                    <img src={conversationSelectedPfp} className='h-full w-full object-cover rounded-full' />
-                )
-            }
-            {
-                !conversationSelectedPfp && (
-                    <p className='text-white text-md font-medium'>
-                        {conversationSelectedUsername?.substring(0,1).toUpperCase()}
-                    </p>
-                )
-            }
-        </div>
-        <div className='flex flex-col'>
-            <p className='text-xl text-white'>{conversationSelectedUsername}</p>
-            {
-                !isconversationAGroup && 
-                <p className='text-sm text-gray-400'>{onlineUsers.includes(conversationSelected) ? "Online" : "Offline"}</p>
-            }
-            {
-                isconversationAGroup && 
-                <div className='flex justify-center items-center text-sm text-gray-400 gap-2'>
-                    {
-                        groupMembers.map((member, index)=>{
-                            return <div key={index}>
-                                    <p>{member._id == currentUserName ? "You": member.username}{groupMembers.length != index+1 ? " ," : ""} </p>
-                                </div>
-                        })
-                    }
-                </div>
-            }
+    <div className='w-full h-[10vh] bg-[#1d202f] flex items-center gap-4'>
+        <div className='flex gap-2 items-center'>
+            <ArrowLeft className='hover:bg-[#2b3142] rounded-full p-2 cursor-pointer transition ml-3 text-xl text-white md:hidden' size={38} onClick={()=>{
+                setConversationSelected(null)
+                }}/>
+            <div className='rounded-full bg-[#141720] h-[7vh] w-[7vh] flex justify-center items-center md:ml-6' onClick={(e)=>{setIsSideBarOpen(true)}}>
+                {
+                    conversationSelectedPfp && (
+                        <img src={conversationSelectedPfp} className='h-full w-full object-cover rounded-full' />
+                    )
+                }
+                {
+                    !conversationSelectedPfp && (
+                        <p className='text-white text-md font-medium'>
+                            {conversationSelectedUsername?.substring(0,1).toUpperCase()}
+                        </p>
+                    )
+                }
+            </div>
+            <div className='flex flex-col' onClick={(e)=>{setIsSideBarOpen(true)}}>
+                <p className='text-xl text-white'>{conversationSelectedUsername}</p>
+                {
+                    !isconversationAGroup && 
+                    <p className='text-sm text-gray-400'>{onlineUsers.includes(conversationSelected) ? "Online" : "Offline"}</p>
+                }
+                {
+                    isconversationAGroup && 
+                    <div className='flex justify-center items-center text-sm text-gray-400 gap-2'>
+                        {
+                            groupMembers.map((member, index)=>{
+                                return <div key={index}>
+                                        <p>{member._id == currentUserName ? "You": member.username}{groupMembers.length != index+1 ? " ," : ""} </p>
+                                    </div>
+                            })
+                        }
+                    </div>
+                }
+            </div>
         </div>
 
         {/* three dot wala */}
