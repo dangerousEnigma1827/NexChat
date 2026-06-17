@@ -1,23 +1,52 @@
 import React from 'react'
-import {ChatsCircleIcon, ChatCircleTextIcon, SignOutIcon, UsersIcon} from "@phosphor-icons/react"
-import { UsersRound } from 'lucide-react'
+import { ChatCircleTextIcon, SignOutIcon, UsersIcon } from "@phosphor-icons/react"
 
-
-function LeftMostBar({setLogoutPopupOpen ,setCreateGroupPopupOpen}) {
+function LeftMostBar({ setLogoutPopupOpen, setCreateGroupPopupOpen }) {
   return (
-    <>
-    <div className='w-[4vw] min-h-[100vh] bg-[#141720] flex flex-col items-center justify-between '>
-        <div className='mt-6 mb-6 h-screen flex flex-col justify-between'>
-            <div className='flex flex-col gap-5'>
-              <ChatCircleTextIcon size={25} color="#ffffff" weight="fill" className='cursor-pointer' />
-              <UsersIcon size={25} color="#ffffff" weight="fill" className='cursor-pointer' onClick={(e)=>{setCreateGroupPopupOpen(e)}}/>
-            </div>
-            <SignOutIcon size={25} color="#ffffff" weight="fill" className='cursor-pointer' onClick={(e)=>{
-                setLogoutPopupOpen(true)
-            }} />
-        </div>
+    <div className="w-[70px] h-full bg-[#141720] flex flex-col items-center justify-between py-6 border-r border-[#1d2230]">
+
+      {/* TOP ICONS */}
+      <div className="flex flex-col gap-6">
+
+        {/* Chats */}
+        <button className="group flex items-center justify-center w-10 h-10 rounded-lg hover:bg-[#22283a] transition">
+          <ChatCircleTextIcon
+            size={24}
+            color="#ffffff"
+            weight="fill"
+            className="group-hover:scale-110 transition"
+          />
+        </button>
+
+        {/* Create Group */}
+        <button
+          className="group flex items-center justify-center w-10 h-10 rounded-lg hover:bg-[#22283a] transition"
+          onClick={() => setCreateGroupPopupOpen(true)}
+        >
+          <UsersIcon
+            size={24}
+            color="#ffffff"
+            weight="fill"
+            className="group-hover:scale-110 transition"
+          />
+        </button>
+
+      </div>
+
+      {/* BOTTOM ICON */}
+      <button
+        className="group flex items-center justify-center w-10 h-10 rounded-lg hover:bg-red-500/20 transition"
+        onClick={() => setLogoutPopupOpen(true)}
+      >
+        <SignOutIcon
+          size={24}
+          color="#ffffff"
+          weight="fill"
+          className="group-hover:scale-110 transition"
+        />
+      </button>
+
     </div>
-    </>
   )
 }
 

@@ -287,17 +287,37 @@ function HomePage() {
     return (
         <div>
 
-            {/* POPUPS (UNCHANGED) */}
-            {logoutPopupOpen && <LogoutPopup handleLogout={handleLogout} setLogoutPopupOpen={setLogoutPopupOpen} />}
-            
-            {deletePopupOpen && <DeletePopup handleDelete={handleDelete} setDeletePopupOpen={setDeletePopupOpen} setDropArrowdownId={setDropArrowdownId} setAttachmentUrlForDeletion={setAttachmentUrlForDeletion} />}
+            {
+                logoutPopupOpen && 
+                <LogoutPopup handleLogout={handleLogout} setLogoutPopupOpen={setLogoutPopupOpen}/>
+            }
+            {
+                deletePopupOpen && 
+                <DeletePopup handleDelete={handleDelete} setDeletePopupOpen={setDeletePopupOpen} setDropArrowdownId={setDropArrowdownId} setAttachmentUrlForDeletion={setAttachmentUrlForDeletion}/>
+            }
+            {
+                clearChatPopupOpen && 
+                <ClearChatPopup setClearChatPopupOpen={setClearChatPopupOpen} setDropdownOpen={setDropdownOpen} handleClearChat={handleClearChat} getAllMessagesBwtwo={getAllMessagesBwtwo}/>
+            }
+            {
+                editPopupOpen && 
+            <EditPopup messagesToDeleteText={messagesToDeleteText} messagesToDeleteTime={messagesToDeleteTime} setEditedText={setEditedText} handleEdit={handleEdit} setDropArrowdownId={setDropArrowdownId} editedText={editedText} setEditPopupOpen={setEditPopupOpen}/>
+            }
+            {
+                startAChat && 
+                <StartAChat setStartAChat={setStartAChat} userSearchText={userSearchText} setUserSearchText={setUserSearchText} currentUserId={currentUserId} conversationSelected={conversationSelected} setConversationSelected={setConversationSelected} setConversationSelectedtedUsername={setConversationSelectedtedUsername} setConversationSelectedtedPfp={setConversationSelectedtedPfp} getAllConversationsInFr={getAllConversationsInFr} setConversationId={setConversationId} getAllMessagesBwtwo={getAllMessagesBwtwo}/>
+            }
+            {
+                createGroupPopupOpen && 
+                <CreateGroupPopup setSelectUsersForGroupPopupOpen={setSelectUsersForGroupPopupOpen} setCreateGroupPopupOpen={setCreateGroupPopupOpen} groupName={groupName} setGroupName={setGroupName}setGroupDescription={setGroupDescription} groupDescription={groupDescription}/>
+            }
+            {
+                selectUsersForGroupPopupOpen &&
+                <SelectUsersForGroupPopup setSelectUsersForGroupPopupOpen={setSelectUsersForGroupPopupOpen} groupName={groupName} setGroupName={setGroupName}setGroupDescription={setGroupDescription} groupDescription={groupDescription} currentUserId={currentUserId} getAllConversationsInFr={getAllConversationsInFr}/>
+            }
 
-            {clearChatPopupOpen && <ClearChatPopup setClearChatPopupOpen={setClearChatPopupOpen} setDropdownOpen={setDropdownOpen} handleClearChat={handleClearChat} getAllMessagesBwtwo={getAllMessagesBwtwo} />}
 
-            {editPopupOpen && <EditPopup messagesToDeleteText={messagesToDeleteText} messagesToDeleteTime={messagesToDeleteTime} setEditedText={setEditedText} handleEdit={handleEdit} setDropArrowdownId={setDropArrowdownId} editedText={editedText} setEditPopupOpen={setEditPopupOpen} />}
-
-            <div className="flex w-full min-h-screen">
-
+            <div className="flex w-full h-screen overflow-hidden">
                 {/* LEFT ICON BAR (hidden on mobile) */}
                 <div className="hidden md:block">
                     <LeftMostBar
@@ -307,10 +327,23 @@ function HomePage() {
                 </div>
 
                 {/* CONVERSATION LIST (always visible on mobile first) */}
-                <div className={`bg-[#212634] min-h-[100vh] flex flex-col items-center w-full md:w-[25vw] ${conversationSelected ? "hidden md:flex" : "flex"}`}>
-                    <div className="w-[90%] mt-5">
+                <div className={`bg-[#212634] h-screen overflow-hidden flex flex-col items-center w-full md:w-[25vw] ${conversationSelected ? "hidden md:flex" : "flex"}`}>
+    
+                    {/* Fixed top section — NexChatIcon + Search */}
+                    <div className="w-[90%] mt-5 flex-shrink-0">
                         <NexChatIcon />
+                        <div className='w-full bg-[#141720] h-[7vh] rounded-md flex items-center gap-2 mb-2'>
+                            <Search className='text-white ml-4' size={19} />
+                            <input
+                                type="text"
+                                placeholder='Search Chats'
+                                className='w-full outline-none bg-transparent text-white h-[8vh] text-md placeholder:text-gray-500'
+                            />
+                        </div>
+                    </div>
 
+                    {/* Scrollable conversation list — takes remaining height */}
+                    <div className="w-[90%] flex-1 overflow-hidden mb-3">
                         <ConversationListBar
                             users={users}
                             conversations={conversations}
@@ -330,26 +363,30 @@ function HomePage() {
                     </div>
                 </div>
 
-                {/* CHAT AREA (mobile full screen when selected) */}
-                <div className={`flex-1 bg-[#141720] min-h-[100vh] ${!conversationSelected ? 'hidden md:block' : 'block'}`}>
+                {/* CHAT AREA */}
+                <div className={`flex-1 bg-[#141720] flex flex-col h-screen overflow-hidden ${!conversationSelected ? 'hidden md:flex' : 'flex'}`}>
 
                     {conversationSelected && (
                         <>
-                            <SelectedConversation
-                                conversationSelectedPfp={conversationSelectedPfp}
-                                conversationSelectedUsername={conversationSelectedUsername}
-                                dropdownOpen={dropdownOpen}
-                                setDropdownOpen={setDropdownOpen}
-                                onlineUsers={onlineUsers}
-                                conversationSelected={conversationSelected}
-                                setClearChatPopupOpen={setClearChatPopupOpen}
-                                isconversationAGroup={isconversationAGroup}
-                                groupMembers={groupMembers}
-                                setIsSideBarOpen={setIsSideBarOpen}
-                                setConversationSelected={setConversationSelected}
-                            />
+                            {/* Fixed header */}
+                            <div className="flex-shrink-0">
+                                <SelectedConversation
+                                    conversationSelectedPfp={conversationSelectedPfp}
+                                    conversationSelectedUsername={conversationSelectedUsername}
+                                    dropdownOpen={dropdownOpen}
+                                    setDropdownOpen={setDropdownOpen}
+                                    onlineUsers={onlineUsers}
+                                    conversationSelected={conversationSelected}
+                                    setClearChatPopupOpen={setClearChatPopupOpen}
+                                    isconversationAGroup={isconversationAGroup}
+                                    groupMembers={groupMembers}
+                                    setIsSideBarOpen={setIsSideBarOpen}
+                                    setConversationSelected={setConversationSelected}
+                                />
+                            </div>
 
-                            <div className="h-[80vh] w-full overflow-y-auto">
+                            {/* Scrollable messages — grows to fill remaining space */}
+                            <div className="flex-1 overflow-y-auto">
                                 <div className="w-full py-6 pb-6">
                                     {allMessagesBwTwo.map((message) => (
                                         <OneMessage
@@ -371,19 +408,26 @@ function HomePage() {
                                 </div>
                             </div>
 
-                            <InputArea
-                                text={text}
-                                setText={setText}
-                                sendMessageFunc={sendMessageFunc}
-                                handleMedia={handleMedia}
-                            />
+                            {/* Fixed input at bottom */}
+                            <div className="flex-shrink-0">
+                                <InputArea
+                                    text={text}
+                                    setText={setText}
+                                    sendMessageFunc={sendMessageFunc}
+                                    handleMedia={handleMedia}
+                                />
+                            </div>
                         </>
                     )}
                 </div>
 
             </div>
+
         </div>
     )
 }
 
 export default HomePage
+
+
+

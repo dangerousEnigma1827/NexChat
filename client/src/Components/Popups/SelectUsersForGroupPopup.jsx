@@ -7,7 +7,8 @@ function SelectUsersForGroupPopup({
     setCreateGroupPopupOpen,
     groupName, groupDescription,
     currentUserId,
-    setGroupName, setGroupDescription
+    setGroupName, setGroupDescription,
+    getAllConversationsInFr
 }) {
 
     const token = localStorage.getItem('token')
@@ -73,6 +74,7 @@ function SelectUsersForGroupPopup({
             })
             console.log("1111")
             setSelectUsersForGroupPopupOpen(false);
+            getAllConversationsInFr()
             console.log("done creating group")
         }catch(err){
             console.log("error creating group", err)
