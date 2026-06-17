@@ -1,4 +1,4 @@
-// src/api/api.js
+// src/api/apiInstance.js
 
 import axios from "axios";
 
