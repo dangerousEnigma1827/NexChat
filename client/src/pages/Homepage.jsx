@@ -381,7 +381,6 @@ function HomePage() {
                 </div>
 
                 <div className={`flex-1 bg-[#141720] flex flex-col h-screen overflow-hidden ${!conversationSelected ? 'hidden md:flex' : 'flex'}`}>
-
                     {conversationSelected && (
                         <>
                             <div className="flex-shrink-0">

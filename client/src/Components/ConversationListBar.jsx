@@ -1,5 +1,5 @@
 import React from 'react'
-import { UserRound , UsersRound} from 'lucide-react'
+import { UserRound, UsersRound } from 'lucide-react'
 import useTime from '../Hooks/useTime'
 
 function ConversationListBar({
@@ -36,7 +36,7 @@ function ConversationListBar({
         </button>
       </div>
 
-      {/* Conversations list (FIXED SCROLL AREA) */}
+      {/* Conversations list */}
       <div className="mt-4 flex flex-col flex-1 overflow-y-auto pr-1 space-y-2">
 
         {conversations.map((conversation, index) => {
@@ -53,7 +53,8 @@ function ConversationListBar({
               onClick={() => {
 
                 setAllMessagesBwTwo([])
-                if(conversation.type === "private") {
+
+                if (conversation.type === "private") {
                   setUserSelectedIdIfNotGroup(user._id)
                   setConversationSelected(conversation._id)
                   setConversationId(conversation._id)
@@ -62,6 +63,7 @@ function ConversationListBar({
                   setConversationSelectedtedUsername(user.username)
                   setConversationSelectedtedPfp(user.pfp)
                   setIsSideBarOpen(true)
+
                 } else {
                   setUserSelectedIdIfNotGroup(null)
                   setConversationSelected(conversation._id)
@@ -80,23 +82,29 @@ function ConversationListBar({
                 group flex items-center gap-3 px-3 py-3 rounded-xl cursor-pointer
                 transition-all duration-200
                 hover:bg-[#1a1f2e]
-                ${isActive ? "bg-[#22283a] " : ""}
+                ${isActive ? "bg-[#22283a]" : ""}
               `}
             >
 
-              {/* AVATAR */}
+              {/* Avatar */}
               <div className="relative flex-shrink-0">
                 <div className="h-11 w-11 sm:h-12 sm:w-12 rounded-full overflow-hidden bg-[#141720] flex items-center justify-center ring-1 ring-[#2a3142] group-hover:ring-[#4c7dff]/40 transition">
 
                   {conversation.type === "private" ? (
                     user?.pfp ? (
-                      <img src={user.pfp} className="h-full w-full object-cover" />
+                      <img
+                        src={user.pfp}
+                        className="h-full w-full object-cover"
+                      />
                     ) : (
                       <UserRound className="text-white" />
                     )
                   ) : (
                     conversation.groupIcon ? (
-                      <img src={conversation.groupIcon} className="h-full w-full object-cover" />
+                      <img
+                        src={conversation.groupIcon}
+                        className="h-full w-full object-cover"
+                      />
                     ) : (
                       <UsersRound className="text-white" />
                     )
@@ -104,15 +112,17 @@ function ConversationListBar({
 
                 </div>
 
-                {/* online dot */}
+                {/* Online dot only for private */}
                 {conversation.type === "private" &&
                   onlineUsers.includes(user?._id) && (
                     <div className="absolute bottom-0 right-0 h-2.5 w-2.5 bg-green-500 rounded-full border-2 border-[#0f111a]" />
                   )}
               </div>
 
+
               <div className="flex flex-col min-w-0 flex-1">
 
+                {/* PRIVATE CHAT */}
                 {conversation.type === "private" ? (
                   <>
                     <div className="flex justify-between items-center gap-2">
@@ -121,7 +131,9 @@ function ConversationListBar({
                       </p>
 
                       <p className="text-[11px] text-gray-500 whitespace-nowrap">
-                        {formatTime(conversation.lastTimeMessageSent)}
+                        {conversation.lastTimeMessageSent
+                          ? formatTime(conversation.lastTimeMessageSent)
+                          : ""}
                       </p>
                     </div>
 
@@ -132,13 +144,25 @@ function ConversationListBar({
                     </p>
                   </>
                 ) : (
-                  <>
-                    <p className="text-white font-medium truncate">
-                      {conversation.groupName}
-                    </p>
 
-                    <p className="text-xs text-gray-400 truncate">
-                      {conversation.participants.map(p => p.username).join(", ")}
+                  /* GROUP CHAT */
+                  <>
+                    <div className="flex justify-between items-center gap-2">
+                      <p className="text-white font-medium truncate">
+                        {conversation.groupName}
+                      </p>
+
+                      <p className="text-[11px] text-gray-500 whitespace-nowrap">
+                        {conversation.lastTimeMessageSent
+                          ? formatTime(conversation.lastTimeMessageSent)
+                          : ""}
+                      </p>
+                    </div>
+
+                    <p className="text-sm text-gray-400 truncate leading-snug">
+                      {conversation.lastMessageSent
+                        ? `${conversation.lastMessageSentBy === currentUserId ? "You" :conversation.lastMessageSentBy.username }: ${conversation.lastMessageSent}`
+                        : "No messages yet"}
                     </p>
                   </>
                 )}
