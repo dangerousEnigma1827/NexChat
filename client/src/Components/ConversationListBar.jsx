@@ -24,7 +24,7 @@ function ConversationListBar({
   let { formatTime } = useTime()
 
   return (
-    <div className="w-full h-full overflow-hidden bg-[#0f111a] rounded-xl border border-[#1d2230] flex flex-col p-3">
+    <div className="w-full h-full overflow-hidden bg-[#1b1f30] rounded-xl border border-[#1d2230] flex flex-col p-3">
 
       {/* Start chat */}
       <div className="w-full">
@@ -73,7 +73,6 @@ function ConversationListBar({
                   setConversationSelectedtedPfp(conversation.groupIcon)
                   setGroupMembers(conversation.participants)
                   setGroupAdmins(conversation.groupAdmin)
-                  console.log(conversation.groupAdmin)
                   setIsSideBarOpen(true)
                 }
               }}

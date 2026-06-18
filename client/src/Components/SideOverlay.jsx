@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { X, UsersRound, UserRound, Mail, Link, Shield, UserCheck } from "lucide-react";
+import { X, UsersRound, UserRound, Mail, Link, Shield, UserCheck, FileText } from "lucide-react";
 import { getCommonGroups } from "../Services/groupServices";
 
 function SideOverlay({
@@ -91,15 +91,10 @@ function SideOverlay({
           {!isconversationAGroup && (
             <div className="mt-4 flex flex-col flex-1 overflow-y-auto pr-1 space-y-2">
               <div className="bg-[#1b1f30] rounded-xl border border-[#1d2230] p-3">
-              <SectionLabel label={"About"} />
-                <div className="flex items-center gap-3 px-4 py-3">
-
-                  <div className="w-8 h-8 rounded-full bg-[#232a3a] flex items-center justify-center flex-shrink-0">
-                    <UserCheck size={20} className="white" />
-                  </div>
+              <SectionLabel label={"Username"} />
+                <div className="flex items-center gap-3 px-1 py-1">
 
                   <div className="min-w-0">
-                    <p className="text-[11px] text-gray-500 mb-0.5">Username</p>
                     <p className="text-[13px] text-white truncate">{conversationSelectedUsername}</p>
                   </div>
 
@@ -112,17 +107,10 @@ function SideOverlay({
             <div className="mt-4 flex flex-col flex-1 overflow-y-auto pr-1 space-y-2">
               <div className="bg-[#1b1f30] rounded-xl border border-[#1d2230] p-3">
               <SectionLabel label={"Group Description"} />
-                <div className="flex items-center gap-3 px-4 py-3">
-
-                  <div className="w-8 h-8 rounded-full bg-[#232a3a] flex items-center justify-center flex-shrink-0">
-                    <UserCheck size={20} className="white" />
-                  </div>
-
+                <div className="flex items-center gap-3 px-1 py-1">
                   <div className="min-w-0">
-                    <p className="text-[11px] text-gray-500 mb-0.5">{}</p>
-                    <p className="text-[13px] text-white truncate">{conversationSelectedUsername}</p>
+                    <p className="text-[13px] text-white truncate">{conversationSelectedDescription || "No Group Description"}</p>
                   </div>
-
                 </div>
               </div>
             </div>
@@ -140,9 +128,6 @@ function SideOverlay({
                 groupAdmins.forEach((admin, index)=>{
                   if(conversation._id == admin._id) isAdmin = true; 
                 })
-
-                console.log(isAdmin)
-
                 return (
                   <div
                     key={index}

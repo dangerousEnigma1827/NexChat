@@ -364,8 +364,7 @@ function HomePage() {
                             conversations={conversations}
                             conversationSelected={conversationSelected}
                             setConversationSelected={setConversationSelected}
-                            setConversationSelectedtedUsername={setConversationSelectedtedUsername}
-                            setConversationSelectedDescription={setConversationSelectedDescription}
+                            setConversationSelectedtedUsername={setConversationSelectedtedUsername}setConversationSelectedDescription={setConversationSelectedDescription}
                             setConversationSelectedtedPfp={setConversationSelectedtedPfp}
                             onlineUsers={onlineUsers}
                             setStartAChat={setStartAChat}
