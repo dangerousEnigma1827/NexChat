@@ -3,7 +3,7 @@ import { Search, X } from 'lucide-react'
 import React, { useState } from 'react'
 import toast from 'react-hot-toast'
 
-function StartAChat({setStartAChat,userSearchText, setUserSearchText, currentUserId, setConversationSelected, setConversationSelectedtedUsername, setConversationSelectedtedPfp, getAllConversationsInFr, setConversationId, getAllMessagesBwtwo}){
+function StartAChat({setStartAChat,userSearchText, setUserSearchText, currentUserId, setConversationSelected, setConversationSelectedtedUsername,setConversationSelectedDescription ,setConversationSelectedtedPfp, getAllConversationsInFr, setConversationId, getAllMessagesBwtwo}){
 
   let token = localStorage.getItem('token')
   let [usernameSearchResults, setUsernameSearchResutls] = useState([])

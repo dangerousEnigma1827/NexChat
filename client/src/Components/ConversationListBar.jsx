@@ -17,7 +17,8 @@ function ConversationListBar({
   setGroupAdmins,
   setUserSelectedIdIfNotGroup,
   setAllMessagesBwTwo,
-  setIsSideBarOpen
+  setIsSideBarOpen,
+  setConversationSelectedDescription
 }) {
 
   let { formatTime } = useTime()
@@ -28,7 +29,7 @@ function ConversationListBar({
       {/* Start chat */}
       <div className="w-full">
         <button
-          className="w-full py-3 bg-gradient-to-r from-[#4c7dff] to-[#3f6ee8] hover:opacity-90 active:scale-[0.98] transition text-white font-medium rounded-lg shadow-md"
+          className="w-full py-3 bg-[#4c7dff] hover:opacity-90 active:scale-[0.98] transition text-white font-medium rounded-lg shadow-md"
           onClick={() => setStartAChat(true)}
         >
           + Start New Chat
@@ -68,9 +69,11 @@ function ConversationListBar({
 
                   setIsConversationAGroup(true)
                   setConversationSelectedtedUsername(conversation.groupName)
+                  setConversationSelectedDescription(conversation.groupDescription)
                   setConversationSelectedtedPfp(conversation.groupIcon)
                   setGroupMembers(conversation.participants)
-                  setGroupAdmins(conversation.admins)
+                  setGroupAdmins(conversation.groupAdmin)
+                  console.log(conversation.groupAdmin)
                   setIsSideBarOpen(true)
                 }
               }}
@@ -78,7 +81,7 @@ function ConversationListBar({
                 group flex items-center gap-3 px-3 py-3 rounded-xl cursor-pointer
                 transition-all duration-200
                 hover:bg-[#1a1f2e]
-                ${isActive ? "bg-[#22283a] ring-1 ring-[#4c7dff]/40" : ""}
+                ${isActive ? "bg-[#22283a] " : ""}
               `}
             >
 
@@ -109,7 +112,6 @@ function ConversationListBar({
                   )}
               </div>
 
-              {/* TEXT */}
               <div className="flex flex-col min-w-0 flex-1">
 
                 {conversation.type === "private" ? (

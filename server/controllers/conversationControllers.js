@@ -33,6 +33,7 @@ export const createNewGroup = async (req,res)=>{
             participants : req.body.participants,
             groupName : req.body.groupName,
             groupIcon : req.body.groupIcon,
+            groupDescription : req.body.groupDescription,
             groupAdmin : req.user.userId
         })
 
@@ -48,7 +49,7 @@ export const getAllConversations = async (req,res) => {
             {
                 participants : req.user.userId
             }
-        ).populate("participants").populate("lastMessageSentBy").sort({lastTimeMessageSent : -1})
+        ).populate("participants").populate("lastMessageSentBy").populate("groupAdmin").sort({lastTimeMessageSent : -1})
 
         res.json(allconversations)
     }catch(err){

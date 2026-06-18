@@ -30,7 +30,8 @@ function HomePage() {
     let [users, setUsers] = useState([]);
     let [conversations, setConversations] = useState([]);
     let [conversationSelected, setConversationSelected] = useState(null)
-    let [conversationSelectedUsername, setConversationSelectedtedUsername] = useState(false)
+    let [conversationSelectedUsername, setConversationSelectedtedUsername] = useState("")
+    let [conversationSelectedDescription, setConversationSelectedDescription] = useState("")
     let [conversationSelectedPfp, setConversationSelectedtedPfp] = useState(null)
     let [currentUserId, setUserId] = useState(null)
 
@@ -315,7 +316,16 @@ function HomePage() {
             }
             {
                 startAChat && 
-                <StartAChat setStartAChat={setStartAChat} userSearchText={userSearchText} setUserSearchText={setUserSearchText} currentUserId={currentUserId} conversationSelected={conversationSelected} setConversationSelected={setConversationSelected} setConversationSelectedtedUsername={setConversationSelectedtedUsername} setConversationSelectedtedPfp={setConversationSelectedtedPfp} getAllConversationsInFr={getAllConversationsInFr} setConversationId={setConversationId} getAllMessagesBwtwo={getAllMessagesBwtwo}/>
+                <StartAChat 
+                setStartAChat={setStartAChat}
+                userSearchText={userSearchText} 
+                setUserSearchText={setUserSearchText} 
+                currentUserId={currentUserId} 
+                conversationSelected={conversationSelected} 
+                setConversationSelected={setConversationSelected} setConversationSelectedtedUsername={setConversationSelectedtedUsername} setConversationSelectedtedPfp={setConversationSelectedtedPfp} getAllConversationsInFr={getAllConversationsInFr} 
+                setConversationId={setConversationId} 
+                getAllMessagesBwtwo={getAllMessagesBwtwo}
+                setConversationSelectedDescription={setConversationSelectedDescription}/>
             }
             {
                 createGroupPopupOpen && 
@@ -355,6 +365,7 @@ function HomePage() {
                             conversationSelected={conversationSelected}
                             setConversationSelected={setConversationSelected}
                             setConversationSelectedtedUsername={setConversationSelectedtedUsername}
+                            setConversationSelectedDescription={setConversationSelectedDescription}
                             setConversationSelectedtedPfp={setConversationSelectedtedPfp}
                             onlineUsers={onlineUsers}
                             setStartAChat={setStartAChat}
@@ -427,14 +438,21 @@ function HomePage() {
 
 
                 <div className={`w-[25vw] bg-[#212634] min-h-[100vh] flex  flex-col items-center`} ref={sideOverlayRef}>
-                    <SideOverlay setIsSideBarOpen={setIsSideBarOpen} userA={userSelectedIdIfNotGroup} userB={currentUserId} conversationSelectedPfp={conversationSelectedPfp} conversationSelectedUsername={conversationSelectedUsername} onlineUsers={onlineUsers} conversationSelected={conversationSelected} 
-                    isconversationAGroup={isconversationAGroup}/>
+                    {
+                        isSideBarOpen && 
+                        <SideOverlay 
+                        setIsSideBarOpen={setIsSideBarOpen} 
+                        userA={userSelectedIdIfNotGroup} 
+                        userB={currentUserId}
+                        conversationSelectedPfp={conversationSelectedPfp} 
+                        conversationSelectedUsername={conversationSelectedUsername} 
+                        conversationSelectedDescription={conversationSelectedDescription}
+                        onlineUsers={onlineUsers} conversationSelected={conversationSelected} 
+                        isconversationAGroup={isconversationAGroup}
+                        groupAdmins={groupAdmins}
+                        groupMembers={groupMembers}/>
+                    }
                 </div>
-                {/* <div className={`w-[25vw] bg-[#212634] min-h-[100vh] flex  flex-col items-center duration-500 top-0 right-0 fixed ${!isSideBarOpen? "translate-x-full" : "translate-x-0"}`}  ref={sideOverlayRef}>
-                    <SideOverlay setIsSideBarOpen={setIsSideBarOpen} userA={userSelectedIdIfNotGroup} userB={currentUserId} conversationSelectedPfp={conversationSelectedPfp} conversationSelectedUsername={conversationSelectedUsername} onlineUsers={onlineUsers} conversationSelected={conversationSelected} 
-                    isconversationAGroup={isconversationAGroup}/>
-                </div> */}
-
             </div>
 
         </div>

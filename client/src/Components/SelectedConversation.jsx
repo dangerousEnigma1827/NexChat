@@ -1,95 +1,114 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import { useState, useEffect } from 'react'
-import { ArrowLeft, User, UserRound, UsersRound } from 'lucide-react'
+import { ArrowLeft, UserRound, UsersRound } from 'lucide-react'
 
-function SelectedConversation({conversationSelectedPfp, conversationSelectedUsername, dropdownOpen, setDropdownOpen, onlineUsers, conversationSelected, setClearChatPopupOpen, isconversationAGroup, groupMembers, setIsSideBarOpen, setConversationSelected}) {
+function SelectedConversation({
+  conversationSelectedPfp,
+  conversationSelectedUsername,
+  dropdownOpen,
+  setDropdownOpen,
+  onlineUsers,
+  conversationSelected,
+  setClearChatPopupOpen,
+  isconversationAGroup,
+  groupMembers,
+  setIsSideBarOpen,
+  setConversationSelected
+}) {
 
-    let [currentUserName, setCurrentUserName] = useState(null)
-    let token = localStorage.getItem('token')
-    let getCurrentUser = async () => {
-        try{
-            let getcurrentuserinfo = await axios.get('http://localhost:5000/api/auth/me', {
-                headers: { Authorization: `Bearer ${token}` }
-            })
-            setCurrentUserName(getcurrentuserinfo.data._id)
-        }catch(err){
-            console.log("error occured getting current user", err);
-        }
+  let [currentUserName, setCurrentUserName] = useState(null)
+  let token = localStorage.getItem('token')
+
+  let getCurrentUser = async () => {
+    try {
+      let res = await axios.get('http://localhost:5000/api/auth/me', {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+      setCurrentUserName(res.data._id)
+    } catch (err) {
+      console.log("error occured getting current user", err);
     }
+  }
 
-    useEffect(()=>{
-        getCurrentUser()
-    }, [conversationSelected])
+  useEffect(() => {
+    getCurrentUser()
+  }, [conversationSelected])
 
   return (
-    <div className='w-full h-[10vh] bg-[#1d202f] flex items-center justify-between gap-4 bg-yellow-900'>
-        <div className='flex gap-2 items-center bg-yellow-500 w-[90%]'>
-            <ArrowLeft className='hover:bg-[#2b3142] rounded-full p-2 cursor-pointer transition ml-3 text-xl text-white md:hidden' size={38} onClick={()=>{
-                setConversationSelected(null)
-            }}/>
+    <div className='w-full h-[10vh] bg-[#1d202f] flex items-center justify-between px-3'>
 
-            <div className='flex gap-1 bg-green-400 w-[100%]' onClick={(e)=>{
-                setIsSideBarOpen(true)
-                console.log("clicked")
-                }}>
-                <div className='rounded-full bg-[#141720] h-[7vh] w-[7vh] flex justify-center items-center md:ml-6'>
-                    {
-                        conversationSelectedPfp && (
-                            <img src={conversationSelectedPfp} className='h-full w-full object-cover rounded-full' />
-                        )
-                    }
-                    {
-                        !conversationSelectedPfp && !isconversationAGroup && 
-                        <UserRound className='text-white'/>
-                    }
-                    {
-                        !conversationSelectedPfp && isconversationAGroup && 
-                        <UsersRound className='text-white'/>
-                    }
-                </div>
-                
-                <div className='flex flex-col'>
-                    <p className='text-xl text-white'>{conversationSelectedUsername}</p>
-                    {
-                        !isconversationAGroup && 
-                        <p className='text-sm text-gray-400'>{onlineUsers.includes(conversationSelected) ? "Online" : "Offline"}</p>
-                    }
-                    {
-                        isconversationAGroup && 
-                        <div className='flex justify-center items-center text-sm text-gray-400 gap-2'>
-                            {
-                                groupMembers.map((member, index)=>{
-                                return <div key={index}>
-                                        <p>{member._id == currentUserName ? "You": member.username}{groupMembers.length != index+1 ? " ," : ""} </p>
-                                    </div>
-                                })
-                            }
-                        </div>
-                    }
-                </div>
-            </div>
+      {/* LEFT SECTION */}
+      <div className='flex items-center gap-3 flex-1'>
+
+        <ArrowLeft
+          size={34}
+          className='text-white p-2 rounded-full hover:bg-[#2b3142] cursor-pointer md:hidden'
+          onClick={() => setConversationSelected(null)}
+        />
+
+        <div
+          className='flex items-center gap-3 flex-1 cursor-pointer'
+          onClick={() => setIsSideBarOpen(true)}
+        >
+
+          {/* Avatar */}
+          <div className='h-11 w-11 rounded-full bg-[#141720] flex items-center justify-center overflow-hidden'>
+            {conversationSelectedPfp ? (
+              <img src={conversationSelectedPfp} className='h-full w-full object-cover' />
+            ) : !isconversationAGroup ? (
+              <UserRound className='text-white' />
+            ) : (
+              <UsersRound className='text-white' />
+            )}
+          </div>
+
+          {/* Text */}
+          <div className='flex flex-col leading-tight'>
+            <p className='text-white text-base font-medium'>
+              {conversationSelectedUsername}
+            </p>
+
+            {!isconversationAGroup ? (
+              <p className='text-xs text-gray-400'>
+                {onlineUsers.includes(conversationSelected) ? "Online" : "Offline"}
+              </p>
+            ) : (
+              <p className='text-xs text-gray-400'>
+                {groupMembers
+                  .map(m => m._id === currentUserName ? "You" : m.username)
+                  .join(", ")}
+              </p>
+            )}
+          </div>
+
         </div>
+      </div>
 
-        {/* three dot wala */}
-        <div className='relative ml-auto mr-6 bg-pink-500'>
+      {/* RIGHT SECTION */}
+      <div className='relative'>
+        <button
+          onClick={() => setDropdownOpen(!dropdownOpen)}
+          className='text-white p-2 rounded-md hover:bg-[#2b3142]'
+        >
+          <svg className="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" strokeLinecap="round" strokeWidth="3" d="M12 6h.01M12 12h.01M12 18h.01"/>
+          </svg>
+        </button>
 
-            <button onClick={() => setDropdownOpen(!dropdownOpen)} className="text-white hover:bg-[#2b3142] rounded-md p-2 transition-all" type="button">
-                <svg className="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" strokeLinecap="round" strokeWidth="3" d="M12 6h.01M12 12h.01M12 18h.01"/></svg>
+        {dropdownOpen && (
+          <div className='absolute right-0 mt-2 w-40 bg-[#232a3a] border border-[#31384d] rounded-md shadow-lg'>
+            <button className='w-full text-left px-3 py-2 text-sm text-gray-300 hover:bg-[#2b3142] hover:text-white'>
+              View Profile
             </button>
-
-            {
-                dropdownOpen &&
-                <div className="absolute right-0 mt-2 bg-[#232a3a] border border-[#31384d] rounded-md shadow-lg w-44 z-50">
-                    <ul className="p-2 text-sm text-gray-300">
-                        <li><button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded-md transition-all">View Profile</button></li>
-                        <li><button className="inline-flex items-center w-full p-2 hover:bg-[#2b3142] hover:text-white rounded-md transition-all" onClick={(e)=>{
-                            setClearChatPopupOpen(true)
-                        }}>Clear Chat</button></li>
-                    </ul>
-                </div>
-            }
-        </div>
+            <button
+              className='w-full text-left px-3 py-2 text-sm text-gray-300 hover:bg-[#2b3142] hover:text-white'
+              onClick={() => setClearChatPopupOpen(true)}
+            >
+              Clear Chat
+            </button>
+          </div>
+        )}
+      </div>
 
     </div>
   )

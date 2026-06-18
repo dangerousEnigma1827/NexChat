@@ -16,6 +16,10 @@ let conversationSchema = new mongoose.Schema({
         type:String,
         default:""
     },
+    groupDescription:{
+        type:String,
+        default:""
+    },
     groupIcon: {
         type: String,
         default: ""
