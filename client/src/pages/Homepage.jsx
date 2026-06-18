@@ -158,6 +158,10 @@ function HomePage() {
                 headers: { Authorization: `Bearer ${token}` }
             })
             getAllMessagesBwtwo()
+
+            toast("Cleared Chat", {
+                style: { background: '#3b82f6', color: '#fff' }
+            })
         } catch (err) {
             console.log(err)
         }
@@ -332,10 +336,7 @@ function HomePage() {
                     />
                 </div>
 
-                {/* CONVERSATION LIST (always visible on mobile first) */}
                 <div className={`bg-[#212634] h-screen overflow-hidden flex flex-col items-center w-full md:w-[25vw] ${conversationSelected ? "hidden md:flex" : "flex"}`}>
-    
-                    {/* Fixed top section — NexChatIcon + Search */}
                     <div className="w-[90%] mt-5 flex-shrink-0">
                         <NexChatIcon />
                         <div className='w-full bg-[#141720] h-[7vh] rounded-md flex items-center gap-2 mb-2'>
@@ -347,8 +348,6 @@ function HomePage() {
                             />
                         </div>
                     </div>
-
-                    {/* Scrollable conversation list — takes remaining height */}
                     <div className="w-[90%] flex-1 overflow-hidden mb-3">
                         <ConversationListBar
                             users={users}
@@ -365,16 +364,16 @@ function HomePage() {
                             setGroupAdmins={setGroupAdmins}
                             setGroupMembers={setGroupMembers}
                             setUserSelectedIdIfNotGroup={setUserSelectedIdIfNotGroup}
+                            setAllMessagesBwTwo = {setAllMessagesBwTwo}
+                            setIsSideBarOpen={setIsSideBarOpen}
                         />
                     </div>
                 </div>
 
-                {/* CHAT AREA */}
                 <div className={`flex-1 bg-[#141720] flex flex-col h-screen overflow-hidden ${!conversationSelected ? 'hidden md:flex' : 'flex'}`}>
 
                     {conversationSelected && (
                         <>
-                            {/* Fixed header */}
                             <div className="flex-shrink-0">
                                 <SelectedConversation
                                     conversationSelectedPfp={conversationSelectedPfp}
@@ -391,7 +390,6 @@ function HomePage() {
                                 />
                             </div>
 
-                            {/* Scrollable messages — grows to fill remaining space */}
                             <div className="flex-1 overflow-y-auto">
                                 <div className="w-full py-6 pb-6">
                                     {allMessagesBwTwo.map((message) => (
@@ -415,7 +413,6 @@ function HomePage() {
                                 </div>
                             </div>
 
-                            {/* Fixed input at bottom */}
                             <div className="flex-shrink-0">
                                 <InputArea
                                     text={text}
@@ -427,6 +424,16 @@ function HomePage() {
                         </>
                     )}
                 </div>
+
+
+                <div className={`w-[25vw] bg-[#212634] min-h-[100vh] flex  flex-col items-center`} ref={sideOverlayRef}>
+                    <SideOverlay setIsSideBarOpen={setIsSideBarOpen} userA={userSelectedIdIfNotGroup} userB={currentUserId} conversationSelectedPfp={conversationSelectedPfp} conversationSelectedUsername={conversationSelectedUsername} onlineUsers={onlineUsers} conversationSelected={conversationSelected} 
+                    isconversationAGroup={isconversationAGroup}/>
+                </div>
+                {/* <div className={`w-[25vw] bg-[#212634] min-h-[100vh] flex  flex-col items-center duration-500 top-0 right-0 fixed ${!isSideBarOpen? "translate-x-full" : "translate-x-0"}`}  ref={sideOverlayRef}>
+                    <SideOverlay setIsSideBarOpen={setIsSideBarOpen} userA={userSelectedIdIfNotGroup} userB={currentUserId} conversationSelectedPfp={conversationSelectedPfp} conversationSelectedUsername={conversationSelectedUsername} onlineUsers={onlineUsers} conversationSelected={conversationSelected} 
+                    isconversationAGroup={isconversationAGroup}/>
+                </div> */}
 
             </div>
 

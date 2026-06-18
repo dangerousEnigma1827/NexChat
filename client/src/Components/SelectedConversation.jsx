@@ -23,49 +23,56 @@ function SelectedConversation({conversationSelectedPfp, conversationSelectedUser
     }, [conversationSelected])
 
   return (
-    <div className='w-full h-[10vh] bg-[#1d202f] flex items-center gap-4'>
-        <div className='flex gap-2 items-center'>
+    <div className='w-full h-[10vh] bg-[#1d202f] flex items-center justify-between gap-4 bg-yellow-900'>
+        <div className='flex gap-2 items-center bg-yellow-500 w-[90%]'>
             <ArrowLeft className='hover:bg-[#2b3142] rounded-full p-2 cursor-pointer transition ml-3 text-xl text-white md:hidden' size={38} onClick={()=>{
                 setConversationSelected(null)
-                }}/>
-            <div className='rounded-full bg-[#141720] h-[7vh] w-[7vh] flex justify-center items-center md:ml-6' onClick={(e)=>{setIsSideBarOpen(true)}}>
-                {
-                    conversationSelectedPfp && (
-                        <img src={conversationSelectedPfp} className='h-full w-full object-cover rounded-full' />
-                    )
-                }
-                {
-                    !isconversationAGroup && 
-                    <UserRound className='text-white'/>
-                }
-                {
-                    isconversationAGroup && 
-                    <UsersRound className='text-white'/>
-                }
-            </div>
-            <div className='flex flex-col' onClick={(e)=>{setIsSideBarOpen(true)}}>
-                <p className='text-xl text-white'>{conversationSelectedUsername}</p>
-                {
-                    !isconversationAGroup && 
-                    <p className='text-sm text-gray-400'>{onlineUsers.includes(conversationSelected) ? "Online" : "Offline"}</p>
-                }
-                {
-                    isconversationAGroup && 
-                    <div className='flex justify-center items-center text-sm text-gray-400 gap-2'>
-                        {
-                            groupMembers.map((member, index)=>{
-                            return <div key={index}>
-                                    <p>{member._id == currentUserName ? "You": member.username}{groupMembers.length != index+1 ? " ," : ""} </p>
-                                </div>
-                            })
-                        }
-                    </div>
-                }
+            }}/>
+
+            <div className='flex gap-1 bg-green-400 w-[100%]' onClick={(e)=>{
+                setIsSideBarOpen(true)
+                console.log("clicked")
+                }}>
+                <div className='rounded-full bg-[#141720] h-[7vh] w-[7vh] flex justify-center items-center md:ml-6'>
+                    {
+                        conversationSelectedPfp && (
+                            <img src={conversationSelectedPfp} className='h-full w-full object-cover rounded-full' />
+                        )
+                    }
+                    {
+                        !conversationSelectedPfp && !isconversationAGroup && 
+                        <UserRound className='text-white'/>
+                    }
+                    {
+                        !conversationSelectedPfp && isconversationAGroup && 
+                        <UsersRound className='text-white'/>
+                    }
+                </div>
+                
+                <div className='flex flex-col'>
+                    <p className='text-xl text-white'>{conversationSelectedUsername}</p>
+                    {
+                        !isconversationAGroup && 
+                        <p className='text-sm text-gray-400'>{onlineUsers.includes(conversationSelected) ? "Online" : "Offline"}</p>
+                    }
+                    {
+                        isconversationAGroup && 
+                        <div className='flex justify-center items-center text-sm text-gray-400 gap-2'>
+                            {
+                                groupMembers.map((member, index)=>{
+                                return <div key={index}>
+                                        <p>{member._id == currentUserName ? "You": member.username}{groupMembers.length != index+1 ? " ," : ""} </p>
+                                    </div>
+                                })
+                            }
+                        </div>
+                    }
+                </div>
             </div>
         </div>
 
         {/* three dot wala */}
-        <div className='relative ml-auto mr-6'>
+        <div className='relative ml-auto mr-6 bg-pink-500'>
 
             <button onClick={() => setDropdownOpen(!dropdownOpen)} className="text-white hover:bg-[#2b3142] rounded-md p-2 transition-all" type="button">
                 <svg className="w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" strokeLinecap="round" strokeWidth="3" d="M12 6h.01M12 12h.01M12 18h.01"/></svg>

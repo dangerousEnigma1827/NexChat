@@ -15,7 +15,9 @@ function ConversationListBar({
   setIsConversationAGroup,
   setGroupMembers,
   setGroupAdmins,
-  setUserSelectedIdIfNotGroup
+  setUserSelectedIdIfNotGroup,
+  setAllMessagesBwTwo,
+  setIsSideBarOpen
 }) {
 
   let { formatTime } = useTime()
@@ -48,7 +50,9 @@ function ConversationListBar({
             <div
               key={index}
               onClick={() => {
-                if (conversation.type === "private") {
+
+                setAllMessagesBwTwo([])
+                if(conversation.type === "private") {
                   setUserSelectedIdIfNotGroup(user._id)
                   setConversationSelected(conversation._id)
                   setConversationId(conversation._id)
@@ -56,6 +60,7 @@ function ConversationListBar({
                   setIsConversationAGroup(false)
                   setConversationSelectedtedUsername(user.username)
                   setConversationSelectedtedPfp(user.pfp)
+                  setIsSideBarOpen(true)
                 } else {
                   setUserSelectedIdIfNotGroup(null)
                   setConversationSelected(conversation._id)
@@ -66,6 +71,7 @@ function ConversationListBar({
                   setConversationSelectedtedPfp(conversation.groupIcon)
                   setGroupMembers(conversation.participants)
                   setGroupAdmins(conversation.admins)
+                  setIsSideBarOpen(true)
                 }
               }}
               className={`

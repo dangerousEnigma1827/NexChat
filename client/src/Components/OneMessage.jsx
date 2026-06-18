@@ -1,111 +1,7 @@
-// import React from 'react'
-// import OneAttachment from './OneAttachment'
-// import OneText from './OneText'
-
-// function OneMessage({
-//   message,
-//   currentUserId,
-//   dropArrowdownId,
-//   setDropArrowdownId,
-//   setMessageToDelete,
-//   setAttachmentUrlForDeletion,
-//   dropdownref,
-//   setDeletePopupOpen,
-//   setEditPopupOpen,
-//   setMessageToDeleteTime,
-//   setMessageToDeleteText,
-//   isconversationAGroup
-// }) {
-
-//   const isMine = message.senderId?._id === currentUserId
-
-//   return (
-//     <div className={`flex w-full px-2 py-1 ${isMine ? "justify-end" : "justify-start"}`}>
-
-//       <div className={`flex flex-col max-w-[70%] ${isMine ? "items-end" : "items-start"}`}>
-
-//         {/* sender info (only for group + others) */}
-//         {isconversationAGroup && !isMine && (
-//           <div className="flex items-center gap-2 mb-1 ml-1">
-//             <img
-//               src={message.senderId?.pfp}
-//               alt="pfp"
-//               className="w-6 h-6 rounded-full object-cover"
-//             />
-//             <p className="text-xs text-gray-500">
-//               {message.senderId?.username}
-//             </p>
-//           </div>
-//         )}
-
-//         {/* MESSAGE BUBBLE */}
-//         <div
-          
-//         >
-
-//           {/* attachments */}
-//           {message.attachments?.length > 0 && (
-//             <div className="flex flex-col gap-2 mb-2">
-//               {message.attachments.map((attachment, index) => (
-//                 <OneAttachment
-//                   key={index}
-//                   message={message}
-//                   attachment={attachment}
-//                   index={index}
-//                   dropdownref={dropdownref}
-//                   dropArrowdownId={dropArrowdownId}
-//                   setDropArrowdownId={setDropArrowdownId}
-//                   setAttachmentUrlForDeletion={setAttachmentUrlForDeletion}
-//                   setDeletePopupOpen={setDeletePopupOpen}
-//                   currentUserId={currentUserId}
-//                   setMessageToDelete={setMessageToDelete}
-//                 />
-//               ))}
-//             </div>
-//           )}
-
-//           {/* text */}
-//           {message.text && (
-//             <OneText
-//               message={message}
-//               dropdownref={dropdownref}
-//               dropArrowdownId={dropArrowdownId}
-//               setDropArrowdownId={setDropArrowdownId}
-//               setAttachmentUrlForDeletion={setAttachmentUrlForDeletion}
-//               setDeletePopupOpen={setDeletePopupOpen}
-//               currentUserId={currentUserId}
-//               setMessageToDelete={setMessageToDelete}
-//               setEditPopupOpen={setEditPopupOpen}
-//               setMessageToDeleteText={setMessageToDeleteText}
-//               setMessageToDeleteTime={setMessageToDeleteTime}
-//             />
-//           )}
-
-//         </div>
-//       </div>
-//     </div>
-//   )
-// }
-
-// export default OneMessage
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import React from 'react'
 import OneAttachment from './OneAttachment'
 import OneText from './OneText'
+import { UserRound } from 'lucide-react'
 
 function OneMessage({
   message,
@@ -136,6 +32,15 @@ function OneMessage({
               : <div className="w-5 h-5 rounded-full bg-[#2a3142]" />
             }
             <p className="text-[11px] text-gray-500 font-medium">{message.senderId?.username}</p>
+          </div>
+        )}
+        {isconversationAGroup && isMine && (
+          <div className="flex items-center gap-2 mb-1 ml-1">
+            {message.senderId?.pfp
+              ? <img src={message.senderId.pfp} className="w-5 h-5 rounded-full object-cover" />
+              : <div className="w-5 h-5 rounded-full flex justify-center items-center text-gray-400 bg-[#2a3142]"><UserRound/></div>
+            }
+            <p className="text-[11px] text-gray-500 font-medium">You</p>
           </div>
         )}
 
