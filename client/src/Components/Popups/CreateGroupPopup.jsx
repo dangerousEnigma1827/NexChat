@@ -6,8 +6,10 @@ function CreateGroupPopup({setCreateGroupPopupOpen, setSelectUsersForGroupPopupO
     setGroupName, setGroupDescription}) {
 
     let [cloudinaryUrl, setCloudinaryUrl] = useState(null)
+    let [isDisabled, setIsDisabled] = useState(false)
 
     let handlePfp = async (e) =>{
+        setIsDisabled(true)
         let file = e.target.files[0]
         if(!file){
 
@@ -26,6 +28,7 @@ function CreateGroupPopup({setCreateGroupPopupOpen, setSelectUsersForGroupPopupO
             const imageUploadurl = await res.json()
             console.log(imageUploadurl)
             setCloudinaryUrl(imageUploadurl.url)
+            setIsDisabled(false)
         }
     }
 
@@ -73,7 +76,7 @@ function CreateGroupPopup({setCreateGroupPopupOpen, setSelectUsersForGroupPopupO
             <div className='flex justify-end mt-8 gap-3'>
                 <button className='px-5 py-3 rounded-xl bg-[#2e3548] text-gray-300 hover:bg-[#394158] transition' onClick={(e)=>{setCreateGroupPopupOpen(false)}}>Cancel</button>
 
-                <button className='px-6 py-3 rounded-xl bg-[#3b82f6] hover:bg-[#2563eb] text-white flex items-center gap-2 transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed' disabled={groupName.trim() == "" || groupDescription.trim() == ""} onClick={(e)=>{
+                <button className='px-6 py-3 rounded-xl bg-[#3b82f6] hover:bg-[#2563eb] text-white flex items-center gap-2 transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed' disabled={(isDisabled) || (groupName.trim() == "" || groupDescription.trim() == "")} onClick={(e)=>{
                     setCreateGroupPopupOpen(false)
                     setSelectUsersForGroupPopupOpen(true)
 

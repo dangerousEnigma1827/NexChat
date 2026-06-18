@@ -14,18 +14,23 @@ function Register() {
 
   let hangleRegister = async () => {
     if (username && email && password) {
+      console.log("2")
       try {
-        await api.post('/auth/register', {
+        let res = await api.post('/auth/register', {
           username,
           email,
           password,
           pfp: cloudinaryUrl
         })
 
-        navigate('/login')
+        console.log("1")
+
         toast("Registered Successfully!", {
           style: { background: '#3b82f6', color: '#fff' }
         })
+
+        localStorage.setItem('token', res.data.token)
+        navigate('/')
       } catch (err) {
         toast(err.response?.data?.message || "Registering failed", {
           style: { background: '#3b82f6', color: '#fff' }
@@ -135,6 +140,7 @@ function Register() {
           <button
             className='w-[80%] bg-[#3b82f6] rounded-md cursor-pointer text-white h-[7vh]'
             onClick={hangleRegister}
+            
           >
             Register
           </button>

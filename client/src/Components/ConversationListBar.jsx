@@ -1,5 +1,5 @@
 import React from 'react'
-import { UserRound } from 'lucide-react'
+import { UserRound , UsersRound} from 'lucide-react'
 import useTime from '../Hooks/useTime'
 
 function ConversationListBar({
@@ -90,7 +90,7 @@ function ConversationListBar({
                     conversation.groupIcon ? (
                       <img src={conversation.groupIcon} className="h-full w-full object-cover" />
                     ) : (
-                      <UserRound className="text-white" />
+                      <UsersRound className="text-white" />
                     )
                   )}
 

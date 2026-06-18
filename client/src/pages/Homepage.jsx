@@ -134,8 +134,14 @@ function HomePage() {
                 )
             )
 
+            console.log("1")
+
+            getAllConversationsInFr()
+            console.log("2")
+
             setText("")
             setAttachments([])
+
         } catch (err) {
             console.log(err)
         }
@@ -402,6 +408,7 @@ function HomePage() {
                                             setEditPopupOpen={setEditPopupOpen}
                                             setMessageToDeleteTime={setMessageToDeleteTime}
                                             setMessageToDeleteText={setMessageToDeleteText}
+                                            isconversationAGroup={isconversationAGroup}
                                         />
                                     ))}
                                     <div ref={scrollRef}></div>

@@ -73,8 +73,8 @@ function SelectUsersForGroupPopup({
                 }
             })
             console.log("1111")
-            setSelectUsersForGroupPopupOpen(false);
             getAllConversationsInFr()
+            setSelectUsersForGroupPopupOpen(false);
             console.log("done creating group")
         }catch(err){
             console.log("error creating group", err)

@@ -18,8 +18,20 @@ const register = async (req, res) => {
         ...req.body, password: hashedPassword
     })
 
-    console.log("created user");
-    res.json(registerInBackend)
+    const token = jwt.sign(
+        { userId: registerInBackend._id },
+        process.env.JWT_SECRET,
+        { expiresIn: "7d" }
+    );
+
+    console.log("done logging in")
+    
+    res.json({
+        success:true,
+        message: "Login Successful",
+        user:registerInBackend,
+        token:token
+    })
   }catch(err){
     console.log("error while registering in backend ", err)
   }

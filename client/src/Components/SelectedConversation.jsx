@@ -1,7 +1,7 @@
 import React from 'react'
 import axios from 'axios'
 import { useState, useEffect } from 'react'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, User, UserRound, UsersRound } from 'lucide-react'
 
 function SelectedConversation({conversationSelectedPfp, conversationSelectedUsername, dropdownOpen, setDropdownOpen, onlineUsers, conversationSelected, setClearChatPopupOpen, isconversationAGroup, groupMembers, setIsSideBarOpen, setConversationSelected}) {
 
@@ -35,11 +35,12 @@ function SelectedConversation({conversationSelectedPfp, conversationSelectedUser
                     )
                 }
                 {
-                    !conversationSelectedPfp && (
-                        <p className='text-white text-md font-medium'>
-                            {conversationSelectedUsername?.substring(0,1).toUpperCase()}
-                        </p>
-                    )
+                    !isconversationAGroup && 
+                    <UserRound className='text-white'/>
+                }
+                {
+                    isconversationAGroup && 
+                    <UsersRound className='text-white'/>
                 }
             </div>
             <div className='flex flex-col' onClick={(e)=>{setIsSideBarOpen(true)}}>
@@ -53,9 +54,9 @@ function SelectedConversation({conversationSelectedPfp, conversationSelectedUser
                     <div className='flex justify-center items-center text-sm text-gray-400 gap-2'>
                         {
                             groupMembers.map((member, index)=>{
-                                return <div key={index}>
-                                        <p>{member._id == currentUserName ? "You": member.username}{groupMembers.length != index+1 ? " ," : ""} </p>
-                                    </div>
+                            return <div key={index}>
+                                    <p>{member._id == currentUserName ? "You": member.username}{groupMembers.length != index+1 ? " ," : ""} </p>
+                                </div>
                             })
                         }
                     </div>

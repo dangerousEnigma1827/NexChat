@@ -33,7 +33,7 @@ let conversationSchema = new mongoose.Schema({
         default:""
     },
     lastTimeMessageSent:{
-        type: String,
+        type: Date,
         default:""
     },
     lastMessageSentBy:{

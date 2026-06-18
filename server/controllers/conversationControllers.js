@@ -48,7 +48,7 @@ export const getAllConversations = async (req,res) => {
             {
                 participants : req.user.userId
             }
-        ).populate("participants").populate("lastMessageSentBy")
+        ).populate("participants").populate("lastMessageSentBy").sort({lastTimeMessageSent : -1})
 
         res.json(allconversations)
     }catch(err){
@@ -62,7 +62,7 @@ export const getAllMessagesOfAConversation = async (req,res) => {
             {
                 conversationId : req.params.conversationId
             }
-        )
+        ).populate('senderId')
         res.json(allmessagesOfAConversationReq)
     }catch(err){
         console.log("error getting all messages of a convo", err)
