@@ -4,7 +4,7 @@ import { SignOutIcon } from '@phosphor-icons/react'
 function LogoutPopup({handleLogout, setLogoutPopupOpen}) {
   return (
     <>
-    <div className='h-screen w-screen fixed inset-0 z-1000 flex justify-center items-center bg-black/40 backdrop-blur-sm'>
+    <div className='h-screen w-screen fixed inset-0 z-1000000 flex justify-center items-center bg-black/40 backdrop-blur-sm'>
         <div className='h-[40vh] w-[30vw] rounded-2xl bg-[#232a3a] border border-[#31384d] shadow-2xl p-8'>
             <div className='flex flex-col justify-center items-center h-full text-white px-8'>
 
