@@ -18,6 +18,7 @@ function OneMessage({
   setMessageToDeleteText,
 }) {
 
+
   let {currentUserId} = useContext(UserContext)
   const isMine = message.senderId === currentUserId || message.senderId?._id === currentUserId
 
@@ -114,6 +115,14 @@ function OneMessage({
                   key={index}
                   attachment={attachment}
                   isDeletedForEveryone={attachment.isDeletedForEveryone}
+                  message={message}
+                  dropdownref={dropdownref}
+                  dropArrowdownId={dropArrowdownId}
+                  setDropArrowdownId={setDropArrowdownId}
+                  setMessageToDelete={setMessageToDelete}
+                  setAttachmentUrlForDeletion={setAttachmentUrlForDeletion}
+                  setDeletePopupOpen={setDeletePopupOpen}
+                  currentUserId={currentUserId}
                 />
               ))}
             </div>

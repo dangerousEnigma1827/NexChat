@@ -24,6 +24,7 @@ import { useContext } from 'react';
 import { ConversationContext } from '../context/conversationContext.jsx';
 import { UserContext } from '../context/userContext.jsx';
 import { GroupContext } from '../context/groupContext.jsx';
+import { getMessagesByConversationId, sendMessageService } from '../Services/messagesServices.js';
 
 function HomePage() {
 
@@ -100,6 +101,7 @@ function HomePage() {
 
     // ---------------- API CALLS ----------------
 
+    
     let getAllConversationsInFr = async () => {
         try {
             let res = await api.get('/conversations/', {
@@ -110,31 +112,23 @@ function HomePage() {
             console.log(err)
         }
     }
-
     
-
     let getAllMessagesBwtwo = async () => {
-        try {
-            let res = await api.get(`/conversations/allMessagesOfAConversation/${conversationId}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            })
-            setAllMessagesBwTwo(res.data)
-        } catch (err) {
-            console.log(err)
+        try{
+            let data = await getMessagesByConversationId(conversationId)
+            setAllMessagesBwTwo(data)
+        }catch(err){
+            console.log("error getting messages between two users ",err);
         }
-
-        // setAllMessagesBwTwo(res.data)
     }
 
     let sendMessageFunc = async () => {
         try {
-            let res = await api.post('/messages/send', {
+            let res = await sendMessageService({
                 text,
                 senderId: currentUserId,
                 conversationId,
                 attachments
-            }, {
-                headers: { Authorization: `Bearer ${token}` }
             })
 
             setAllMessagesBwTwo(prev => [...prev, res.data])
@@ -160,10 +154,62 @@ function HomePage() {
         }
     }
 
-    let handleLogout = async () => {
-        localStorage.removeItem('token')
-        navigate('/login')
+    let handleDelete = async () => {
+        try {
+            let typeOf = attachmentUrlForDeletion ? "attachment" : "text"
+
+            await api.delete('/messages/delete', {
+                data: {
+                    typeOf,
+                    messageToDelete,
+                    attachmentUrlForDeletion
+                },
+                headers: { Authorization: `Bearer ${token}` }
+            })
+
+            getAllMessagesBwtwo()
+        } catch (err) {
+            console.log(err)
+        }
     }
+
+    // let handleDeleteForMe = async () => {
+    //     try {
+    //         let typeOf = attachmentUrlForDeletion ? "attachment" : "text"
+
+    //         await api.delete('/messages/delete', {
+    //             data: {
+    //                 typeOf,
+    //                 messageToDelete,
+    //                 attachmentUrlForDeletion
+    //             },
+    //             headers: { Authorization: `Bearer ${token}` }
+    //         })
+
+    //         getAllMessagesBwtwo()
+    //     } catch (err) {
+    //         console.log(err)
+    //     }
+    // }
+
+    let handleEdit = async () => {
+        try {
+            await api.post('/messages/edit', {
+                messageId: dropArrowdownId,
+                editedText
+            }, {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+
+            getAllMessagesBwtwo()
+            setEditPopupOpen(false)
+            setDropArrowdownId(null)
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+
 
     let handleClearChat = async () => {
         try {
@@ -181,6 +227,7 @@ function HomePage() {
     }
 
     let handleMedia = async (e) => {
+        console.log("hmmm")
         let files = Array.from(e.target.files)
 
         let uploadFile = async (file) => {
@@ -205,6 +252,7 @@ function HomePage() {
         }
 
         let uploaded = await Promise.all(files.map(uploadFile))
+        console.log(uploaded)
 
         setAttachments(uploaded)
 
@@ -212,51 +260,25 @@ function HomePage() {
             text,
             senderId: currentUserId,
             recieverId: conversationSelected,
+            conversationId,
             attachments: uploaded
         }, {
             headers: { Authorization: `Bearer ${token}` }
         })
+
+        console.log("done sending")
 
         setAllMessagesBwTwo(prev => [...prev, res.data])
         setAttachments([])
         setText("")
     }
 
-    let handleDelete = async () => {
-        try {
-            let typeOf = attachmentUrlForDeletion ? "attachment" : "text"
-
-            await api.delete('/messages/delete', {
-                data: {
-                    typeOf,
-                    messageToDelete,
-                    attachmentUrlForDeletion
-                },
-                headers: { Authorization: `Bearer ${token}` }
-            })
-
-            getAllMessagesBwtwo()
-        } catch (err) {
-            console.log(err)
-        }
+    let handleLogout = async () => {
+        localStorage.removeItem('token')
+        navigate('/login')
     }
 
-    let handleEdit = async () => {
-        try {
-            await api.post('/messages/edit', {
-                messageId: dropArrowdownId,
-                editedText
-            }, {
-                headers: { Authorization: `Bearer ${token}` }
-            })
-
-            getAllMessagesBwtwo()
-            setEditPopupOpen(false)
-            setDropArrowdownId(null)
-        } catch (err) {
-            console.log(err)
-        }
-    }
+    
 
     // ---------------- EFFECTS ----------------
 
@@ -392,21 +414,22 @@ function HomePage() {
 
                             <div className="flex-1 overflow-y-auto">
                                 <div className="w-full py-6 pb-6">
-                                    {allMessagesBwTwo.map((message) => (
-                                        <OneMessage
-                                            key={message._id}
-                                            message={message}
-                                            dropdownref={dropdownref}
-                                            dropArrowdownId={dropArrowdownId}
-                                            setDropArrowdownId={setDropArrowdownId}
-                                            setAttachmentUrlForDeletion={setAttachmentUrlForDeletion}
-                                            setDeletePopupOpen={setDeletePopupOpen}
-                                            setMessageToDelete={setMessageToDelete}
-                                            setEditPopupOpen={setEditPopupOpen}
-                                            setMessageToDeleteTime={setMessageToDeleteTime}
-                                            setMessageToDeleteText={setMessageToDeleteText}
+                                    {allMessagesBwTwo.map((message)=>{
+                                        console.log(message)
+                                        return <OneMessage
+                                                key={message._id}
+                                                message={message}
+                                                dropdownref={dropdownref}
+                                                dropArrowdownId={dropArrowdownId}
+                                                setDropArrowdownId={setDropArrowdownId}
+                                                setAttachmentUrlForDeletion={setAttachmentUrlForDeletion}
+                                                setDeletePopupOpen={setDeletePopupOpen}
+                                                setMessageToDelete={setMessageToDelete}
+                                                setEditPopupOpen={setEditPopupOpen}
+                                                setMessageToDeleteTime={setMessageToDeleteTime}
+                                                setMessageToDeleteText={setMessageToDeleteText}
                                         />
-                                    ))}
+                                    })}
                                     <div ref={scrollRef}></div>
                                 </div>
                             </div>

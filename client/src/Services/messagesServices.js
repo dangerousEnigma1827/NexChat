@@ -1,11 +1,11 @@
 import api from "../api/apiInstance"
 
 export const getMessagesByConversationId = async (conversationId) => {
-    try {
-        let res = await api.get(`/conversations/allMessagesOfAConversation/${conversationId}`)
+    let res = await api.get(`/conversations/allMessagesOfAConversation/${conversationId}`)
+    return res.data
+}
 
-        return res.data
-    } catch (err) {
-        console.log(err)
-    }
+export const sendMessageService = async (data) => {
+    let res = await api.post('/messages/send', data)
+    return res;
 }

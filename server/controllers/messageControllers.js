@@ -5,6 +5,8 @@ import Conversation from "../models/conversationModels.js";
 import io from '../server.js'
 
 export const sendMessage = async (req,res)=>{
+    console.log("recieved");
+    console.log(req.body)
     try{
         let messageSent = await Message.create(req.body);
         
