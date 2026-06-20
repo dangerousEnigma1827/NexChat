@@ -174,11 +174,11 @@ function SideOverlay({
           )}
 
           {/* Common groups (private only) */}
-          {!isconversationAGroup && (
+          {(isconversationAGroup==false && commonGroups.length != 0)  &&  (
             <div className="mt-4 flex flex-col flex-1 overflow-y-auto pr-1 space-y-2">
               <div className="bg-[#1b1f30] rounded-xl border border-[#1d2230] p-3">
               <SectionLabel label="Common Groups" />
-                {commonGroups.map((group, index) => {
+                {commonGroups?.map((group, index) => {
                   return (
                     <div
                       key={index}
@@ -214,7 +214,23 @@ function SideOverlay({
                 })}
               </div>
             </div>
-          )}
+          )
+          }
+
+          
+          {(isconversationAGroup==false && commonGroups.length == 0)  &&  (
+            (
+            <div className="mt-4 flex flex-col flex-1 overflow-y-auto pr-1 space-y-2">
+              <div className="bg-[#1b1f30] rounded-xl border border-[#1d2230] p-3">
+              <SectionLabel label="Common Groups" />
+                <div className="w-full flex justify-center items-center">
+                  <p className="align-center text-gray-300">No Common Groups Found!</p>
+                </div>
+              </div>
+            </div>
+          )
+          )
+          }
 
         
 

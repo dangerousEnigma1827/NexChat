@@ -7,9 +7,9 @@ import api from '../api/apiInstance';
 function Register() {
 
   let navigate = useNavigate()
-  let [username, setUsername] = useState()
-  let [password, setPassword] = useState()
-  let [email, setEmail] = useState()
+  let [username, setUsername] = useState("")
+  let [password, setPassword] = useState("")
+  let [email, setEmail] = useState("")
   let [cloudinaryUrl, setCloudinaryUrl] = useState(null)
 
   let hangleRegister = async () => {

@@ -8,8 +8,8 @@ import api from '../api/apiInstance'
 function Login() {
 
   let navigate = useNavigate()
-  let [password, setPassword] = useState()
-  let [email, setEmail] = useState()
+  let [password, setPassword] = useState("")
+  let [email, setEmail] = useState("")
 
   let handleLogin = async () => {
     if (email && password) {

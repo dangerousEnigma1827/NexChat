@@ -81,7 +81,7 @@ function ConversationListBar({
               className={`
                 group flex items-center gap-3 px-3 py-3 rounded-xl cursor-pointer
                 transition-all duration-200
-                hover:bg-[#1a1f2e]
+                hover:bg-[#22283a]
                 ${isActive ? "bg-[#22283a]" : ""}
               `}
             >
