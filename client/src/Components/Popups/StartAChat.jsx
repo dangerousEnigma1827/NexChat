@@ -87,7 +87,10 @@ function StartAChat({setStartAChat,userSearchText, setUserSearchText, currentUse
 
             </div>
             <button
-              className='w-full h-[52px] bg-[#4c7dff] hover:bg-[#3f6ee8] rounded-xl mt-4 font-medium text-[15px] transition-all duration-300 active:scale-[0.98]'
+              disabled={!userSearchText.trim()}
+              className={`w-full ${!userSearchText.trim() ? "cursor-not-allowed" : ""} h-[52px] bg-[#4c7dff] hover:bg-[#3f6ee8] rounded-xl mt-4 font-medium text-[15px] transition-all duration-300 active:scale-[0.98]`}
+
+              
               onClick={handleSearchUser}>Search</button>
 
             <div className='flex-1 mt-5 bg-[#141720] rounded-2xl border border-[#2b3245] overflow-y-auto'>
