@@ -1,7 +1,9 @@
 import axios from 'axios'
 import { Search, X } from 'lucide-react'
 import React, { useState } from 'react'
+
 import toast from 'react-hot-toast'
+import LoadingSpin from '../../utils/LoadingSpin'
 
 function StartAChat({setStartAChat,userSearchText, setUserSearchText, currentUserId, setConversationSelected, setConversationSelectedtedUsername,setConversationSelectedDescription ,setConversationSelectedtedPfp, getAllConversationsInFr, setConversationId, getAllMessagesBwtwo}){
 
@@ -10,10 +12,19 @@ function StartAChat({setStartAChat,userSearchText, setUserSearchText, currentUse
   let [selectedUserFromSearch, setSelectedUserFromSearch] = useState(null)
   let selectedUser;
 
+  let [loading, setLoading] = useState({searchLoading:false})
+  let [hasSearched, setHasSearched] = useState(false)
+
   let newConversation="123456";
 
   const handleSearchUser = async () => {
+    setHasSearched(true)
     try {
+      setLoading((prev)=> {
+        return {...prev, searchLoading:true}
+      })
+
+
       let searchUserFromFr = await axios.post(
         "http://localhost:5000/api/users/search",
         { userSearchText },
@@ -24,6 +35,10 @@ function StartAChat({setStartAChat,userSearchText, setUserSearchText, currentUse
      setUsernameSearchResutls(searchUserFromFr.data)
     } catch (err) {
       console.log("error getting user list", err)
+    }finally{
+      setLoading((prev)=> {
+        return {...prev, searchLoading:false}
+      })
     }
   }
 
@@ -79,6 +94,7 @@ function StartAChat({setStartAChat,userSearchText, setUserSearchText, currentUse
                     className='text-gray-400 hover:text-red-500 cursor-pointer transition-all duration-300'
                     onClick={() =>{
                         setUserSearchText("")
+                        setHasSearched(false)
                         setUsernameSearchResutls([])
                     }}
                   />
@@ -87,20 +103,35 @@ function StartAChat({setStartAChat,userSearchText, setUserSearchText, currentUse
 
             </div>
             <button
-              disabled={!userSearchText.trim()}
-              className={`w-full ${!userSearchText.trim() ? "cursor-not-allowed" : ""} h-[52px] bg-[#4c7dff] hover:bg-[#3f6ee8] rounded-xl mt-4 font-medium text-[15px] transition-all duration-300 active:scale-[0.98]`}
+              disabled={!userSearchText.trim() || loading.searchLoading}
+              className={`w-full  disabled:cursor-not-allowed disabled:opacity-20 h-[52px] bg-[#4c7dff] hover:bg-[#3f6ee8] rounded-xl mt-4 font-medium text-[15px] transition-all duration-300 active:scale-[0.98]`}
 
-              
-              onClick={handleSearchUser}>Search</button>
+              onClick={handleSearchUser}>
+                {!loading.searchLoading ? 
+                  "Search" : 
+                  (<div className='flex justify-center items-center gap-2'>
+                    <span>Searching...</span>
+                    <LoadingSpin />
+                  </div>)}
+            </button>
 
             <div className='flex-1 mt-5 bg-[#141720] rounded-2xl border border-[#2b3245] overflow-y-auto'>
 
               {
-                usernameSearchResults.length === 0 ? (
+                !hasSearched && (
+                  <div className='w-full h-full flex flex-col justify-center items-center text-gray-500 gap-2'>
+                    <Search size={32} className='opacity-60' />
+                    <p className='text-[15px]'>Search For Users To Start chatting</p>
+                  </div>
+                )
+              }
+
+              {
+                (userSearchText.trim() != "" && hasSearched) ? (
 
                   <div className='w-full h-full flex flex-col justify-center items-center text-gray-500 gap-2'>
                     <Search size={32} className='opacity-60' />
-                    <p className='text-[15px]'>Search for users to start chatting</p>
+                    <p className='text-[15px]'>No Users found...</p>
                   </div>
                 ) : (
                   <div className='w-[100%] flex flex-col items-center p-2'>
