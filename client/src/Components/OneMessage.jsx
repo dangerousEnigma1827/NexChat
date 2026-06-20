@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import OneAttachment from './OneAttachment'
 import OneText from './OneText'
 import { UserRound } from 'lucide-react'
+import { ConversationContext } from '../context/conversationContext'
 
 function OneMessage({
   message,
@@ -15,10 +16,11 @@ function OneMessage({
   setEditPopupOpen,
   setMessageToDeleteTime,
   setMessageToDeleteText,
-  isconversationAGroup
 }) {
 
   const isMine = message.senderId === currentUserId || message.senderId?._id === currentUserId
+
+  let {isconversationAGroup} = useContext(ConversationContext)
 
   return (
     <div className={`flex w-full px-4 py-0.5 ${isMine ? "justify-end" : "justify-start"}`}>

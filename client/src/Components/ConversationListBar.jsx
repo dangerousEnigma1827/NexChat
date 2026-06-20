@@ -1,27 +1,38 @@
 import React from 'react'
 import { UserRound, UsersRound } from 'lucide-react'
 import useTime from '../Hooks/useTime'
+import { useContext } from 'react'
+import { ConversationContext } from '../context/conversationContext'
 
 function ConversationListBar({
-  conversationSelected,
-  setConversationSelected,
-  setConversationSelectedtedUsername,
-  setConversationSelectedtedPfp,
   onlineUsers,
   setStartAChat,
-  conversations,
   currentUserId,
-  setConversationId,
-  setIsConversationAGroup,
   setGroupMembers,
   setGroupAdmins,
   setUserSelectedIdIfNotGroup,
   setAllMessagesBwTwo,
   setIsSideBarOpen,
-  setConversationSelectedDescription
 }) {
 
   let { formatTime } = useTime()
+
+  let {
+      conversations,
+      conversationId,
+      setConversationId,
+      isconversationAGroup,
+      setIsConversationAGroup,
+      setConversations,
+      conversationSelected,
+      setConversationSelected,
+      conversationSelectedUsername,
+      setConversationSelectedtedUsername,
+      conversationSelectedDescription,
+      setConversationSelectedDescription,
+      conversationSelectedPfp,
+      setConversationSelectedtedPfp
+  } = useContext(ConversationContext);
 
   return (
     <div className="w-full h-full overflow-hidden bg-[#1b1f30] rounded-xl border border-[#1d2230] flex flex-col p-3">

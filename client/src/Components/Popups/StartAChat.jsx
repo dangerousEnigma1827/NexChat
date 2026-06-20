@@ -5,7 +5,16 @@ import React, { useState } from 'react'
 import toast from 'react-hot-toast'
 import LoadingSpin from '../../utils/LoadingSpin'
 
-function StartAChat({setStartAChat,userSearchText, setUserSearchText, currentUserId, setConversationSelected, setConversationSelectedtedUsername,setConversationSelectedDescription ,setConversationSelectedtedPfp, getAllConversationsInFr, setConversationId, getAllMessagesBwtwo}){
+function StartAChat({setStartAChat,userSearchText, setUserSearchText, currentUserId,getAllConversationsInFr, getAllMessagesBwtwo}){
+
+  let {
+      setConversationId,
+      setConversationSelected,
+      setConversationSelectedtedUsername,
+      setConversationSelectedDescription,
+      setConversationSelectedtedPfp
+  } = useContext(ConversationContext);
+
 
   let token = localStorage.getItem('token')
   let [usernameSearchResults, setUsernameSearchResutls] = useState([])

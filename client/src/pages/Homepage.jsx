@@ -20,6 +20,9 @@ import CreateGroupPopup from '../Components/Popups/CreateGroupPopup';
 import SelectUsersForGroupPopup from '../Components/Popups/SelectUsersForGroupPopup';
 import SideOverlay from '../Components/SideOverlay';
 
+import { useContext } from 'react';
+import { ConversationContext } from '../context/conversationContext.jsx';
+
 function HomePage() {
 
     let token = localStorage.getItem('token')
@@ -28,11 +31,24 @@ function HomePage() {
     let dropdownref = useRef(null)
 
     let [users, setUsers] = useState([]);
-    let [conversations, setConversations] = useState([]);
-    let [conversationSelected, setConversationSelected] = useState(null)
-    let [conversationSelectedUsername, setConversationSelectedtedUsername] = useState("")
-    let [conversationSelectedDescription, setConversationSelectedDescription] = useState("")
-    let [conversationSelectedPfp, setConversationSelectedtedPfp] = useState(null)
+
+    let {
+        conversations,
+        conversationId,
+        setConversationId,
+        isconversationAGroup,
+        setIsConversationAGroup,
+        setConversations,
+        conversationSelected,
+        setConversationSelected,
+        conversationSelectedUsername,
+        setConversationSelectedtedUsername,
+        conversationSelectedDescription,
+        setConversationSelectedDescription,
+        conversationSelectedPfp,
+        setConversationSelectedtedPfp
+    } = useContext(ConversationContext);
+
     let [currentUserId, setUserId] = useState(null)
 
     let [allMessagesBwTwo, setAllMessagesBwTwo] = useState([])
@@ -61,11 +77,9 @@ function HomePage() {
     let [editedText, setEditedText] = useState("")
 
     let [userSearchText, setUserSearchText] = useState("")
-    let [conversationId, setConversationId] = useState(null)
 
     let [groupName, setGroupName] = useState("")
     let [groupDescription, setGroupDescription] = useState("")
-    let [isconversationAGroup, setIsConversationAGroup] = useState(false)
     let [groupMembers, setGroupMembers] = useState()
     let [groupAdmins, setGroupAdmins] = useState()
 
@@ -312,7 +326,7 @@ function HomePage() {
             }
             {
                 editPopupOpen && 
-            <EditPopup messagesToDeleteText={messagesToDeleteText} messagesToDeleteTime={messagesToDeleteTime} setEditedText={setEditedText} handleEdit={handleEdit} setDropArrowdownId={setDropArrowdownId} editedText={editedText} setEditPopupOpen={setEditPopupOpen}/>
+                <EditPopup messagesToDeleteText={messagesToDeleteText} messagesToDeleteTime={messagesToDeleteTime} setEditedText={setEditedText} handleEdit={handleEdit} setDropArrowdownId={setDropArrowdownId} editedText={editedText} setEditPopupOpen={setEditPopupOpen}/>
             }
             {
                 startAChat && 
@@ -321,11 +335,9 @@ function HomePage() {
                 userSearchText={userSearchText} 
                 setUserSearchText={setUserSearchText} 
                 currentUserId={currentUserId} 
-                conversationSelected={conversationSelected} 
-                setConversationSelected={setConversationSelected} setConversationSelectedtedUsername={setConversationSelectedtedUsername} setConversationSelectedtedPfp={setConversationSelectedtedPfp} getAllConversationsInFr={getAllConversationsInFr} 
+                getAllConversationsInFr={getAllConversationsInFr} 
                 setConversationId={setConversationId} 
-                getAllMessagesBwtwo={getAllMessagesBwtwo}
-                setConversationSelectedDescription={setConversationSelectedDescription}/>
+                getAllMessagesBwtwo={getAllMessagesBwtwo}/>
             }
             {
                 createGroupPopupOpen && 
@@ -361,16 +373,9 @@ function HomePage() {
                     <div className="w-[90%] flex-1 overflow-hidden mb-3">
                         <ConversationListBar
                             users={users}
-                            conversations={conversations}
-                            conversationSelected={conversationSelected}
-                            setConversationSelected={setConversationSelected}
-                            setConversationSelectedtedUsername={setConversationSelectedtedUsername}setConversationSelectedDescription={setConversationSelectedDescription}
-                            setConversationSelectedtedPfp={setConversationSelectedtedPfp}
                             onlineUsers={onlineUsers}
                             setStartAChat={setStartAChat}
                             currentUserId={currentUserId}
-                            setConversationId={setConversationId}
-                            setIsConversationAGroup={setIsConversationAGroup}
                             setGroupAdmins={setGroupAdmins}
                             setGroupMembers={setGroupMembers}
                             setUserSelectedIdIfNotGroup={setUserSelectedIdIfNotGroup}
@@ -385,17 +390,12 @@ function HomePage() {
                         <>
                             <div className="flex-shrink-0">
                                 <SelectedConversation
-                                    conversationSelectedPfp={conversationSelectedPfp}
-                                    conversationSelectedUsername={conversationSelectedUsername}
                                     dropdownOpen={dropdownOpen}
                                     setDropdownOpen={setDropdownOpen}
                                     onlineUsers={onlineUsers}
-                                    conversationSelected={conversationSelected}
                                     setClearChatPopupOpen={setClearChatPopupOpen}
-                                    isconversationAGroup={isconversationAGroup}
                                     groupMembers={groupMembers}
                                     setIsSideBarOpen={setIsSideBarOpen}
-                                    setConversationSelected={setConversationSelected}
                                 />
                             </div>
 
@@ -415,7 +415,6 @@ function HomePage() {
                                             setEditPopupOpen={setEditPopupOpen}
                                             setMessageToDeleteTime={setMessageToDeleteTime}
                                             setMessageToDeleteText={setMessageToDeleteText}
-                                            isconversationAGroup={isconversationAGroup}
                                         />
                                     ))}
                                     <div ref={scrollRef}></div>
@@ -442,10 +441,7 @@ function HomePage() {
                         setIsSideBarOpen={setIsSideBarOpen} 
                         userA={userSelectedIdIfNotGroup} 
                         userB={currentUserId}
-                        conversationSelectedPfp={conversationSelectedPfp} 
-                        conversationSelectedUsername={conversationSelectedUsername} 
-                        conversationSelectedDescription={conversationSelectedDescription}
-                        onlineUsers={onlineUsers} conversationSelected={conversationSelected} 
+                        onlineUsers={onlineUsers}
                         isconversationAGroup={isconversationAGroup}
                         groupAdmins={groupAdmins}
                         groupMembers={groupMembers}/>

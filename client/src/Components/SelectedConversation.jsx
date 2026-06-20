@@ -1,20 +1,23 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { ArrowLeft, UserRound, UsersRound } from 'lucide-react'
+import { useContext } from 'react';
+import { ConversationContext } from '../context/conversationContext.jsx';
 
 function SelectedConversation({
-  conversationSelectedPfp,
-  conversationSelectedUsername,
   dropdownOpen,
   setDropdownOpen,
   onlineUsers,
-  conversationSelected,
   setClearChatPopupOpen,
-  isconversationAGroup,
   groupMembers,
   setIsSideBarOpen,
-  setConversationSelected
 }) {
+
+  let {conversationSelectedPfp,
+    conversationSelectedUsername,
+    conversationSelected,
+    isconversationAGroup,
+    setConversationSelected} = useContext(ConversationContext)
 
   let [currentUserName, setCurrentUserName] = useState(null)
   let token = localStorage.getItem('token')
