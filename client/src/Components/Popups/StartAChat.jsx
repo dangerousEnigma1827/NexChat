@@ -1,11 +1,12 @@
 import axios from 'axios'
 import { Search, X } from 'lucide-react'
 import React, { useState } from 'react'
-
+import { ConversationContext } from '../../context/conversationContext'
+import { UserContext } from '../../context/userContext'
 import toast from 'react-hot-toast'
 import LoadingSpin from '../../utils/LoadingSpin'
 
-function StartAChat({setStartAChat,userSearchText, setUserSearchText, currentUserId,getAllConversationsInFr, getAllMessagesBwtwo}){
+function StartAChat({setStartAChat,userSearchText, setUserSearchText,getAllConversationsInFr, getAllMessagesBwtwo}){
 
   let {
       setConversationId,
@@ -15,6 +16,9 @@ function StartAChat({setStartAChat,userSearchText, setUserSearchText, currentUse
       setConversationSelectedtedPfp
   } = useContext(ConversationContext);
 
+  let{
+      currentUserId, setUserId
+  } = useContext(UserContext)
 
   let token = localStorage.getItem('token')
   let [usernameSearchResults, setUsernameSearchResutls] = useState([])

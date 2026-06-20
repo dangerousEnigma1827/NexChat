@@ -6,7 +6,6 @@ import { ConversationContext } from '../context/conversationContext'
 
 function OneMessage({
   message,
-  currentUserId,
   dropArrowdownId,
   setDropArrowdownId,
   setMessageToDelete,
@@ -18,6 +17,7 @@ function OneMessage({
   setMessageToDeleteText,
 }) {
 
+  let {currentUserId} = useContext(ConversationContext)
   const isMine = message.senderId === currentUserId || message.senderId?._id === currentUserId
 
   let {isconversationAGroup} = useContext(ConversationContext)

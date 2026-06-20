@@ -22,6 +22,8 @@ import SideOverlay from '../Components/SideOverlay';
 
 import { useContext } from 'react';
 import { ConversationContext } from '../context/conversationContext.jsx';
+import { UserContext } from '../context/userContext.jsx';
+import { GroupContext } from '../context/groupContext.jsx';
 
 function HomePage() {
 
@@ -49,7 +51,17 @@ function HomePage() {
         setConversationSelectedtedPfp
     } = useContext(ConversationContext);
 
-    let [currentUserId, setUserId] = useState(null)
+    let{
+        currentUserId, setUserId
+    } = useContext(UserContext)
+
+    let {
+        groupName, setGroupName,
+        groupDescription, setGroupDescription,
+        setGroupMembers, groupMembers,
+        groupAdmins, setGroupAdmins
+    } = useContext(GroupContext)
+
 
     let [allMessagesBwTwo, setAllMessagesBwTwo] = useState([])
     let [onlineUsers, setOnlineUsers] = useState([])
@@ -78,10 +90,7 @@ function HomePage() {
 
     let [userSearchText, setUserSearchText] = useState("")
 
-    let [groupName, setGroupName] = useState("")
-    let [groupDescription, setGroupDescription] = useState("")
-    let [groupMembers, setGroupMembers] = useState()
-    let [groupAdmins, setGroupAdmins] = useState()
+
 
     let [isSideBarOpen, setIsSideBarOpen] = useState(false)
     let [userSelectedIdIfNotGroup, setUserSelectedIdIfNotGroup] = useState(null)
@@ -334,18 +343,17 @@ function HomePage() {
                 setStartAChat={setStartAChat}
                 userSearchText={userSearchText} 
                 setUserSearchText={setUserSearchText} 
-                currentUserId={currentUserId} 
                 getAllConversationsInFr={getAllConversationsInFr} 
                 setConversationId={setConversationId} 
                 getAllMessagesBwtwo={getAllMessagesBwtwo}/>
             }
             {
                 createGroupPopupOpen && 
-                <CreateGroupPopup setSelectUsersForGroupPopupOpen={setSelectUsersForGroupPopupOpen} setCreateGroupPopupOpen={setCreateGroupPopupOpen} groupName={groupName} setGroupName={setGroupName}setGroupDescription={setGroupDescription} groupDescription={groupDescription}/>
+                <CreateGroupPopup setSelectUsersForGroupPopupOpen={setSelectUsersForGroupPopupOpen} setCreateGroupPopupOpen={setCreateGroupPopupOpen}/>
             }
             {
                 selectUsersForGroupPopupOpen &&
-                <SelectUsersForGroupPopup setSelectUsersForGroupPopupOpen={setSelectUsersForGroupPopupOpen} groupName={groupName} setGroupName={setGroupName}setGroupDescription={setGroupDescription} groupDescription={groupDescription} currentUserId={currentUserId} getAllConversationsInFr={getAllConversationsInFr}/>
+                <SelectUsersForGroupPopup setSelectUsersForGroupPopupOpen={setSelectUsersForGroupPopupOpen} groupName={groupName} setGroupName={setGroupName}setGroupDescription={setGroupDescription} groupDescription={groupDescription} getAllConversationsInFr={getAllConversationsInFr}/>
             }
 
 
@@ -375,7 +383,6 @@ function HomePage() {
                             users={users}
                             onlineUsers={onlineUsers}
                             setStartAChat={setStartAChat}
-                            currentUserId={currentUserId}
                             setGroupAdmins={setGroupAdmins}
                             setGroupMembers={setGroupMembers}
                             setUserSelectedIdIfNotGroup={setUserSelectedIdIfNotGroup}
@@ -410,7 +417,6 @@ function HomePage() {
                                             setDropArrowdownId={setDropArrowdownId}
                                             setAttachmentUrlForDeletion={setAttachmentUrlForDeletion}
                                             setDeletePopupOpen={setDeletePopupOpen}
-                                            currentUserId={currentUserId}
                                             setMessageToDelete={setMessageToDelete}
                                             setEditPopupOpen={setEditPopupOpen}
                                             setMessageToDeleteTime={setMessageToDeleteTime}

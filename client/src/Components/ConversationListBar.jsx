@@ -3,6 +3,7 @@ import { UserRound, UsersRound } from 'lucide-react'
 import useTime from '../Hooks/useTime'
 import { useContext } from 'react'
 import { ConversationContext } from '../context/conversationContext'
+import { UserContext } from '../context/userContext'
 
 function ConversationListBar({
   onlineUsers,
@@ -33,6 +34,8 @@ function ConversationListBar({
       conversationSelectedPfp,
       setConversationSelectedtedPfp
   } = useContext(ConversationContext);
+
+  let {currentUserId} = useContext(UserContext)
 
   return (
     <div className="w-full h-full overflow-hidden bg-[#1b1f30] rounded-xl border border-[#1d2230] flex flex-col p-3">
