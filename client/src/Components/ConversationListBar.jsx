@@ -4,13 +4,11 @@ import useTime from '../Hooks/useTime'
 import { useContext } from 'react'
 import { ConversationContext } from '../context/conversationContext'
 import { UserContext } from '../context/userContext'
+import { GroupContext } from '../context/groupContext'
 
 function ConversationListBar({
   onlineUsers,
   setStartAChat,
-  currentUserId,
-  setGroupMembers,
-  setGroupAdmins,
   setUserSelectedIdIfNotGroup,
   setAllMessagesBwTwo,
   setIsSideBarOpen,
@@ -36,6 +34,8 @@ function ConversationListBar({
   } = useContext(ConversationContext);
 
   let {currentUserId} = useContext(UserContext)
+  let {setGroupMembers,
+  setGroupAdmins} = useContext(GroupContext)
 
   return (
     <div className="w-full h-full overflow-hidden bg-[#1b1f30] rounded-xl border border-[#1d2230] flex flex-col p-3">

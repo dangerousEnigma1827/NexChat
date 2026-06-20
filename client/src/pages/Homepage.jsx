@@ -158,15 +158,10 @@ function HomePage() {
                 )
             )
 
-            console.log("1")
-
             getAllConversationsInFr()
-            console.log("2")
-
             setText("")
             setAttachments([])
-
-        } catch (err) {
+        } catch(err) {
             console.log(err)
         }
     }
@@ -353,7 +348,7 @@ function HomePage() {
             }
             {
                 selectUsersForGroupPopupOpen &&
-                <SelectUsersForGroupPopup setSelectUsersForGroupPopupOpen={setSelectUsersForGroupPopupOpen} groupName={groupName} setGroupName={setGroupName}setGroupDescription={setGroupDescription} groupDescription={groupDescription} getAllConversationsInFr={getAllConversationsInFr}/>
+                <SelectUsersForGroupPopup setSelectUsersForGroupPopupOpen={setSelectUsersForGroupPopupOpen} getAllConversationsInFr={getAllConversationsInFr}/>
             }
 
 
@@ -383,8 +378,6 @@ function HomePage() {
                             users={users}
                             onlineUsers={onlineUsers}
                             setStartAChat={setStartAChat}
-                            setGroupAdmins={setGroupAdmins}
-                            setGroupMembers={setGroupMembers}
                             setUserSelectedIdIfNotGroup={setUserSelectedIdIfNotGroup}
                             setAllMessagesBwTwo = {setAllMessagesBwTwo}
                             setIsSideBarOpen={setIsSideBarOpen}
@@ -401,7 +394,6 @@ function HomePage() {
                                     setDropdownOpen={setDropdownOpen}
                                     onlineUsers={onlineUsers}
                                     setClearChatPopupOpen={setClearChatPopupOpen}
-                                    groupMembers={groupMembers}
                                     setIsSideBarOpen={setIsSideBarOpen}
                                 />
                             </div>
@@ -447,10 +439,7 @@ function HomePage() {
                         setIsSideBarOpen={setIsSideBarOpen} 
                         userA={userSelectedIdIfNotGroup} 
                         userB={currentUserId}
-                        onlineUsers={onlineUsers}
-                        isconversationAGroup={isconversationAGroup}
-                        groupAdmins={groupAdmins}
-                        groupMembers={groupMembers}/>
+                        onlineUsers={onlineUsers}/>
                     }
                 </div>
             </div>

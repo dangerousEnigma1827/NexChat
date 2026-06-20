@@ -1,22 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { X, UsersRound, UserRound, Mail, Link, Shield, UserCheck, FileText } from "lucide-react";
 import { getCommonGroups } from "../Services/groupServices";
+import { GroupContext } from "../context/groupContext";
+import { ConversationContext } from "../context/conversationContext";
 
 function SideOverlay({
   setIsSideBarOpen,
   userA,
   userB,
-  conversationSelectedUsername,
-  conversationSelectedDescription,
-  conversationSelectedPfp,
   onlineUsers,
-  conversationSelected,
-  isconversationAGroup,
-  groupMembers,
-  groupAdmins,
 }) {
 
   const [commonGroups, setCommonGroups] = useState([]);
+
+  let {groupMembers,groupAdmins} = useContext(GroupContext)
+  let {isconversationAGroup, conversationSelected, conversationSelectedPfp, conversationSelectedDescription, conversationSelectedUsername} =useContext(ConversationContext)
 
   const handleFindCommonGroups = async () => {
     try {
@@ -217,7 +215,7 @@ function SideOverlay({
           )
           }
 
-          
+
           {(isconversationAGroup==false && commonGroups.length == 0)  &&  (
             (
             <div className="mt-4 flex flex-col flex-1 overflow-y-auto pr-1 space-y-2">

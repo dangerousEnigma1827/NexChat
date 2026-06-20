@@ -3,8 +3,7 @@ import { useState } from 'react'
 import {ChatsCircleIcon, ChatCircleTextIcon, KeyIcon, EnvelopeIcon, UserIcon, CloudArrowUpIcon, ArrowRightIcon} from "@phosphor-icons/react"
 import { GroupContext } from '../../context/groupContext'
 
-function CreateGroupPopup({setCreateGroupPopupOpen, setSelectUsersForGroupPopupOpen, groupName, groupDescription,
-    setGroupName, setGroupDescription}) {
+function CreateGroupPopup({setCreateGroupPopupOpen, setSelectUsersForGroupPopupOpen}) {
 
     let [cloudinaryUrl, setCloudinaryUrl] = useState(null)
     let [isDisabled, setIsDisabled] = useState(false)

@@ -6,11 +6,17 @@ import { BrowserRouter } from 'react-router-dom'
 import 'flowbite';
 import { UserProvider } from './context/userContext.jsx'
 import { ConversationProvider } from './context/conversationContext.jsx'
+import { GroupProvider } from './context/groupContext.jsx'
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
+  <UserProvider>
     <ConversationProvider>
-    <App />
+      <GroupProvider>
+        <App />
+      </GroupProvider>
     </ConversationProvider>
+  </UserProvider>
+    
   </BrowserRouter>
 )

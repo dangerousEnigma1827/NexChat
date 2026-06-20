@@ -2,19 +2,20 @@ import axios from 'axios'
 import React, { useContext, useEffect, useState } from 'react'
 import { ArrowLeftIcon, Search, X } from 'lucide-react'
 import { UserContext } from '../../context/userContext'
+import { GroupContext } from '../../context/groupContext'
 
 function SelectUsersForGroupPopup({
     setSelectUsersForGroupPopupOpen,
     setCreateGroupPopupOpen,
-    groupName, groupDescription,
-    currentUserId,
-    setGroupName, setGroupDescription,
+    
     getAllConversationsInFr
 }) {
 
     const token = localStorage.getItem('token')
 
     let {currentUserId} = useContext(UserContext)
+    let {groupName, groupDescription,
+    setGroupName, setGroupDescription} = useContext(GroupContext)
 
     const [allSingleUsers, setAllSingleUsers] = useState([])
     const [searchQuery, setSearchQuery] = useState('')

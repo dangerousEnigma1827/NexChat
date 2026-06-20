@@ -3,13 +3,13 @@ import axios from 'axios'
 import { ArrowLeft, UserRound, UsersRound } from 'lucide-react'
 import { useContext } from 'react';
 import { ConversationContext } from '../context/conversationContext.jsx';
+import { GroupContext } from '../context/groupContext.jsx';
 
 function SelectedConversation({
   dropdownOpen,
   setDropdownOpen,
   onlineUsers,
   setClearChatPopupOpen,
-  groupMembers,
   setIsSideBarOpen,
 }) {
 
@@ -18,6 +18,8 @@ function SelectedConversation({
     conversationSelected,
     isconversationAGroup,
     setConversationSelected} = useContext(ConversationContext)
+
+  let {groupMembers} = useContext(GroupContext)
 
   let [currentUserName, setCurrentUserName] = useState(null)
   let token = localStorage.getItem('token')
