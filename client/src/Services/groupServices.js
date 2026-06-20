@@ -1,11 +1,11 @@
 import axios from 'axios';
+import api from '../api/apiInstance';
 
 let token = localStorage.getItem('token')
 
 export const getCommonGroups = async (userA, userB) => {
     try{
-        console.log("1")
-        let res = await axios.get(`http://localhost:5000/api/conversations/commonGroups/${userA}/${userB}`,{
+        let res = await api.get(`/conversations/commonGroups/${userA}/${userB}`,{
             headers:{Authorization: `Bearer ${token}`}
         })
         return res.data

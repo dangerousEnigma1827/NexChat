@@ -63,6 +63,7 @@ function HomePage() {
     } = useContext(GroupContext)
 
 
+
     let [allMessagesBwTwo, setAllMessagesBwTwo] = useState([])
     let [onlineUsers, setOnlineUsers] = useState([])
 
@@ -110,16 +111,7 @@ function HomePage() {
         }
     }
 
-    let getCurrentUser = async () => {
-        try {
-            let res = await api.get('/auth/me', {
-                headers: { Authorization: `Bearer ${token}` }
-            })
-            setUserId(res.data._id)
-        } catch (err) {
-            console.log(err)
-        }
-    }
+    
 
     let getAllMessagesBwtwo = async () => {
         try {
@@ -130,6 +122,8 @@ function HomePage() {
         } catch (err) {
             console.log(err)
         }
+
+        // setAllMessagesBwTwo(res.data)
     }
 
     let sendMessageFunc = async () => {
@@ -267,7 +261,6 @@ function HomePage() {
     // ---------------- EFFECTS ----------------
 
     useEffect(() => {
-        getCurrentUser()
         getAllConversationsInFr()
     }, [])
 
@@ -311,7 +304,6 @@ function HomePage() {
     //     return () => document.removeEventListener("mousedown", handleClick)
     // }, [isSideBarOpen])
 
-    // ---------------- UI (RESPONSIVE FIXED) ----------------
 
     return (
         <div>
@@ -449,6 +441,3 @@ function HomePage() {
 }
 
 export default HomePage
-
-
-
