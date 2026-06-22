@@ -1,10 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useContext } from 'react';
+
 import { MessageCircle, Search, Send, Plus, UsersRound } from "lucide-react";
 import { ChatsCircleIcon, ChatCircleTextIcon, SignOutIcon, TrashIcon } from "@phosphor-icons/react"
-import { useNavigate } from 'react-router-dom'
 import socket from '../socket/socket';
 import api from '../api/apiInstance.js'
 
+//componets
 import SelectedConversation from '../Components/SelectedConversation';
 import ConversationListBar from '../Components/ConversationListBar';
 import InputArea from '../Components/InputArea';
@@ -20,11 +23,14 @@ import CreateGroupPopup from '../Components/Popups/CreateGroupPopup';
 import SelectUsersForGroupPopup from '../Components/Popups/SelectUsersForGroupPopup';
 import SideOverlay from '../Components/SideOverlay';
 
-import { useContext } from 'react';
+//context
 import { ConversationContext } from '../context/conversationContext.jsx';
 import { UserContext } from '../context/userContext.jsx';
 import { GroupContext } from '../context/groupContext.jsx';
 import { getMessagesByConversationId, sendMessageService } from '../Services/messagesServices.js';
+
+//utils
+import { formatDayLabel } from '../utils/formatDays.js'
 
 function HomePage() {
 
@@ -98,6 +104,11 @@ function HomePage() {
     let [userSelectedIdIfNotGroup, setUserSelectedIdIfNotGroup] = useState(null)
 
     let sideOverlayRef = useRef(null)
+
+    //date tag
+    let last = null
+    let curr = null
+    
 
     // ---------------- API CALLS ----------------
 
@@ -415,7 +426,20 @@ function HomePage() {
                             <div className="flex-1 overflow-y-auto">
                                 <div className="w-full py-6 pb-6">
                                     {allMessagesBwTwo.map((message)=>{
-                                        return <OneMessage
+                                        curr = (formatDayLabel(message.createdAt))
+                                        let show = last != curr
+                                        last = (curr);
+                                        return <div>
+
+                                         {show && (
+                                            <div className="flex justify-center my-4">
+                                                <span className="bg-[#2a3142] text-gray-300 px-3 py-1 rounded-full text-sm">
+                                                    {curr}
+                                                </span>
+                                            </div>
+                                        )}
+
+                                        <OneMessage
                                                 key={message._id}
                                                 message={message}
                                                 dropdownref={dropdownref}
@@ -428,6 +452,8 @@ function HomePage() {
                                                 setMessageToDeleteTime={setMessageToDeleteTime}
                                                 setMessageToDeleteText={setMessageToDeleteText}
                                         />
+
+                                        </div>
                                     })}
                                     <div ref={scrollRef}></div>
                                 </div>

@@ -4,7 +4,7 @@ import OneText from './OneText'
 import { UserRound } from 'lucide-react'
 import { ConversationContext } from '../context/conversationContext'
 import { UserContext } from '../context/userContext'
-import useTimeForDays from '../Hooks/useTimeForDays'
+
 
 function OneMessage({
   message,
@@ -18,9 +18,6 @@ function OneMessage({
   setMessageToDeleteTime,
   setMessageToDeleteText,
 }) {
-
-  let tag = useTimeForDays(message.createdAt)
-  console.log(tag)
 
   let {currentUserId} = useContext(UserContext)
   const isMine = message.senderId === currentUserId || message.senderId?._id === currentUserId
