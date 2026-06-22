@@ -110,17 +110,17 @@ import React from 'react'
 
 function OneText({ text, isEdited, isDeletedForEveryone, createdAt, isMine, hasAttachments }) {
   return (
-    <div className={`px-4 py-2.5 ${hasAttachments ? "pt-1.5" : ""}`}>
-      <p className={`text-[14.5px] leading-relaxed ${isDeletedForEveryone ? "text-gray-400 italic" : "text-white"}`}>
+    <div className={`px-2 min-w-[80px] ${hasAttachments ? "max-w-[300px]" : "max-w-[370px]"}`}>
+      <p className={`text-[14.5px] ${isDeletedForEveryone ? "text-gray-400 italic px-1 py-01" : "text-white"} max-w-full`}>
         {text}
       </p>
-      <div className="flex justify-end items-center gap-1.5 mt-1">
+      <div className="flex justify-end items-center gap-1.5">
         {isEdited && !isDeletedForEveryone && (
           <span className="text-[10px] text-white/50">Edited</span>
         )}
-        <span className="text-[10px] text-white/50">
+        {/* <span className="text-[10px] text-white/50">
           {new Date(createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-        </span>
+        </span> */}
       </div>
     </div>
   )

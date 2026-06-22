@@ -25,7 +25,7 @@ function OneMessage({
   let {isconversationAGroup} = useContext(ConversationContext)
 
   return (
-    <div className={`flex w-full px-4 py-0.5 ${isMine ? "justify-end" : "justify-start"}`}>
+    <div className={`flex w-full px-4 py-0.5 ${isMine ? "justify-end" : "justify-start"}  mt-1`}>
       <div className={`flex flex-col max-w-[65%] ${isMine ? "items-end" : "items-start"}`}>
 
         {/* Group sender info */}
@@ -43,13 +43,13 @@ function OneMessage({
             <p className="text-[11px] text-gray-500 font-medium">You</p>
             {message.senderId?.pfp
               ? <img src={message.senderId.pfp} className="w-5 h-5 rounded-full object-cover" />
-              : <div className="w-5 h-5 rounded-full flex justify-center items-center text-gray-400 bg-[#2a3142]"><UserRound/></div>
+              : <div className="w-5 h-5 rounded-full flex justify-center items-center text-gray-400 bg-[#2a3142]"><UserRound size={13}/></div>
             }
           </div>
         )}
 
         {/* Single bubble wrapping everything */}
-        <div className={`relative group rounded-2xl overflow-visible
+        <div className={`relative group rounded-xl overflow-visible pt-[2px] pl-[2px]
           ${isMine
             ? "bg-[#4c7dff] text-white rounded-tr-sm"
             : "bg-[#1d2235] text-white rounded-tl-sm"
@@ -108,8 +108,8 @@ function OneMessage({
           )}
 
           {/* Attachments */}
-          {message.attachments?.length > 0 && (
-            <div className="flex flex-col gap-1">
+          {(message.attachments?.length > 0 && !message.isDeletedForEveryone) && (
+            <div className="flex flex-col">
               {message.attachments.map((attachment, index) => (
                 <OneAttachment
                   key={index}
@@ -139,6 +139,17 @@ function OneMessage({
               hasAttachments={message.attachments?.length > 0}
             />
           )}
+
+          {<div className={`flex justify-end mr-2 ${message.text == "" ? "my-0.5" : ""}`}>
+                <span className='text-[11px] text-gray-300 font-light'>
+                    {
+                        new Date(message.createdAt).toLocaleTimeString([], {
+                            hour: "2-digit",
+                            minute: "2-digit"
+                        })
+                    }
+                </span>
+            </div>}
 
         </div>
       </div>
