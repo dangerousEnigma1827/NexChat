@@ -8,13 +8,11 @@ export function UserProvider({children}){
     let token = localStorage.getItem('token')
 
     let getCurrentUser = async () => {
-        console.log("starting")
         try {
             let res = await api.get('/auth/me', {
                 headers: { Authorization: `Bearer ${token}` }
             })
             setUserId(res.data._id)
-        console.log("done", res.data._id)
 
         } catch (err) {
             console.log(err)

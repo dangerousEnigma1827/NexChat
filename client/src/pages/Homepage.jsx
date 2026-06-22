@@ -415,7 +415,6 @@ function HomePage() {
                             <div className="flex-1 overflow-y-auto">
                                 <div className="w-full py-6 pb-6">
                                     {allMessagesBwTwo.map((message)=>{
-                                        console.log(message)
                                         return <OneMessage
                                                 key={message._id}
                                                 message={message}
