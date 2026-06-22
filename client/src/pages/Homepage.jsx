@@ -22,6 +22,7 @@ import StartAChat from '../Components/Popups/StartAChat';
 import CreateGroupPopup from '../Components/Popups/CreateGroupPopup';
 import SelectUsersForGroupPopup from '../Components/Popups/SelectUsersForGroupPopup';
 import SideOverlay from '../Components/SideOverlay';
+import ImagePreview from '../Components/Popups/ImagePreview.jsx';
 
 //context
 import { ConversationContext } from '../context/conversationContext.jsx';
@@ -104,6 +105,9 @@ function HomePage() {
     let [userSelectedIdIfNotGroup, setUserSelectedIdIfNotGroup] = useState(null)
 
     let sideOverlayRef = useRef(null)
+
+    const [imagePreviewOpen, setImagePreviewOpen] = useState(false)
+    const [previewSrc, setPreviewSrc] = useState("")
 
     //date tag
     let last = null
@@ -376,6 +380,13 @@ function HomePage() {
                 <SelectUsersForGroupPopup setSelectUsersForGroupPopupOpen={setSelectUsersForGroupPopupOpen} getAllConversationsInFr={getAllConversationsInFr}/>
             }
 
+            {imagePreviewOpen && (
+                <ImagePreview
+                    src={previewSrc}
+                    setImagePreviewOpen={setImagePreviewOpen}
+                />
+            )}
+
 
             <div className="flex w-full h-screen overflow-hidden">
                 {/* LEFT ICON BAR (hidden on mobile) */}
@@ -451,6 +462,8 @@ function HomePage() {
                                                 setEditPopupOpen={setEditPopupOpen}
                                                 setMessageToDeleteTime={setMessageToDeleteTime}
                                                 setMessageToDeleteText={setMessageToDeleteText}
+                                                setImagePreviewOpen={setImagePreviewOpen}
+                                                setPreviewSrc={setPreviewSrc}
                                         />
 
                                         </div>

@@ -1,6 +1,6 @@
 import React from 'react'
 
-function OneAttachment({message, dropdownref, attachment, dropArrowdownId, setDropArrowdownId, setMessageToDelete, setAttachmentUrlForDeletion, setDeletePopupOpen, currentUserId, index}) {
+function OneAttachment({message, dropdownref, attachment, dropArrowdownId, setDropArrowdownId, setMessageToDelete, setAttachmentUrlForDeletion, setDeletePopupOpen, currentUserId, index, setImagePreviewOpen, setPreviewSrc}) {
     const isImageAttachment = attachment.type === "image" && !attachment.isDeletedForEveryone
 
   return (
@@ -76,6 +76,11 @@ function OneAttachment({message, dropdownref, attachment, dropArrowdownId, setDr
                         alt="chat-image"
                         className='cursor-pointer block w-full max-h-[380px] object-cover rounded-xl bg-blue-500'
                         loading="lazy"
+
+                        onClick={() => {
+                            setPreviewSrc(attachment.url)
+                            setImagePreviewOpen(true)
+                        }}
                     />
                 )
             }

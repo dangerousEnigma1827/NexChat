@@ -17,6 +17,8 @@ function OneMessage({
   setEditPopupOpen,
   setMessageToDeleteTime,
   setMessageToDeleteText,
+  setPreviewSrc,
+  setImagePreviewOpen
 }) {
 
   let {currentUserId} = useContext(UserContext)
@@ -123,6 +125,8 @@ function OneMessage({
                   setAttachmentUrlForDeletion={setAttachmentUrlForDeletion}
                   setDeletePopupOpen={setDeletePopupOpen}
                   currentUserId={currentUserId}
+                  setPreviewSrc={setPreviewSrc}
+                  setImagePreviewOpen={setImagePreviewOpen}
                 />
               ))}
             </div>
