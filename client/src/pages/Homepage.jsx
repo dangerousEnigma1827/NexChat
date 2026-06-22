@@ -476,6 +476,7 @@ function HomePage() {
                     {
                         isSideBarOpen && 
                         <SideOverlay 
+                        setUserSelectedIdIfNotGroup={setUserSelectedIdIfNotGroup}
                         setIsSideBarOpen={setIsSideBarOpen} 
                         userA={userSelectedIdIfNotGroup} 
                         userB={currentUserId}

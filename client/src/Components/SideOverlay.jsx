@@ -3,18 +3,37 @@ import { X, UsersRound, UserRound, Mail, Link, Shield, UserCheck, FileText } fro
 import { getCommonGroups } from "../Services/groupServices";
 import { GroupContext } from "../context/groupContext";
 import { ConversationContext } from "../context/conversationContext";
+import api from "../api/apiInstance";
 
 function SideOverlay({
   setIsSideBarOpen,
   userA,
   userB,
   onlineUsers,
+  setUserSelectedIdIfNotGroup
 }) {
 
   const [commonGroups, setCommonGroups] = useState([]);
+  let [conversationClicked, setConversationClicked] = useState(null)
+  let token = localStorage.getItem('token')
 
   let {groupMembers,groupAdmins} = useContext(GroupContext)
-  let {isconversationAGroup, conversationSelected, conversationSelectedPfp, conversationSelectedDescription, conversationSelectedUsername} =useContext(ConversationContext)
+  let {
+        conversations,
+        conversationId,
+        setConversationId,
+        isconversationAGroup,
+        setIsConversationAGroup,
+        setConversations,
+        conversationSelected,
+        setConversationSelected,
+        conversationSelectedUsername,
+        setConversationSelectedtedUsername,
+        conversationSelectedDescription,
+        setConversationSelectedDescription,
+        conversationSelectedPfp,
+        setConversationSelectedtedPfp
+    } = useContext(ConversationContext);
 
   const handleFindCommonGroups = async () => {
     try {
@@ -24,6 +43,24 @@ function SideOverlay({
       console.log("error finding common groups", err);
     }
   };
+
+  const getConversation = async (clickedMemberId)=>{
+    try{
+        let res = await api.get(`/conversations/getClickedUserConversation/${userB}/${clickedMemberId}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+        console.log(res.data)
+
+        setConversationClicked(res.data[0]._id)
+        setConversationSelected(res.data[0]._id)
+        setConversationId(res.data[0]._id)
+        
+        
+        // console.log(res.data[0]._id)
+    }catch(err){
+        console.log("error getting clicked conversation ",err  )
+    }
+  }
 
   useEffect(() => {
     if (userA && userB) handleFindCommonGroups();
@@ -45,8 +82,7 @@ function SideOverlay({
         </p>
         <button
           onClick={() => setIsSideBarOpen(false)}
-          className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#2b3142] transition-colors"
-        >
+          className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#2b3142] transition-colors">
         </button>
       </div>
 
@@ -126,13 +162,25 @@ function SideOverlay({
                 groupAdmins.forEach((admin, index)=>{
                   if(conversation._id == admin._id) isAdmin = true; 
                 })
+
                 return (
                   <div
                     key={index}
                     className={`
                       group flex items-center gap-1 px-3 py-3 rounded-xl cursor-pointer
                       transition-all duration-200
-                      hover:bg-[#22283a]`}>
+                      hover:bg-[#22283a]`}
+                      onClick={(e)=>{
+                        if(conversation._id != userB){
+                            getConversation(conversation._id)
+                            setIsConversationAGroup(false)
+                            setUserSelectedIdIfNotGroup(conversation._id)
+                            setConversationSelectedtedUsername(conversation.username)
+                            setConversationSelectedtedPfp(conversation.pfp)
+                            setIsSideBarOpen(true)
+                        }
+                      }}
+                      >
 
                     {/* AVATAR */}
                   <div className="relative flex-shrink-0">
@@ -156,7 +204,7 @@ function SideOverlay({
                     <div className="flex flex-col min-w-0 flex-1">
                       <div className="flex justify-between items-center gap-2">
                         <p className="text-white font-medium truncate">
-                          {conversation?.username}
+                          {conversation._id == userB ? conversation?.username + " (You)" : conversation?.username}
                         </p>
                         <p className="text-emerald-400 font-medium truncate">
                           {isAdmin ? "Admin" : ""}

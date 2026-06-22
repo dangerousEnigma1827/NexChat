@@ -113,3 +113,19 @@ export const getAllCommonGroups = async (req,res)=>{
         })
     }
 }
+
+export const clickedConversation = async (req,res) => {
+    const {userB, clickedMemberId} = req.params;
+    try{
+        let response = await conversationModels.find({
+            participants : {
+                $all : [userB,clickedMemberId ],
+                $size:2
+            }
+        })
+
+        res.json(response)
+    }catch(err){
+        console.log("error getting clicked conversation ",err)
+    }
+}

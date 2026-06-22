@@ -1,8 +1,6 @@
 import React from 'react'
 
 function OneAttachment({message, dropdownref, attachment, dropArrowdownId, setDropArrowdownId, setMessageToDelete, setAttachmentUrlForDeletion, setDeletePopupOpen, currentUserId, index}) {
-    console.log(message)
-
     const isImageAttachment = attachment.type === "image" && !attachment.isDeletedForEveryone
 
   return (
