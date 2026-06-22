@@ -232,12 +232,24 @@ function SideOverlay({
                         group flex items-center gap-3 px-3 py-3 rounded-xl cursor-pointer
                         transition-all duration-200
                         hover:bg-[#1a1f2e]
-                      `}>
+                      `} onClick={(e)=>{
+                            setUserSelectedIdIfNotGroup(null)
+                            setConversationSelected(group._id)
+                            setConversationId(group._id)
+
+                            setIsConversationAGroup(true)
+                            setConversationSelectedtedUsername(group.groupName)
+                            setConversationSelectedDescription(group.groupDescription)
+                            setConversationSelectedtedPfp(group.groupIcon)
+                            setGroupMembers(group.participants)
+                            setGroupAdmins(group.groupAdmin)
+                            setIsSideBarOpen(true)
+                      }}>
                       <div className="relative flex-shrink-0">
                         <div className="h-11 w-11 sm:h-12 sm:w-12 rounded-full overflow-hidden bg-[#141720] flex items-center justify-center ring-1 ring-[#2a3142] group-hover:ring-[#4c7dff]/40 transition">
                           {
                             group.groupIcon? (
-                              <img src={conversation.groupIcon} className="h-full w-full object-cover" />
+                              <img src={group.groupIcon} className="h-full w-full object-cover" />
                             ) : (
                               <UsersRound className="text-white" />
                             )
