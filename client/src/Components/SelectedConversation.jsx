@@ -3,6 +3,7 @@ import axios from 'axios'
 import { ArrowLeft, UserRound, UsersRound } from 'lucide-react'
 import { useContext } from 'react';
 import { ConversationContext } from '../context/conversationContext.jsx';
+import api from '../api/apiInstance.js';
 import { GroupContext } from '../context/groupContext.jsx';
 
 function SelectedConversation({
@@ -28,7 +29,7 @@ function SelectedConversation({
 
   let getCurrentUser = async () => {
     try {
-      let res = await api.get('/api/auth/me', {
+      let res = await api.get('/auth/me', {
         headers: { Authorization: `Bearer ${token}` }
       })
       setCurrentUserName(res.data._id)

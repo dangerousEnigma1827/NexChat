@@ -46,7 +46,7 @@ function UserProfilePopup({ user, setUserProfilePopupOpen, setEditProfilePopupOp
           </h1>
 
           <p className='text-gray-400 text-sm'>
-            @{currentUserUsername?.toLowerCase() || " "}
+            {/* @{currentUserUsername?.toLowerCase() || " "} */}
           </p>
         </div>
 

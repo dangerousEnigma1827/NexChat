@@ -106,6 +106,7 @@ function HomePage() {
     let [editedText, setEditedText] = useState("")
 
     let [userSearchText, setUserSearchText] = useState("")
+    let [conversationSearch, setConversationSearch] = useState("")
 
 
 
@@ -455,13 +456,25 @@ function HomePage() {
                 <div className={`bg-[#212634] h-screen overflow-hidden flex flex-col items-center w-full md:w-[25vw] ${conversationSelected ? "hidden md:flex" : "flex"}`}>
                     <div className="w-[90%] mt-5 flex-shrink-0">
                         <NexChatIcon />
-                        <div className='w-full bg-[#141720] h-[7vh] rounded-md flex items-center gap-2 mb-2'>
-                            <Search className='text-white ml-4' size={19} />
+                        <div className='w-full bg-[#141720] h-[7vh] rounded-md flex items-center gap-2 mb-2 px-3'>
+                            <Search className='text-white' size={19} />
+
                             <input
                                 type="text"
+                                value={conversationSearch}
+                                onChange={(e) => setConversationSearch(e.target.value)}
                                 placeholder='Search Chats'
-                                className='w-full outline-none bg-transparent text-white h-[8vh] text-md placeholder:text-gray-500'
+                                className='w-full outline-none bg-transparent text-white h-full text-md placeholder:text-gray-500'
                             />
+
+                            {conversationSearch && (
+                                <button
+                                    onClick={() => setConversationSearch("")}
+                                    className="text-gray-400 hover:text-white text-lg"
+                                >
+                                    ✕
+                                </button>
+                            )}
                         </div>
                     </div>
                     <div className="w-[90%] flex-1 overflow-hidden mb-3">
@@ -472,6 +485,7 @@ function HomePage() {
                             setUserSelectedIdIfNotGroup={setUserSelectedIdIfNotGroup}
                             setAllMessagesBwTwo = {setAllMessagesBwTwo}
                             setIsSideBarOpen={setIsSideBarOpen}
+                            conversationSearch={conversationSearch}
                         />
                     </div>
                 </div>
