@@ -25,37 +25,25 @@
 
 NexChat is a real-time community messaging platform built using the MERN stack with Socket.IO integration.
 
-It supports:
-- Private 1-to-1 messaging  
+Key Features Include:
+- Private messaging  
 - Group chats  
-- Real-time communication  
+- Realtime communication using Web Sockets
 - Media sharing (images/attachments)  
 - Message edit & delete (self/everyone)  
 - Conversation tracking with last message sync  
-- Online-style instant updates using sockets  
-
 ---
 
 # 🖼️ UI Overview
 
-## Dashboard
-<p align="center">
-  <img src="https://your-image-link.com/dashboard.png" width="900"/>
-</p>
-
 ## Private Chat
 <p align="center">
-  <img src="https://your-image-link.com/private-chat.png" width="900"/>
+  <img src="/client/public/prev2.png" width="900"/>
 </p>
 
 ## Group Chat
 <p align="center">
-  <img src="https://your-image-link.com/group-chat.png" width="900"/>
-</p>
-
-## Media Sharing
-<p align="center">
-  <img src="https://your-image-link.com/media.png" width="900"/>
+  <img src="/client/public/prev1.png" width="900"/>
 </p>
 
 ---
@@ -91,22 +79,19 @@ NexChat/
 │   │   ├── sockets/
 │   │   ├── utils/
 │   │   └── App.jsx
-│   └── package.json
 │
 ├── server/
 │   ├── config/               
 │   ├── controllers/
-│   ├── middleware/
+│   ├── middlewares/
 │   ├── models/            
 │   ├── routes/
 │   ├── socket/            
 │   ├── utils/ 
 │   ├── server.js
-│   └── package.json
 │
 ├── .gitignore
 ├── README.md
-└── package.json
 ```
 
 ---
