@@ -6,6 +6,7 @@ import { UserContext } from '../../context/userContext'
 import toast from 'react-hot-toast'
 import LoadingSpin from '../LoadingSpin'
 import { useContext } from 'react'
+import api from '../../api/apiInstance'
 function StartAChat({setStartAChat,userSearchText, setUserSearchText,getAllConversationsInFr, getAllMessagesBwtwo}){
 
   let {
@@ -38,8 +39,8 @@ function StartAChat({setStartAChat,userSearchText, setUserSearchText,getAllConve
       })
 
 
-      let searchUserFromFr = await axios.post(
-        "http://localhost:5000/api/users/search",
+      let searchUserFromFr = await api.post(
+        "/users/search",
         { userSearchText },
         {
           headers: { Authorization: `Bearer ${token}` }
@@ -156,7 +157,7 @@ function StartAChat({setStartAChat,userSearchText, setUserSearchText,getAllConve
 
                   (
                   <div className='w-[100%] flex flex-col items-center p-2'>
-                    <p className='text-gray-400'>{usernameSearchResults.length} Result {usernameSearchResults.length > 1 ? "s" : ""} found</p>
+                    <p className='text-gray-400'>{usernameSearchResults.length} Result {usernameSearchResults.length > 1 ? "'s" : ""} found</p>
                     {
                       usernameSearchResults.map((user) => {
                         return (

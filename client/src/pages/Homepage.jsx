@@ -63,7 +63,7 @@ function HomePage() {
         setConversationSelectedtedPfp
     } = useContext(ConversationContext);
 
-    let [loading, setLoading] = useState({messages:false})
+    let [loading, setLoading] = useState({messages:false, conversation:false})
 
     let{
         currentUserId, setUserId
@@ -129,12 +129,20 @@ function HomePage() {
     
     let getAllConversationsInFr = async () => {
         try {
+            setLoading((prev)=>{
+                return {...prev, conversation:true}
+            })
             let res = await api.get('/conversations/', {
                 headers: { Authorization: `Bearer ${token}` }
             })
             setConversations(res.data)
+            console.log(res.data)
         } catch (err) {
             console.log(err)
+        }finally{
+            setLoading((prev)=>{
+                return {...prev, conversation:false}
+            })
         }
     }
     
@@ -486,6 +494,7 @@ function HomePage() {
                             setAllMessagesBwTwo = {setAllMessagesBwTwo}
                             setIsSideBarOpen={setIsSideBarOpen}
                             conversationSearch={conversationSearch}
+                            loading={loading}
                         />
                     </div>
                 </div>

@@ -4,6 +4,7 @@ import useTime from '../Hooks/useTime'
 import { ConversationContext } from '../context/conversationContext'
 import { UserContext } from '../context/userContext'
 import { GroupContext } from '../context/groupContext'
+import LoadingSpin from './LoadingSpin'
 
 function ConversationListBar({
   onlineUsers,
@@ -11,7 +12,7 @@ function ConversationListBar({
   setUserSelectedIdIfNotGroup,
   setAllMessagesBwTwo,
   setIsSideBarOpen,
-  conversationSearch
+  conversationSearch, loading
 }) {
 
   let { formatTime } = useTime()
@@ -63,16 +64,24 @@ function ConversationListBar({
       {/* List */}
       <div className="mt-4 flex flex-col flex-1 overflow-y-auto pr-1 space-y-2">
 
-        {/* ✅ EMPTY STATE 1: no conversations at all */}
-        {conversations.length === 0 && (
-          <div className="flex-1 flex items-center justify-center text-gray-400 text-sm">
-            No conversations yet
+        <div className={` flex w-full justify-center items-center  ${loading.conversation == false ? " none" : ""}`}>
+          {
+            loading.conversation == true && 
+            <LoadingSpin/>
+          }
+        </div>
+
+        {(conversations.length === 0 && loading.conversation == false) && (
+          <div className="flex-1 flex flex-col items-center justify-center text-gray-400 text-sm text-center px-4">
+            <p className="font-medium">No conversations yet</p>
+            <p className="text-xs text-white mt-1">
+              Click on Start New Chat to get started
+            </p>
           </div>
         )}
 
-        {/* ✅ EMPTY STATE 2: search returned nothing */}
         {conversations.length > 0 && filteredConversations.length === 0 && (
-          <div className="flex-1 flex flex-col items-center justify-center text-gray-400 text-sm gap-1">
+          <div className="flex-1 flex flex-col items-center justify-center text-gray-400 text-sm gap-1 text-center px-4">
             <p>No users found</p>
             <p className="text-xs text-gray-500">Try a different search</p>
           </div>
@@ -123,6 +132,7 @@ function ConversationListBar({
               className={`group flex items-center gap-3 px-3 py-3 rounded-xl cursor-pointer transition-all duration-200 hover:bg-[#22283a] ${isActive ? "bg-[#22283a]" : ""}`}
             >
 
+              {/* Avatar */}
               <div className="relative flex-shrink-0">
                 <div className="h-11 w-11 sm:h-12 sm:w-12 rounded-full overflow-hidden bg-[#141720] flex items-center justify-center ring-1 ring-[#2a3142] group-hover:ring-[#4c7dff]/40 transition">
 
@@ -148,6 +158,7 @@ function ConversationListBar({
                   )}
               </div>
 
+              {/* Info */}
               <div className="flex flex-col min-w-0 flex-1">
 
                 {conversation.type === "private" ? (
