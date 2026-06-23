@@ -16,6 +16,9 @@ let userSchema = new mongoose.Schema({
     },
     pfp:{
         type:String
+    },
+    about:{
+        type:String
     }
 },{
     timestamps:true

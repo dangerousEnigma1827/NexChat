@@ -5,6 +5,7 @@ import { ConversationContext } from '../../context/conversationContext'
 import { UserContext } from '../../context/userContext'
 import toast from 'react-hot-toast'
 import LoadingSpin from '../LoadingSpin'
+import { useContext } from 'react'
 function StartAChat({setStartAChat,userSearchText, setUserSearchText,getAllConversationsInFr, getAllMessagesBwtwo}){
 
   let {
@@ -44,6 +45,7 @@ function StartAChat({setStartAChat,userSearchText, setUserSearchText,getAllConve
           headers: { Authorization: `Bearer ${token}` }
         }
       )
+      console.log(searchUserFromFr.data)
      setUsernameSearchResutls(searchUserFromFr.data)
     } catch (err) {
       console.log("error getting user list", err)
@@ -139,14 +141,22 @@ function StartAChat({setStartAChat,userSearchText, setUserSearchText,getAllConve
               }
 
               {
-                (userSearchText.trim() != "" && hasSearched) ? (
+                (userSearchText.trim() != "" && hasSearched && usernameSearchResults.length == 0) && (
 
                   <div className='w-full h-full flex flex-col justify-center items-center text-gray-500 gap-2'>
                     <Search size={32} className='opacity-60' />
                     <p className='text-[15px]'>No Users found...</p>
                   </div>
-                ) : (
+                )
+              }
+
+
+              {
+                (hasSearched && usernameSearchResults.length != 0) && (
+
+                  (
                   <div className='w-[100%] flex flex-col items-center p-2'>
+                    <p className='text-gray-400'>{usernameSearchResults.length} Result {usernameSearchResults.length > 1 ? "s" : ""} found</p>
                     {
                       usernameSearchResults.map((user) => {
                         return (
@@ -178,6 +188,7 @@ function StartAChat({setStartAChat,userSearchText, setUserSearchText,getAllConve
                       })
                     }
                   </div>
+                )
                 )
               }
             </div>

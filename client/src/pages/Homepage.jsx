@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useContext } from 'react';
+import toast from "react-hot-toast";
 
 import { MessageCircle, Search, Send, Plus, UsersRound } from "lucide-react";
 import { ChatsCircleIcon, ChatCircleTextIcon, SignOutIcon, TrashIcon } from "@phosphor-icons/react"
@@ -32,6 +33,8 @@ import { getMessagesByConversationId, sendMessageService } from '../Services/mes
 
 //utils
 import { formatDayLabel } from '../utils/formatDays.js'
+import UserProfilePopup from '../Components/Popups/UserProfilePopup.jsx';
+import EditProfilePopup from '../Components/Popups/EditProfilePopup.jsx';
 
 function HomePage() {
 
@@ -82,6 +85,8 @@ function HomePage() {
     let [startAChat, setStartAChat] = useState(false)
     let [createGroupPopupOpen, setCreateGroupPopupOpen] = useState(false)
     let [selectUsersForGroupPopupOpen, setSelectUsersForGroupPopupOpen] = useState(false)
+    let [userProfilePopupOpen, setUserProfilePopupOpen] = useState(false)
+    let [editProfilePopupOpen, setEditProfilePopupOpen] = useState(false)
 
     let [dropdownOpen, setDropdownOpen] = useState(false);
     let [dropdownNextToNexChatIcon, setDropdownNextToNextChatIcon] = useState(false)
@@ -108,6 +113,7 @@ function HomePage() {
 
     const [imagePreviewOpen, setImagePreviewOpen] = useState(false)
     const [previewSrc, setPreviewSrc] = useState("")
+    let [imageBlobs, setImageBlobs] = useState([])
 
     //date tag
     let last = null
@@ -153,7 +159,7 @@ function HomePage() {
                     c._id === conversationId
                         ? {
                             ...c,
-                            lastMessageSent: text,
+                            lastMessageSent: text ? text : `Images${attachments.length}`,
                             lastTimeMessageSent: new Date(),
                             lastMessageSentBy: currentUserId
                         }
@@ -164,6 +170,7 @@ function HomePage() {
             getAllConversationsInFr()
             setText("")
             setAttachments([])
+            setImageBlobs([])
         } catch(err) {
             console.log(err)
         }
@@ -245,6 +252,30 @@ function HomePage() {
         console.log("hmmm")
         let files = Array.from(e.target.files)
 
+        if(files.length > 5){
+            toast("Can't Send More Than 5 Images At Once!", {
+                style: { background: '#3b82f6', color: '#fff' }
+            })
+
+            return;
+        }
+
+        for(let file of files){
+            if(!file.type.includes("image")){
+                toast("Can't Send Files Other Than Images!", {
+                    style: { background: '#3b82f6', color: '#fff' }
+                })
+                return;
+            }
+        }
+
+        for(let file of files){
+            let newBlobUrl = URL.createObjectURL(file);
+            setImageBlobs((prev)=>{
+                return [...prev, newBlobUrl]
+            })
+        }
+
         let uploadFile = async (file) => {
             let data = new FormData()
             data.append("file", file)
@@ -271,21 +302,20 @@ function HomePage() {
 
         setAttachments(uploaded)
 
-        let res = await api.post('/messages/send', {
-            text,
-            senderId: currentUserId,
-            recieverId: conversationSelected,
-            conversationId,
-            attachments: uploaded
-        }, {
-            headers: { Authorization: `Bearer ${token}` }
-        })
+        // let res = await api.post('/messages/send', {
+        //     text,
+        //     senderId: currentUserId,
+        //     conversationId,
+        //     attachments: uploaded
+        // }, {
+        //     headers: { Authorization: `Bearer ${token}` }
+        // })
 
-        console.log("done sending")
+        // console.log("done sending")
 
-        setAllMessagesBwTwo(prev => [...prev, res.data])
-        setAttachments([])
-        setText("")
+        // setAllMessagesBwTwo(prev => [...prev, res.data])
+        // setAttachments([])
+        // setText("")
     }
 
     let handleLogout = async () => {
@@ -307,27 +337,28 @@ function HomePage() {
         }
     }, [conversationId, currentUserId])
 
-    useEffect(() => {
-        scrollRef.current?.scrollIntoView({ behavior: "smooth" })
+    useEffect(() =>{
+        if(scrollRef.current){
+            scrollRef.current.scrollTop =
+            scrollRef.current.scrollHeight;
+        }
     }, [allMessagesBwTwo])
 
     useEffect(() => {
         socket.connect()
-
         socket.on("connect", () => {
             socket.emit("join", currentUserId)
         })
-
         socket.on("recieve_message", (msg) => {
             setAllMessagesBwTwo(prev => [...prev, msg])
         })
-
         socket.on("online_users", setOnlineUsers)
 
         return () => {
             socket.off("connect")
             socket.off("recieve_message")
         }
+
     }, [currentUserId])
 
     // useEffect(() => {
@@ -376,8 +407,8 @@ function HomePage() {
                 <CreateGroupPopup setSelectUsersForGroupPopupOpen={setSelectUsersForGroupPopupOpen} setCreateGroupPopupOpen={setCreateGroupPopupOpen}/>
             }
             {
-                selectUsersForGroupPopupOpen &&
-                <SelectUsersForGroupPopup setSelectUsersForGroupPopupOpen={setSelectUsersForGroupPopupOpen} getAllConversationsInFr={getAllConversationsInFr}/>
+                editPopupOpen &&
+                <EditPopup setEditPopupOpen={setEditPopupOpen}/>
             }
 
             {imagePreviewOpen && (
@@ -387,6 +418,17 @@ function HomePage() {
                 />
             )}
 
+            {
+                userProfilePopupOpen && 
+                    <UserProfilePopup
+                    setUserProfilePopupOpen={setUserProfilePopupOpen} setEditProfilePopupOpen={setEditProfilePopupOpen}/>
+            }
+            {
+                editProfilePopupOpen && 
+                    <EditProfilePopup
+                    setEditProfilePopupOpen={setEditProfilePopupOpen} editProfilePopupOpen={editProfilePopupOpen}/>
+            }
+
 
             <div className="flex w-full h-screen overflow-hidden">
                 {/* LEFT ICON BAR (hidden on mobile) */}
@@ -394,6 +436,7 @@ function HomePage() {
                     <LeftMostBar
                         setLogoutPopupOpen={setLogoutPopupOpen}
                         setCreateGroupPopupOpen={setCreateGroupPopupOpen}
+                        setUserProfilePopupOpen={setUserProfilePopupOpen}
                     />
                 </div>
 
@@ -434,13 +477,13 @@ function HomePage() {
                                 />
                             </div>
 
-                            <div className="flex-1 overflow-y-auto">
+                            <div className="flex-1 overflow-y-auto" ref={scrollRef}>
                                 <div className="w-full py-6 pb-6">
                                     {allMessagesBwTwo.map((message)=>{
                                         curr = (formatDayLabel(message.createdAt))
                                         let show = last != curr
                                         last = (curr);
-                                        return <div>
+                                        return <div key={message._id}>
 
                                          {show && (
                                             <div className="flex justify-center my-4">
@@ -451,7 +494,7 @@ function HomePage() {
                                         )}
 
                                         <OneMessage
-                                                key={message._id}
+                                                scrollRef={scrollRef}       
                                                 message={message}
                                                 dropdownref={dropdownref}
                                                 dropArrowdownId={dropArrowdownId}
@@ -468,9 +511,29 @@ function HomePage() {
 
                                         </div>
                                     })}
-                                    <div ref={scrollRef}></div>
                                 </div>
                             </div>
+
+                            {imageBlobs.length > 0 && (
+                                <div className="flex-shrink-0 px-4 py-3 bg-[#1a1f2e] border-t border-[#2a3142]">
+                                    <div className="flex gap-2 overflow-x-auto">
+                                        {imageBlobs.map((src, index) => (
+                                        <div
+                                            key={index}
+                                            className="relative w-20 h-20 flex-shrink-0 rounded-md overflow-hidden border border-[#2a3142] bg-[#141720]">
+
+                                            <img  src={src} alt="preview" className="w-full h-full object-cover"/>
+                                            <button className="absolute top-1 right-1 bg-black/60 text-white text-xs w-5 h-5 rounded-full"
+                                            onClick={() =>{
+                                                setImageBlobs(prev => prev.filter((_, i) => i !== index))
+                                                setAttachments(prev => prev.filter((_, i) => i !== index))
+                                            }
+                                            }>×</button>
+                                        </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
 
                             <div className="flex-shrink-0">
                                 <InputArea
@@ -478,6 +541,8 @@ function HomePage() {
                                     setText={setText}
                                     sendMessageFunc={sendMessageFunc}
                                     handleMedia={handleMedia}
+                                    imageBlobs={imageBlobs}
+                                    setImageBlobs={setImageBlobs}
                                 />
                             </div>
                         </>

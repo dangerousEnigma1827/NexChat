@@ -18,7 +18,7 @@ function OneMessage({
   setMessageToDeleteTime,
   setMessageToDeleteText,
   setPreviewSrc,
-  setImagePreviewOpen
+  setImagePreviewOpen, scrollRef
 }) {
 
   let {currentUserId} = useContext(UserContext)
@@ -35,7 +35,7 @@ function OneMessage({
           <div className="flex items-center gap-2 mb-1 ml-1">
             {message.senderId?.pfp
               ? <img src={message.senderId.pfp} className="w-5 h-5 rounded-full object-cover" />
-              : <div className="w-5 h-5 rounded-full bg-[#2a3142]" />
+              : <div className="w-5 h-5 rounded-full flex justify-center items-center text-gray-400 bg-[#2a3142]"><UserRound size={13}/></div>
             }
             <p className="text-[11px] text-gray-500 font-medium">{message.senderId?.username}</p>
           </div>
@@ -116,6 +116,7 @@ function OneMessage({
                 <OneAttachment
                   key={index}
                   attachment={attachment}
+                  scrollRef={scrollRef} 
                   isDeletedForEveryone={attachment.isDeletedForEveryone}
                   message={message}
                   dropdownref={dropdownref}

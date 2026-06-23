@@ -1,6 +1,6 @@
 import React from 'react'
 
-function OneAttachment({message, dropdownref, attachment, dropArrowdownId, setDropArrowdownId, setMessageToDelete, setAttachmentUrlForDeletion, setDeletePopupOpen, currentUserId, index, setImagePreviewOpen, setPreviewSrc}) {
+function OneAttachment({message, dropdownref, attachment, dropArrowdownId, setDropArrowdownId, setMessageToDelete, setAttachmentUrlForDeletion, setDeletePopupOpen, currentUserId, index, setImagePreviewOpen, setPreviewSrc, scrollRef}) {
     const isImageAttachment = attachment.type === "image" && !attachment.isDeletedForEveryone
 
   return (
@@ -9,7 +9,7 @@ function OneAttachment({message, dropdownref, attachment, dropArrowdownId, setDr
         <div className={`group relative overflow-hidden max-w-[65%] sm:max-w-[320px] ${
             message.senderId._id === currentUserId
             ? "bg-blue-500 mr-1 ml-1 mt-1 "
-            : "bg-[#1d202f] mr-1 ml-1 rounded-tr-2xl rounded-br-2xl rounded-bl-2xl"
+            : "bg-[#1d202f] mr-1 ml-1 mt-1"
         }`}>
 
             <div >
@@ -76,6 +76,11 @@ function OneAttachment({message, dropdownref, attachment, dropArrowdownId, setDr
                         alt="chat-image"
                         className='cursor-pointer block w-full max-h-[380px] object-cover rounded-xl bg-blue-500'
                         loading="lazy"
+
+                        onLoad={() => {
+                            scrollRef.current.scrollTop =
+                            scrollRef.current.scrollHeight
+                        }}
 
                         onClick={() => {
                             setPreviewSrc(attachment.url)

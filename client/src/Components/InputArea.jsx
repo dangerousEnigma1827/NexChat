@@ -1,7 +1,7 @@
 import React from 'react'
 import { Plus, Send } from 'lucide-react'
 
-function InputArea({ handleMedia, sendMessageFunc, text, setText }) {
+function InputArea({ handleMedia, sendMessageFunc, text, setText , imageBlobs, setImageBlobs}) {
   return (
     <div className='w-full px-4 py-3 bg-[#11131a] border-t border-[#2a2f3d] flex justify-center'>
       
@@ -17,7 +17,10 @@ function InputArea({ handleMedia, sendMessageFunc, text, setText }) {
             type="file"
             className='hidden'
             multiple
-            onChange={(e) => handleMedia(e)}
+            onChange={(e) =>{
+              handleMedia(e)
+              e.target.value=null
+            }}
           />
         </label>
 
@@ -40,14 +43,15 @@ function InputArea({ handleMedia, sendMessageFunc, text, setText }) {
         />
 
         <button
-          disabled={!text?.trim()}
+          disabled={!text?.trim() && imageBlobs.length == 0}
           onClick={() => {
-            if (!text.trim()) return
+            if (!text.trim() && imageBlobs.length==0) return
             sendMessageFunc()
             setText("")
+            setImageBlobs([])
           }}
           className={` p-2 rounded-full transition ${
-            text?.trim()
+            (text?.trim() || imageBlobs.length > 0)
               ? "bg-blue-500 hover:bg-blue-600 cursor-pointer"
               : "bg-[#2b3142] cursor-not-allowed"
           }`}

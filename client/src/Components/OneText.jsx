@@ -2,7 +2,7 @@ import React from 'react'
 
 function OneText({ text, isEdited, isDeletedForEveryone, createdAt, isMine, hasAttachments }) {
   return (
-    <div className={`px-2 min-w-[80px] ${hasAttachments ? "max-w-[300px]" : "max-w-[370px]"}`}>
+    <div className={`px-2 min-w-[80px] ${hasAttachments ? "max-w-[320px]" : "max-w-[370px]"}`}>
       <p className={`text-[14.5px] ${isDeletedForEveryone ? "text-gray-300 italic px-1 py-01" : "text-white"} max-w-full`}>
         {!isDeletedForEveryone && text}
         {isDeletedForEveryone &&

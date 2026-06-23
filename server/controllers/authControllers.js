@@ -100,5 +100,21 @@ const allUsers = async (req,res) => {
     }
 }
 
+export const editProfile = async (req,res)=>{
+    try{
+        let editp = await userModels.findOneAndUpdate(
+            {_id : req.user.userId}, 
+            {
+                $set:{
+                    username : req.body.username,
+                    pfp : req.body.pfp,
+                    about:req.body.about
+                }
+            }
+        )
+    }catch(err){
+        console.log("error updating prfile ", err)
+    }
+}
 
-export { register, login, me , allUsers };
+export { register, login, me , allUsers};

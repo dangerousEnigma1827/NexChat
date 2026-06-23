@@ -66,30 +66,31 @@ function ConversationListBar({
               key={index}
               onClick={() => {
 
-                setAllMessagesBwTwo([])
+                if(!isActive){
+                  setAllMessagesBwTwo([])
+                  if (conversation.type === "private") {
+                    setUserSelectedIdIfNotGroup(user._id)
+                    setConversationSelected(conversation._id)
+                    setConversationId(conversation._id)
 
-                if (conversation.type === "private") {
-                  setUserSelectedIdIfNotGroup(user._id)
-                  setConversationSelected(conversation._id)
-                  setConversationId(conversation._id)
+                    setIsConversationAGroup(false)
+                    setConversationSelectedtedUsername(user.username)
+                    setConversationSelectedtedPfp(user.pfp)
+                    setIsSideBarOpen(true)
 
-                  setIsConversationAGroup(false)
-                  setConversationSelectedtedUsername(user.username)
-                  setConversationSelectedtedPfp(user.pfp)
-                  setIsSideBarOpen(true)
+                  } else {
+                    setUserSelectedIdIfNotGroup(null)
+                    setConversationSelected(conversation._id)
+                    setConversationId(conversation._id)
 
-                } else {
-                  setUserSelectedIdIfNotGroup(null)
-                  setConversationSelected(conversation._id)
-                  setConversationId(conversation._id)
-
-                  setIsConversationAGroup(true)
-                  setConversationSelectedtedUsername(conversation.groupName)
-                  setConversationSelectedDescription(conversation.groupDescription)
-                  setConversationSelectedtedPfp(conversation.groupIcon)
-                  setGroupMembers(conversation.participants)
-                  setGroupAdmins(conversation.groupAdmin)
-                  setIsSideBarOpen(true)
+                    setIsConversationAGroup(true)
+                    setConversationSelectedtedUsername(conversation.groupName)
+                    setConversationSelectedDescription(conversation.groupDescription)
+                    setConversationSelectedtedPfp(conversation.groupIcon)
+                    setGroupMembers(conversation.participants)
+                    setGroupAdmins(conversation.groupAdmin)
+                    setIsSideBarOpen(true)
+                  }
                 }
               }}
               className={`

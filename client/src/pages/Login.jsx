@@ -6,7 +6,6 @@ import toast from "react-hot-toast";
 import api from '../api/apiInstance'
 
 function Login() {
-
   let navigate = useNavigate()
   let [password, setPassword] = useState("")
   let [email, setEmail] = useState("")
@@ -44,13 +43,14 @@ function Login() {
       <div className="w-full max-w-md bg-[#212634] rounded-2xl shadow-2xl p-6 sm:p-10 flex flex-col items-center">
 
         {/* Header */}
-        <div className="flex flex-col items-center gap-2 mb-8">
+        <div className="flex items-center gap-2 mb-2">
           <ChatsCircleIcon size={40} color="#3b82f6" weight="fill" />
           <h1 className="text-white text-2xl sm:text-3xl font-semibold">NexChat</h1>
-          <p className="text-gray-400 text-sm sm:text-base text-center">
+        </div>
+
+          <p className="text-gray-400 text-sm sm:text-base text-center mb-4">
             Login to continue your conversations
           </p>
-        </div>
 
         {/* Inputs */}
         <div className="w-full flex flex-col gap-4">
