@@ -16,7 +16,7 @@
 
 # 🌐 Live Demo
 
-🚀 **Try NexChat here:**   👉 https://YOUR-DEPLOYMENT-LINK.com
+🚀 **Try NexChat here:**   👉 https://nexchat-sulq.onrender.com
 
 ---
 
