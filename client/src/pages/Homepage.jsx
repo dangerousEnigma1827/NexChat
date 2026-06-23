@@ -5,24 +5,24 @@ import toast from "react-hot-toast";
 
 import { MessageCircle, Search, Send, Plus, UsersRound } from "lucide-react";
 import { ChatsCircleIcon, ChatCircleTextIcon, SignOutIcon, TrashIcon } from "@phosphor-icons/react"
-import socket from '../socket/socket';
+import socket from '../socket/socket.js';
 import api from '../api/apiInstance.js'
 
 //componets
-import SelectedConversation from '../Components/SelectedConversation';
-import ConversationListBar from '../Components/ConversationListBar';
-import InputArea from '../Components/InputArea';
-import NexChatIcon from '../Components/NexChatIcon';
-import LeftMostBar from '../Components/LeftMostBar';
-import OneMessage from '../Components/OneMessage';
-import LogoutPopup from '../Components/Popups/LogoutPopup';
-import DeletePopup from '../Components/Popups/DeletePopup';
-import ClearChatPopup from '../Components/Popups/ClearChatPopup';
-import EditPopup from '../Components/Popups/EditPopup';
-import StartAChat from '../Components/Popups/StartAChat';
-import CreateGroupPopup from '../Components/Popups/CreateGroupPopup';
-import SelectUsersForGroupPopup from '../Components/Popups/SelectUsersForGroupPopup';
-import SideOverlay from '../Components/SideOverlay';
+import SelectedConversation from '../Components/SelectedConversation.jsx';
+import ConversationListBar from '../Components/ConversationListBar.jsx';
+import InputArea from '../Components/InputArea.jsx';
+import NexChatIcon from '../Components/NexChatIcon.jsx';
+import LeftMostBar from '../Components/LeftMostBar.jsx';
+import OneMessage from '../Components/OneMessage.jsx';
+import LogoutPopup from '../Components/Popups/LogoutPopup.jsx';
+import DeletePopup from '../Components/Popups/DeletePopup.jsx';
+import ClearChatPopup from '../Components/Popups/ClearChatPopup.jsx';
+import EditPopup from '../Components/Popups/EditPopup.jsx';
+import StartAChat from '../Components/Popups/StartAChat.jsx';
+import CreateGroupPopup from '../Components/Popups/CreateGroupPopup.jsx';
+import SelectUsersForGroupPopup from '../Components/Popups/SelectUsersForGroupPopup.jsx';
+import SideOverlay from '../Components/SideOverlay.jsx';
 import ImagePreview from '../Components/Popups/ImagePreview.jsx';
 
 //context

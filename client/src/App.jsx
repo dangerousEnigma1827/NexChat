@@ -13,7 +13,7 @@ function App() {
     <Toaster position="top-right"/>
      <Routes>
         <Route path='/register' element={<Register/>}/>
-        <Route path='//register-step2' element={<RegisterStep2/>}/>
+        <Route path='/register-step2' element={<RegisterStep2/>}/>
         <Route path='/login' element={<Login/>}/>
         <Route path='/' element={<ProtectedRoutes><HomePage/></ProtectedRoutes>}/>
       </Routes> 
