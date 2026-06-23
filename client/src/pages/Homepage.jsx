@@ -428,8 +428,19 @@ function HomePage() {
                 <CreateGroupPopup setSelectUsersForGroupPopupOpen={setSelectUsersForGroupPopupOpen} setCreateGroupPopupOpen={setCreateGroupPopupOpen}/>
             }
             {
+                selectUsersForGroupPopupOpen &&
+                <SelectUsersForGroupPopup setSelectUsersForGroupPopupOpen={setSelectUsersForGroupPopupOpen} groupName={groupName} setGroupName={setGroupName}setGroupDescription={setGroupDescription} groupDescription={groupDescription} currentUserId={currentUserId} getAllConversationsInFr={getAllConversationsInFr}/>
+            }
+            {
                 editPopupOpen &&
-                <EditPopup setEditPopupOpen={setEditPopupOpen}/>
+                <EditPopup 
+                    setEditPopupOpen={setEditPopupOpen}
+                    messagesToDeleteText={messagesToDeleteText}
+                    messagesToDeleteTime={messagesToDeleteTime}
+                    setEditedText={setEditedText}
+                    handleEdit={handleEdit}
+                    setDropArrowdownId={setDropArrowdownId}
+                    editedText={editedText}/>
             }
 
             {imagePreviewOpen && (
@@ -447,7 +458,9 @@ function HomePage() {
             {
                 editProfilePopupOpen && 
                     <EditProfilePopup
-                    setEditProfilePopupOpen={setEditProfilePopupOpen} editProfilePopupOpen={editProfilePopupOpen}/>
+                    setEditProfilePopupOpen={setEditProfilePopupOpen} editProfilePopupOpen={editProfilePopupOpen}
+                    
+                    />
             }
 
 

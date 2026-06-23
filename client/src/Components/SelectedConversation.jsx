@@ -78,7 +78,7 @@ function SelectedConversation({
 
             {!isconversationAGroup ? (
               <p className='text-xs text-gray-400'>
-                {onlineUsers.includes(conversationSelected) ? "Online" : "Offline"}
+                {onlineUsers.includes(conversationSelected) ? "Online" : "Online"}
               </p>
             ) : (
               <p className='text-xs text-gray-400'>
