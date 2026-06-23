@@ -25,6 +25,7 @@ function ConversationListBar({
     setConversationSelectedtedUsername,
     setConversationSelectedDescription,
     setConversationSelectedtedPfp,
+    setConversationSelectedtedAbout
   } = useContext(ConversationContext)
 
   let { currentUserId } = useContext(UserContext)
@@ -112,6 +113,7 @@ function ConversationListBar({
                     setIsConversationAGroup(false)
                     setConversationSelectedtedUsername(user.username)
                     setConversationSelectedtedPfp(user.pfp)
+                    setConversationSelectedtedAbout(user.about)
                     setIsSideBarOpen(true)
 
                   } else {

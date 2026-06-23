@@ -32,7 +32,8 @@ function SideOverlay({
         conversationSelectedDescription,
         setConversationSelectedDescription,
         conversationSelectedPfp,
-        setConversationSelectedtedPfp
+        setConversationSelectedtedPfp,
+        conversationSelectedtedAbout
     } = useContext(ConversationContext);
 
   const handleFindCommonGroups = async () => {
@@ -136,6 +137,22 @@ function SideOverlay({
               </div>
             </div>
           )}
+
+
+          {/* {!isconversationAGroup && (
+            <div className="mt-4 flex flex-col flex-1 overflow-y-auto pr-1 space-y-2">
+              <div className="bg-[#1b1f30] rounded-xl border border-[#1d2230] p-3">
+              <SectionLabel label={"ABOUT"} />
+                <div className="flex items-center gap-3 px-1 py-1">
+
+                  <div className="min-w-0">
+                    <p className="text-[13px] text-white truncate">{conversationSelectedtedAbout}</p>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          )} */}
 
           {isconversationAGroup && (
             <div className="mt-4 flex flex-col flex-1 overflow-y-auto pr-1 space-y-2">

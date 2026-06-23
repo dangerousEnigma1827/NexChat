@@ -6,6 +6,7 @@ export function ConversationProvider({children}){
     let [conversations, setConversations] = useState([]);
     let [conversationSelected, setConversationSelected] = useState(null)
     let [conversationSelectedUsername, setConversationSelectedtedUsername] = useState("")
+    let [conversationSelectedAbout, setConversationSelectedtedAbout] = useState("")
     let [conversationSelectedDescription, setConversationSelectedDescription] = useState("")
     let [conversationSelectedPfp, setConversationSelectedtedPfp] = useState(null)
     let [isconversationAGroup, setIsConversationAGroup] = useState(false)
@@ -25,7 +26,9 @@ export function ConversationProvider({children}){
             isconversationAGroup,
             setIsConversationAGroup,
             conversationId,
-            setConversationId
+            setConversationId,
+            conversationSelectedAbout,
+            setConversationSelectedtedAbout
         }}>
 
             {children}
