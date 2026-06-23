@@ -35,6 +35,7 @@ import { getMessagesByConversationId, sendMessageService } from '../Services/mes
 import { formatDayLabel } from '../utils/formatDays.js'
 import UserProfilePopup from '../Components/Popups/UserProfilePopup.jsx';
 import EditProfilePopup from '../Components/Popups/EditProfilePopup.jsx';
+import LoadingSpin from '../Components/LoadingSpin.jsx';
 
 function HomePage() {
 
@@ -61,6 +62,8 @@ function HomePage() {
         conversationSelectedPfp,
         setConversationSelectedtedPfp
     } = useContext(ConversationContext);
+
+    let [loading, setLoading] = useState({messages:false})
 
     let{
         currentUserId, setUserId
@@ -136,10 +139,17 @@ function HomePage() {
     
     let getAllMessagesBwtwo = async () => {
         try{
+            setLoading((prev)=>{
+                return {...prev, messages:true}
+            })
             let data = await getMessagesByConversationId(conversationId)
             setAllMessagesBwTwo(data)
         }catch(err){
             console.log("error getting messages between two users ",err);
+        }finally{
+            setLoading((prev)=>{
+                return {...prev, messages:false}
+            })
         }
     }
 
@@ -328,8 +338,10 @@ function HomePage() {
     // ---------------- EFFECTS ----------------
 
     useEffect(() => {
-        getAllConversationsInFr()
-    }, [])
+        if(currentUserId){
+            getAllConversationsInFr()
+        }
+    }, [currentUserId])
 
     useEffect(() => {
         if (conversationId && currentUserId) {
@@ -479,38 +491,49 @@ function HomePage() {
 
                             <div className="flex-1 overflow-y-auto" ref={scrollRef}>
                                 <div className="w-full py-6 pb-6">
-                                    {allMessagesBwTwo.map((message)=>{
-                                        curr = (formatDayLabel(message.createdAt))
-                                        let show = last != curr
-                                        last = (curr);
-                                        return <div key={message._id}>
-
-                                         {show && (
-                                            <div className="flex justify-center my-4">
-                                                <span className="bg-[#2a3142] text-gray-300 px-3 py-1 rounded-full text-sm">
-                                                    {curr}
-                                                </span>
+                                    {
+                                        loading.messages == true && (
+                                            <div className='flex justify-center items-center'>
+                                                <LoadingSpin />
                                             </div>
-                                        )}
+                                        )
+                                    }
 
-                                        <OneMessage
-                                                scrollRef={scrollRef}       
-                                                message={message}
-                                                dropdownref={dropdownref}
-                                                dropArrowdownId={dropArrowdownId}
-                                                setDropArrowdownId={setDropArrowdownId}
-                                                setAttachmentUrlForDeletion={setAttachmentUrlForDeletion}
-                                                setDeletePopupOpen={setDeletePopupOpen}
-                                                setMessageToDelete={setMessageToDelete}
-                                                setEditPopupOpen={setEditPopupOpen}
-                                                setMessageToDeleteTime={setMessageToDeleteTime}
-                                                setMessageToDeleteText={setMessageToDeleteText}
-                                                setImagePreviewOpen={setImagePreviewOpen}
-                                                setPreviewSrc={setPreviewSrc}
-                                        />
+                                    {
+                                        loading.messages == false &&
+                                        allMessagesBwTwo.map((message) => {
+                                            curr = formatDayLabel(message.createdAt)
+                                            let show = last != curr
+                                            last = curr
 
-                                        </div>
-                                    })}
+                                            return (
+                                                <div key={message._id}>
+                                                    {show && (
+                                                        <div className="flex justify-center my-4">
+                                                            <span className="bg-[#2a3142] text-gray-300 px-3 py-1 rounded-full text-sm">
+                                                                {curr}
+                                                            </span>
+                                                        </div>
+                                                    )}
+
+                                                    <OneMessage
+                                                        scrollRef={scrollRef}
+                                                        message={message}
+                                                        dropdownref={dropdownref}
+                                                        dropArrowdownId={dropArrowdownId}
+                                                        setDropArrowdownId={setDropArrowdownId}
+                                                        setAttachmentUrlForDeletion={setAttachmentUrlForDeletion}
+                                                        setDeletePopupOpen={setDeletePopupOpen}
+                                                        setMessageToDelete={setMessageToDelete}
+                                                        setEditPopupOpen={setEditPopupOpen}
+                                                        setMessageToDeleteTime={setMessageToDeleteTime}
+                                                        setMessageToDeleteText={setMessageToDeleteText}
+                                                        setImagePreviewOpen={setImagePreviewOpen}
+                                                        setPreviewSrc={setPreviewSrc}/>
+                                                </div>
+                                            )
+                                        })
+                                    }
                                 </div>
                             </div>
 

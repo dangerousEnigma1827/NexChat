@@ -92,7 +92,7 @@ function SelectedConversation({
       </div>
 
       {/* RIGHT SECTION */}
-      <div className='relative'>
+      {/* <div className='relative'>
         <button
           onClick={() => setDropdownOpen(!dropdownOpen)}
           className='text-white p-2 rounded-md hover:bg-[#2b3142]'
@@ -115,7 +115,7 @@ function SelectedConversation({
             </button>
           </div>
         )}
-      </div>
+      </div> */}
 
     </div>
   )
