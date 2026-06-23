@@ -24,9 +24,11 @@ function SelectedConversation({
   let [currentUserName, setCurrentUserName] = useState(null)
   let token = localStorage.getItem('token')
 
+
+
   let getCurrentUser = async () => {
     try {
-      let res = await axios.get('http://localhost:5000/api/auth/me', {
+      let res = await api.get('/api/auth/me', {
         headers: { Authorization: `Bearer ${token}` }
       })
       setCurrentUserName(res.data._id)
