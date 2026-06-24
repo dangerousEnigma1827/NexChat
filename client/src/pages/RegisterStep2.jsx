@@ -127,7 +127,7 @@ function RegisterStep2() {
         <div className="flex gap-3 mt-7">
 
           <button
-            onClick={() => navigate('/')}
+            onClick={handleRegister}
             className="flex-1 h-[52px] rounded-xl bg-[#11151f] text-gray-300 hover:bg-[#181d29] transition"
           >
             Skip for now
