@@ -62,6 +62,7 @@ function HomePage() {
         conversationSelectedPfp,
         setConversationSelectedtedPfp
     } = useContext(ConversationContext);
+    console.log("loaded stuff")
 
     let [loading, setLoading] = useState({messages:false, conversation:false})
 
@@ -347,7 +348,9 @@ function HomePage() {
     // ---------------- EFFECTS ----------------
 
     useEffect(() => {
+        console.log('id is' ,currentUserId)
         if(currentUserId){
+            console.log("getting all conversations")
             getAllConversationsInFr()
         }
     }, [currentUserId])

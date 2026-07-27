@@ -117,10 +117,10 @@ function SelectUsersForGroupPopup({
                 <div className='flex-1 overflow-y-auto pr-1'>
                     {
                         filteredUsers.length > 0 ? (
-                            filteredUsers.map((user) => {
+                            filteredUsers.map((user,idx) => {
                                 const isSelected = selectedUsers.includes(user._id)
                                 return (
-                                    <div key={user._id} onClick={() => handleUserSelect(user._id)} className={`h-[75px] w-full flex items-center justify-between px-4 mb-2 rounded-xl cursor-pointer transition-all duration-300 ${isSelected? ' border border-[#4c7dff]': 'hover:bg-[#2b3142]'}`}>
+                                    <div key={idx} onClick={() => handleUserSelect(user._id)} className={`h-[75px] w-full flex items-center justify-between px-4 mb-2 rounded-xl cursor-pointer transition-all duration-300 ${isSelected? ' border border-[#4c7dff]': 'hover:bg-[#2b3142]'}`}>
                                         <div className='flex items-center gap-4'>
                                             <div className='rounded-full bg-[#141720] h-[52px] w-[52px] flex justify-center items-center overflow-hidden shrink-0'>
                                                 {
