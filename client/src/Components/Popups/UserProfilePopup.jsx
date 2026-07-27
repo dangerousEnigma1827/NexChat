@@ -116,7 +116,7 @@ function UserProfilePopup({
           onClick={() => {
             setUserProfilePopupOpen(false)
             setEditProfilePopupOpen(true)
-            setActive("profile")
+            setActive("chats")
           }}
           className='w-full mt-4 h-[52px] rounded-xl bg-[#3b82f6] hover:bg-[#2563eb] text-white flex justify-center items-center gap-2 transition'
         >

@@ -3,7 +3,7 @@ import { useState } from 'react'
 import {ChatsCircleIcon, ChatCircleTextIcon, KeyIcon, EnvelopeIcon, UserIcon, CloudArrowUpIcon, ArrowRightIcon} from "@phosphor-icons/react"
 import { GroupContext } from '../../context/groupContext'
 
-function CreateGroupPopup({setCreateGroupPopupOpen, setSelectUsersForGroupPopupOpen}) {
+function CreateGroupPopup({setCreateGroupPopupOpen, setSelectUsersForGroupPopupOpen, setActive}) {
 
     let [cloudinaryUrl, setCloudinaryUrl] = useState(null)
     let [isDisabled, setIsDisabled] = useState(false)
@@ -79,10 +79,17 @@ function CreateGroupPopup({setCreateGroupPopupOpen, setSelectUsersForGroupPopupO
             </div>
 
             <div className='flex justify-end mt-8 gap-3'>
-                <button className='px-5 py-3 rounded-xl bg-[#2e3548] text-gray-300 hover:bg-[#394158] transition' onClick={(e)=>{setCreateGroupPopupOpen(false)}}>Cancel</button>
+                <button className='px-5 py-3 rounded-xl bg-[#2e3548] text-gray-300 hover:bg-[#394158] transition' onClick={(e)=>{
+                    setGroupName("")
+                    setGroupDescription("")
+                    setCloudinaryUrl("")
+                    setCreateGroupPopupOpen(false)
+                    setActive("chats")
+                }}>Cancel</button>
 
                 <button className='px-6 py-3 rounded-xl bg-[#3b82f6] hover:bg-[#2563eb] text-white flex items-center gap-2 transition shadow-lg disabled:opacity-50 disabled:cursor-not-allowed' disabled={(isDisabled) || (groupName.trim() == "" || groupDescription.trim() == "")} onClick={(e)=>{
                     console.log("clicked")
+                    setActive("chats")
                     setCreateGroupPopupOpen(false)
                     setSelectUsersForGroupPopupOpen(true)
 

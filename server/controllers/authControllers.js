@@ -24,8 +24,6 @@ const register = async (req, res) => {
         { expiresIn: "7d" }
     );
 
-    console.log("done logging in")
-    
     res.json({
         success:true,
         message: "Login Successful",
@@ -63,8 +61,6 @@ const login = async (req, res) => {
             { expiresIn: "7d" }
         );
 
-        console.log("done logging in")
-        
         res.json({
             success:true,
             message: "Login Successful",
@@ -79,7 +75,6 @@ const login = async (req, res) => {
 
 const me = async (req,res) => {
     try{
-        console.log(req.user.userId)
         let currentUser = await userModels.findById(req.user.userId)
         res.json(currentUser);
     }catch(err){

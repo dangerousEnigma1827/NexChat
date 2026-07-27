@@ -5,8 +5,6 @@ import Conversation from "../models/conversationModels.js";
 import io from '../server.js'
 
 export const sendMessage = async (req,res)=>{
-    console.log("recieved");
-    console.log(req.body)
     try{
         let messageSent = await Message.create(req.body);
         
@@ -15,13 +13,14 @@ export const sendMessage = async (req,res)=>{
                 _id : req.body.conversationId
             },
             {
-                lastMessageSent:req.body.text,
+                lastMessageSent:messageSent._id,
                 lastTimeMessageSent:new Date(),
                 lastMessageSentBy:req.body.senderId
             },
             {
-                new:true
-        })
+                returnDocument:"after"
+            }
+        )
 
         res.json(messageSent)
         io.to(req.body.recieverId).emit("recieve_message", messageSent)
@@ -35,43 +34,89 @@ export const clearChatInBackend = async (req,res)=>{
         let clearedMessages = await Message.deleteMany({
             conversationId:req.params.conversationId
         })
+
+        await Conversation.findByIdAndUpdate(
+            req.params.conversationId,
+            {
+                lastMessageSent:null,
+                lastTimeMessageSent:null,
+                lastMessageSentBy:null
+            }
+        )
         res.json(clearedMessages)
     }catch(err){
         console.log("err deleting chatss in backend", err)
     }
 }
 
-export const deleteFromBackendController = async (req,res) => {
-    try{
-        let type = req.body.typeOf
-        console.log(type)
-        if(type == "text"){
-            console.log("1")
-            let deletefrombackend = await Message.findByIdAndUpdate(req.body.messageToDelete,{
-                text : "This Message Was Deleted",
-                isDeletedForEveryone:true
-            }, {new:true})
-            console.log("2")
-            res.json(deletefrombackend)
-        }
+export const deleteFromBackendController = async (req, res) => {
+    try {
 
-        if(type == "attachment"){
-            let deletefrombackend = await Message.findOneAndUpdate({
-                _id : req.body.messageToDelete,
-                "attachments.url" : req.body.attachmentUrlForDeletion
-            },
-            {
-                $set:{
-                    "attachments.$.isDeletedForEveryone" : true,
-                    "attachments.$.url":""
+        const {
+            typeOf,
+            messageToDelete,
+            attachmentUrlForDeletion
+        } = req.body
+
+
+        let updatedMessage
+
+
+        if(typeOf === "text"){
+
+            updatedMessage = await Message.findByIdAndUpdate(
+                messageToDelete,
+                {
+                    text:"This Message Was Deleted",
+                    isDeletedForEveryone:true
+                },
+                {
+                   returnDocument:"after"
                 }
-            }, {new:true})
-            console.log("2")
+            )
 
-            res.json(deletefrombackend)
         }
+
+
+        if(typeOf === "attachment"){
+
+            updatedMessage = await Message.findOneAndUpdate(
+                {
+                    _id:messageToDelete,
+                    "attachments.url":attachmentUrlForDeletion
+                },
+                {
+                    $set:{
+                        "attachments.$.isDeletedForEveryone":true,
+                        "attachments.$.url":""
+                    }
+                },
+                {
+                    returnDocument:"after"
+                }
+            )
+
+        }
+
+
+        if(!updatedMessage){
+            return res.status(404).json({
+                message:"Message not found"
+            })
+        }
+
+
+        res.json(updatedMessage)
+
+
     }catch(err){
-        console.log("error deleting form frontend")
+
+        console.log("error deleting message",err)
+
+        res.status(500).json({
+            message:"Server error"
+        })
+
     }
 }
 
@@ -84,7 +129,7 @@ export const editMessageController = async (req,res)=>{
                     text : req.body.editedText,
                     isEdited:true
                 }
-            }, {new:true}
+            }, {returnDocument:"after"}
         )
         let recieverId = editFromBackend.recieverId;
         io.to(recieverId).emit("recieve_message", editFromBackend)

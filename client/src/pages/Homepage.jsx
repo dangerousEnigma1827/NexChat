@@ -176,19 +176,18 @@ function HomePage() {
             setAllMessagesBwTwo(prev => [...prev, res.data])
 
             setConversations(prev =>
-                prev.map(c =>
+            prev.map(c =>
                     c._id === conversationId
                         ? {
                             ...c,
-                            lastMessageSent: text ? text : `Images${attachments.length}`,
-                            lastTimeMessageSent: new Date(),
-                            lastMessageSentBy: currentUserId
+                            lastMessageSent: res.data,
+                            lastTimeMessageSent:new Date(),
+                            lastMessageSentBy:currentUserId
                         }
                         : c
                 )
             )
 
-            getAllConversationsInFr()
             setText("")
             setAttachments([])
             setImageBlobs([])
@@ -197,36 +196,59 @@ function HomePage() {
         }
     }
 
-    let handleDelete = async () => {
-        try {
-            let typeOf = attachmentUrlForDeletion ? "attachment" : "text"
+let handleDelete = async () => {
+    try {
+        let typeOf = attachmentUrlForDeletion ? "attachment" : "text"
 
-            console.log(messageToDelete)
-            await api.delete('/messages/delete', {
-                data: {
-                    typeOf,
-                    messageToDelete,
-                    attachmentUrlForDeletion
-                },
-                headers: { Authorization: `Bearer ${token}` }
-            })
+        let res = await api.delete('/messages/delete', {
+            data:{
+                typeOf,
+                messageToDelete,
+                attachmentUrlForDeletion
+            },
+            headers:{
+                Authorization:`Bearer ${token}`
+            }
+        })
 
-            console.log(allMessagesBwTwo)
+        let deletedMessage = res.data
 
-            let newArrAfterDeleting = allMessagesBwTwo.map((m,idx)=>{
-                if(m._id!=messageToDelete){
-                    return m
+        // update messages in chat window
+        setAllMessagesBwTwo(prev =>
+            prev.map(m =>
+                m._id === messageToDelete
+                ? deletedMessage
+                : m
+            )
+        )
+
+
+        // update conversation last message
+        setConversations(prev =>
+            prev.map(c => {
+
+                if(c._id !== conversationId){
+                    return c
                 }
 
-                m={...m, isDeletedForEveryone:true}
-                return m;
+                return {
+                    ...c,
+                    lastMessageSent: deletedMessage,
+                    lastTimeMessageSent: new Date(),
+                    lastMessageSentBy: deletedMessage.senderId
+                }
             })
+        )
 
-            setAllMessagesBwTwo(newArrAfterDeleting)
-        } catch (err) {
-            console.log(err)
-        }
+
+        setDeletePopupOpen(false)
+        setDropArrowdownId(null)
+        setAttachmentUrlForDeletion("")
+
+    } catch(err){
+        console.log(err)
     }
+}
 
     // let handleDeleteForMe = async () => {
     //     try {
@@ -276,10 +298,11 @@ function HomePage() {
 
     let handleClearChat = async () => {
         try {
+            console.log(allMessagesBwTwo)
             await api.post(`/messages/clearchat/${conversationId}`, {}, {
                 headers: { Authorization: `Bearer ${token}` }
             })
-            getAllMessagesBwtwo()
+            setAllMessagesBwTwo([])
 
             toast("Cleared Chat", {
                 style: { background: '#3b82f6', color: '#fff' }
@@ -426,11 +449,25 @@ function HomePage() {
             }
             {
                 createGroupPopupOpen && 
-                <CreateGroupPopup setSelectUsersForGroupPopupOpen={setSelectUsersForGroupPopupOpen} setCreateGroupPopupOpen={setCreateGroupPopupOpen}/>
+                <CreateGroupPopup 
+                setSelectUsersForGroupPopupOpen={setSelectUsersForGroupPopupOpen}
+                setCreateGroupPopupOpen={setCreateGroupPopupOpen}
+                setActive={setActiveLeftBar}
+                />
             }
             {
                 selectUsersForGroupPopupOpen &&
-                <SelectUsersForGroupPopup setSelectUsersForGroupPopupOpen={setSelectUsersForGroupPopupOpen} groupName={groupName} setGroupName={setGroupName}setGroupDescription={setGroupDescription} groupDescription={groupDescription} currentUserId={currentUserId} getAllConversationsInFr={getAllConversationsInFr}/>
+                <SelectUsersForGroupPopup 
+
+                setSelectUsersForGroupPopupOpen={setSelectUsersForGroupPopupOpen} 
+                groupName={groupName} 
+                setGroupName={setGroupName}
+                setGroupDescription={setGroupDescription} 
+                groupDescription={groupDescription} 
+                currentUserId={currentUserId}
+                getAllConversationsInFr={getAllConversationsInFr}
+                setCreateGroupPopupOpen={setCreateGroupPopupOpen}
+                />
             }
             {
                 editPopupOpen &&
@@ -663,7 +700,9 @@ function HomePage() {
                         setIsSideBarOpen={setIsSideBarOpen} 
                         userA={userSelectedIdIfNotGroup} 
                         userB={currentUserId}
-                        onlineUsers={onlineUsers}/>
+                        onlineUsers={onlineUsers}
+                        onClearChat={handleClearChat}
+                        />
                     }
                 </div>
             </div>

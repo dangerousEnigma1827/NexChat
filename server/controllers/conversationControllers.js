@@ -49,7 +49,12 @@ export const getAllConversations = async (req,res) => {
             {
                 participants : req.user.userId
             }
-        ).populate("participants").populate("lastMessageSentBy").populate("groupAdmin").sort({lastTimeMessageSent : -1})
+        )
+        .populate("participants")
+        .populate("lastMessageSentBy")
+        .populate("groupAdmin")
+        .populate("lastMessageSent")
+        .sort({lastTimeMessageSent : -1})
 
         res.json(allconversations)
     }catch(err){
@@ -94,7 +99,6 @@ export const getAllSingleUsers = async (req,res)=>{
 
 export const getAllCommonGroups = async (req,res)=>{
     const {userA, userB} = req.params
-    console.log(userA + " " + userB)
     try{
         let response = await conversationModels.find({
             type:"group",
@@ -103,7 +107,6 @@ export const getAllCommonGroups = async (req,res)=>{
             }
         }).populate("participants")
 
-        console.log(response)
         res.json(response)
     }catch(err){
         return res.status(500).json({

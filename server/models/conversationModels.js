@@ -32,14 +32,18 @@ let conversationSchema = new mongoose.Schema({
             default: null
         }
     ],
+
     lastMessageSent:{
-        type:String,
-        default:""
+        type: mongoose.Schema.Types.ObjectId,
+        ref:"Message",
+        default:null
     },
+
     lastTimeMessageSent:{
         type: Date,
-        default:""
+        default:null
     },
+
     lastMessageSentBy:{
         type: mongoose.Schema.Types.ObjectId,
         ref: "User"
