@@ -119,6 +119,9 @@ function HomePage() {
     const [previewSrc, setPreviewSrc] = useState("")
     let [imageBlobs, setImageBlobs] = useState([])
 
+    //left side bar
+    const [activeLeftBar, setActiveLeftBar] = useState("chats")
+
     //date tag
     let last = null
     let curr = null
@@ -450,15 +453,21 @@ function HomePage() {
 
             {
                 userProfilePopupOpen && 
-                    <UserProfilePopup
-                    setUserProfilePopupOpen={setUserProfilePopupOpen} setEditProfilePopupOpen={setEditProfilePopupOpen}/>
+                <UserProfilePopup
+                    setUserProfilePopupOpen={setUserProfilePopupOpen}
+                    setEditProfilePopupOpen={setEditProfilePopupOpen}
+                    setActive={setActiveLeftBar}
+                />
             }
+
+
             {
                 editProfilePopupOpen && 
-                    <EditProfilePopup
-                    setEditProfilePopupOpen={setEditProfilePopupOpen} editProfilePopupOpen={editProfilePopupOpen}
-                    
-                    />
+                <EditProfilePopup
+                    setEditProfilePopupOpen={setEditProfilePopupOpen}
+                    editProfilePopupOpen={editProfilePopupOpen}
+                    setActive={setActiveLeftBar}
+                />
             }
 
 
@@ -469,6 +478,8 @@ function HomePage() {
                         setLogoutPopupOpen={setLogoutPopupOpen}
                         setCreateGroupPopupOpen={setCreateGroupPopupOpen}
                         setUserProfilePopupOpen={setUserProfilePopupOpen}
+                        active={activeLeftBar}
+                        setActive={setActiveLeftBar}
                     />
                 </div>
 
@@ -524,14 +535,51 @@ function HomePage() {
                             </div>
 
                             <div className="flex-1 overflow-y-auto" ref={scrollRef}>
-                                <div className="w-full py-6 pb-6">
+                                <div className="w-full py-6 pb-6 h-full">
                                     {
-                                        loading.messages == true && (
-                                            <div className='flex justify-center items-center'>
-                                                <LoadingSpin />
+                                        loading.messages && (
+                                            <div className="flex flex-col justify-center items-center h-full gap-3">
+                                                <div className="w-10 h-10 border-4 border-[#595c65] border-t-[#4c7dff] rounded-full animate-spin"></div>
+                                                <p className="text-sm text-gray-400">
+                                                    Loading messages...
+                                                </p>
                                             </div>
                                         )
                                     }
+
+
+{
+    !loading.messages && allMessagesBwTwo.length === 0 && (
+        <div className="flex flex-col justify-center items-center h-full gap-3 text-center px-5">
+
+            <div className="w-16 h-16 rounded-full bg-[#1d2235] flex items-center justify-center">
+                <svg
+                    className="w-8 h-8 text-gray-400"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.77 9.77 0 01-4-.82L3 20l1.32-3.3A7.63 7.63 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                    />
+                </svg>
+            </div>
+
+            <p className="text-gray-300 font-medium">
+                No messages yet
+            </p>
+
+            <p className="text-sm text-gray-500 max-w-[250px]">
+                Start the conversation and send your first message
+            </p>
+
+        </div>
+    )
+}
+
 
                                     {
                                         loading.messages == false &&
