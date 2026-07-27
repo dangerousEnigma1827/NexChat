@@ -62,7 +62,6 @@ function HomePage() {
         conversationSelectedPfp,
         setConversationSelectedtedPfp
     } = useContext(ConversationContext);
-    console.log("loaded stuff")
 
     let [loading, setLoading] = useState({messages:false, conversation:false})
 
@@ -137,7 +136,6 @@ function HomePage() {
                 headers: { Authorization: `Bearer ${token}` }
             })
             setConversations(res.data)
-            console.log(res.data)
         } catch (err) {
             console.log(err)
         }finally{
@@ -200,6 +198,7 @@ function HomePage() {
         try {
             let typeOf = attachmentUrlForDeletion ? "attachment" : "text"
 
+            console.log(messageToDelete)
             await api.delete('/messages/delete', {
                 data: {
                     typeOf,
@@ -209,7 +208,18 @@ function HomePage() {
                 headers: { Authorization: `Bearer ${token}` }
             })
 
-            getAllMessagesBwtwo()
+            console.log(allMessagesBwTwo)
+
+            let newArrAfterDeleting = allMessagesBwTwo.map((m,idx)=>{
+                if(m._id!=messageToDelete){
+                    return m
+                }
+
+                m={...m, isDeletedForEveryone:true}
+                return m;
+            })
+
+            setAllMessagesBwTwo(newArrAfterDeleting)
         } catch (err) {
             console.log(err)
         }
@@ -243,15 +253,23 @@ function HomePage() {
                 headers: { Authorization: `Bearer ${token}` }
             })
 
-            getAllMessagesBwtwo()
+            let newArrAfterEditing = allMessagesBwTwo.map((m,idx)=>{
+                if(m._id!=dropArrowdownId){
+                    return m
+                }
+
+                m={...m, text:editedText}
+                return m;
+            })
+
+            setAllMessagesBwTwo(newArrAfterEditing)
+
             setEditPopupOpen(false)
             setDropArrowdownId(null)
         } catch (err) {
             console.log(err)
         }
     }
-
-
 
     let handleClearChat = async () => {
         try {
@@ -269,14 +287,11 @@ function HomePage() {
     }
 
     let handleMedia = async (e) => {
-        console.log("hmmm")
         let files = Array.from(e.target.files)
-
         if(files.length > 5){
             toast("Can't Send More Than 5 Images At Once!", {
                 style: { background: '#3b82f6', color: '#fff' }
             })
-
             return;
         }
 
@@ -318,24 +333,8 @@ function HomePage() {
         }
 
         let uploaded = await Promise.all(files.map(uploadFile))
-        console.log(uploaded)
 
         setAttachments(uploaded)
-
-        // let res = await api.post('/messages/send', {
-        //     text,
-        //     senderId: currentUserId,
-        //     conversationId,
-        //     attachments: uploaded
-        // }, {
-        //     headers: { Authorization: `Bearer ${token}` }
-        // })
-
-        // console.log("done sending")
-
-        // setAllMessagesBwTwo(prev => [...prev, res.data])
-        // setAttachments([])
-        // setText("")
     }
 
     let handleLogout = async () => {
@@ -343,14 +342,10 @@ function HomePage() {
         navigate('/login')
     }
 
-    
-
     // ---------------- EFFECTS ----------------
 
     useEffect(() => {
-        console.log('id is' ,currentUserId)
         if(currentUserId){
-            console.log("getting all conversations")
             getAllConversationsInFr()
         }
     }, [currentUserId])
