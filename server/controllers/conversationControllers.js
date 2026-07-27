@@ -129,3 +129,22 @@ export const clickedConversation = async (req,res) => {
         console.log("error getting clicked conversation ",err)
     }
 }
+
+export const setAllConversationToSeen = async (req,res)=> {
+    try{
+        await Message.updateMany(
+            {
+                conversationId: req.body.conversationId,
+                senderId: { $ne: req.user.userId },
+                seenBy: { $ne: req.user.userId }
+            },
+            {
+                $addToSet: {
+                    seenBy: req.user.userId
+                }
+            }
+        );
+    }catch(err){
+        console.log("erorr setting seen in bkd")
+    }
+}

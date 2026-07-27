@@ -5,6 +5,7 @@ import { ConversationContext } from '../context/conversationContext'
 import { UserContext } from '../context/userContext'
 import { GroupContext } from '../context/groupContext'
 import LoadingSpin from './LoadingSpin'
+import api from '../api/apiInstance'
 
 function ConversationListBar({
   onlineUsers,
@@ -20,6 +21,7 @@ function ConversationListBar({
   let {
     conversations,
     setConversationId,
+    conversationId,
     setIsConversationAGroup,
     setConversationSelected,
     setConversationSelectedtedUsername,
@@ -30,6 +32,7 @@ function ConversationListBar({
 
   let { currentUserId } = useContext(UserContext)
   let { setGroupMembers, setGroupAdmins } = useContext(GroupContext)
+  let currConverId;
 
   let filteredConversations = conversations.filter((conversation) => {
     if (!conversationSearch) return true
@@ -48,6 +51,17 @@ function ConversationListBar({
       ?.toLowerCase()
       .includes(conversationSearch.toLowerCase())
   })
+
+
+  let setAllMessagesSeen = async () => {
+    try{
+      let req = api.post('/conversations/setSeen', {
+        conversationId:currConverId
+      })
+    }catch(err){
+      console.log("erorr occured setting all messages to seen",err)
+    }
+  }
 
   return (
     <div className="w-full h-full overflow-hidden bg-[#1b1f30] rounded-xl border border-[#1d2230] flex flex-col p-3">
@@ -115,6 +129,7 @@ function ConversationListBar({
                     setConversationSelectedtedPfp(user.pfp)
                     setConversationSelectedtedAbout(user.about)
                     setIsSideBarOpen(true)
+                    currConverId=conversation._id
 
                   } else {
                     setUserSelectedIdIfNotGroup(null)
@@ -128,8 +143,11 @@ function ConversationListBar({
                     setGroupMembers(conversation.participants)
                     setGroupAdmins(conversation.groupAdmin)
                     setIsSideBarOpen(true)
+                    currConverId=conversation._id
                   }
                 }
+
+                setAllMessagesSeen()
               }}
               className={`group flex items-center gap-3 px-3 py-3 rounded-xl cursor-pointer transition-all duration-200 hover:bg-[#22283a] ${isActive ? "bg-[#22283a]" : ""}`}
             >

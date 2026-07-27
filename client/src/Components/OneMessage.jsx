@@ -1,3 +1,4 @@
+// OneMessage.jsx
 import React, { useContext } from 'react'
 import OneAttachment from './OneAttachment'
 import OneText from './OneText'
@@ -27,7 +28,7 @@ function OneMessage({
   let {isconversationAGroup} = useContext(ConversationContext)
 
   return (
-    <div className={`flex w-full px-4 py-0.5 ${isMine ? "justify-end" : "justify-start"}  mt-1`}>
+    <div className={`flex w-full px-4 py-0.5 ${isMine ? "justify-end" : "justify-start"} mt-1`}>
       <div className={`flex flex-col max-w-[65%] ${isMine ? "items-end" : "items-start"}`}>
 
         {/* Group sender info */}
@@ -51,7 +52,7 @@ function OneMessage({
         )}
 
         {/* Single bubble wrapping everything */}
-        <div className={`relative group rounded-xl overflow-visible pt-[2px] pl-[2px]
+        <div className={`relative group rounded-xl overflow-visible
           ${isMine
             ? "bg-[#4c7dff] text-white rounded-tr-sm"
             : "bg-[#1d2235] text-white rounded-tl-sm"
@@ -109,53 +110,62 @@ function OneMessage({
             </div>
           )}
 
-          {/* Attachments */}
-          {(message.attachments?.length > 0 && !message.isDeletedForEveryone) && (
-            <div className="flex flex-col">
-              {message.attachments.map((attachment, index) => (
-                <OneAttachment
-                  key={index}
-                  attachment={attachment}
-                  scrollRef={scrollRef} 
-                  isDeletedForEveryone={attachment.isDeletedForEveryone}
-                  message={message}
-                  dropdownref={dropdownref}
-                  dropArrowdownId={dropArrowdownId}
-                  setDropArrowdownId={setDropArrowdownId}
-                  setMessageToDelete={setMessageToDelete}
-                  setAttachmentUrlForDeletion={setAttachmentUrlForDeletion}
-                  setDeletePopupOpen={setDeletePopupOpen}
-                  currentUserId={currentUserId}
-                  setPreviewSrc={setPreviewSrc}
-                  setImagePreviewOpen={setImagePreviewOpen}
-                />
-              ))}
-            </div>
-          )}
+          {/* Clipped inner wrapper — keeps images/text perfectly matched to the bubble's rounded corners */}
+          <div className="rounded-[inherit] overflow-hidden">
 
-          {/* Text */}
-          {message.text && (
-            <OneText
-              text={message.text}
-              isEdited={message.isEdited}
-              isDeletedForEveryone={message.isDeletedForEveryone}
-              createdAt={message.createdAt}
-              isMine={isMine}
-              hasAttachments={message.attachments?.length > 0}
-            />
-          )}
+            {/* Attachments */}
+            {(message.attachments?.length > 0 && !message.isDeletedForEveryone) && (
+              <div className="flex flex-col gap-[2px]">
+                {message.attachments.map((attachment, index) => (
+                  <OneAttachment
+                    key={index}
+                    attachment={attachment}
+                    scrollRef={scrollRef}
+                    isDeletedForEveryone={attachment.isDeletedForEveryone}
+                    message={message}
+                    dropdownref={dropdownref}
+                    dropArrowdownId={dropArrowdownId}
+                    setDropArrowdownId={setDropArrowdownId}
+                    setMessageToDelete={setMessageToDelete}
+                    setAttachmentUrlForDeletion={setAttachmentUrlForDeletion}
+                    setDeletePopupOpen={setDeletePopupOpen}
+                    currentUserId={currentUserId}
+                    setPreviewSrc={setPreviewSrc}
+                    setImagePreviewOpen={setImagePreviewOpen}
+                  />
+                ))}
+              </div>
+            )}
 
-          {<div className={`flex justify-end mr-2 ${message.text == "" ? "my-0.5" : ""}`}>
-                <span className='text-[11px] text-gray-300 font-light'>
-                    {
-                        new Date(message.createdAt).toLocaleTimeString([], {
-                            hour: "2-digit",
-                            minute: "2-digit"
-                        })
-                    }
+            {/* Text */}
+            {message.text && (
+              <OneText
+                text={message.text}
+                isEdited={message.isEdited}
+                isDeletedForEveryone={message.isDeletedForEveryone}
+                createdAt={message.createdAt}
+                isMine={isMine}
+                hasAttachments={message.attachments?.length > 0}
+              />
+            )}
+
+            {/* Timestamp / seen row */}
+            <div className={`flex justify-end items-center gap-1.5 px-3 pb-1.5 ${message.text ? "" : "pt-1.5"}`}>
+              <span className="text-[11px] text-gray-300 font-light">
+                {new Date(message.createdAt).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit"
+                })}
+              </span>
+
+              {!isconversationAGroup && isMine && message.seenBy?.length === 1 && (
+                <span className="text-[10px] text-cyan-200 font-medium">
+                  Seen
                 </span>
-            </div>}
+              )}
+            </div>
 
+          </div>
         </div>
       </div>
     </div>

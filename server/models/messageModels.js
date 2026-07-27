@@ -40,7 +40,11 @@ let messageSchema = new mongoose.Schema({
     "isEdited": {
         type:Boolean,
         default:false
-    }
+    },
+    seenBy: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+    }]
 }, {
     timestamps:true
 })
