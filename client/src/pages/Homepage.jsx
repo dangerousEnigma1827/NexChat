@@ -298,7 +298,13 @@ let handleDelete = async () => {
 
     let handleClearChat = async () => {
         try {
-            console.log(allMessagesBwTwo)
+            if(allMessagesBwTwo.length==0){
+                toast("No Messages", {
+                    style: { background: '#3b82f6', color: '#fff' }
+                })
+
+                return;
+            }
             await api.post(`/messages/clearchat/${conversationId}`, {}, {
                 headers: { Authorization: `Bearer ${token}` }
             })
