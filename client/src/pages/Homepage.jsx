@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useContext } from 'react';
 import toast from "react-hot-toast";
 
-import { MessageCircle, Search, Send, Plus, UsersRound } from "lucide-react";
+import { MessageCircle, Search, Send, Plus, UsersRound, X } from "lucide-react";
 import { ChatsCircleIcon, ChatCircleTextIcon, SignOutIcon, TrashIcon } from "@phosphor-icons/react"
 import socket from '../socket/socket.js';
 import api from '../api/apiInstance.js'
@@ -298,6 +298,7 @@ let handleDelete = async () => {
 
     let handleClearChat = async () => {
         try {
+
             if(allMessagesBwTwo.length==0){
                 toast("No Messages", {
                     style: { background: '#3b82f6', color: '#fff' }
@@ -305,6 +306,8 @@ let handleDelete = async () => {
 
                 return;
             }
+
+
             await api.post(`/messages/clearchat/${conversationId}`, {}, {
                 headers: { Authorization: `Bearer ${token}` }
             })
@@ -514,7 +517,7 @@ let handleDelete = async () => {
             }
 
 
-            <div className="flex w-full h-screen overflow-hidden">
+            <div className="flex w-full h-screen overflow-hidden bg-[#141720]">
                 {/* LEFT ICON BAR (hidden on mobile) */}
                 <div className="hidden md:block">
                     <LeftMostBar
@@ -526,26 +529,26 @@ let handleDelete = async () => {
                     />
                 </div>
 
-                <div className={`bg-[#212634] h-screen overflow-hidden flex flex-col items-center w-full md:w-[25vw] ${conversationSelected ? "hidden md:flex" : "flex"}`}>
+                <div className={`bg-[#212634] h-screen overflow-hidden flex flex-col items-center w-full md:w-[25vw] border-r border-[#1d2230] ${conversationSelected ? "hidden md:flex" : "flex"}`}>
                     <div className="w-[90%] mt-5 flex-shrink-0">
                         <NexChatIcon />
-                        <div className='w-full bg-[#141720] h-[7vh] rounded-md flex items-center gap-2 mb-2 px-3'>
-                            <Search className='text-white' size={19} />
+                        <div className='w-full bg-[#141720] border border-[#2a3040] focus-within:border-[#4c7dff]/50 h-11 rounded-lg flex items-center gap-2.5 mb-3 px-3.5 transition-colors duration-150'>
+                            <Search className='text-gray-500' size={17} />
 
                             <input
                                 type="text"
                                 value={conversationSearch}
                                 onChange={(e) => setConversationSearch(e.target.value)}
-                                placeholder='Search Chats'
-                                className='w-full outline-none bg-transparent text-white h-full text-md placeholder:text-gray-500'
+                                placeholder='Search chats'
+                                className='w-full outline-none bg-transparent text-white h-full text-[14px] placeholder:text-gray-500'
                             />
 
                             {conversationSearch && (
                                 <button
                                     onClick={() => setConversationSearch("")}
-                                    className="text-gray-400 hover:text-white text-lg"
+                                    className="text-gray-500 hover:text-white transition-colors duration-150 flex-shrink-0"
                                 >
-                                    ✕
+                                    <X size={15} />
                                 </button>
                             )}
                         </div>
@@ -582,48 +585,45 @@ let handleDelete = async () => {
                                     {
                                         loading.messages && (
                                             <div className="flex flex-col justify-center items-center h-full gap-3">
-                                                <div className="w-10 h-10 border-4 border-[#595c65] border-t-[#4c7dff] rounded-full animate-spin"></div>
-                                                <p className="text-sm text-gray-400">
+                                                <div className="w-9 h-9 border-[3px] border-[#2a3142] border-t-[#4c7dff] rounded-full animate-spin"></div>
+                                                <p className="text-[13px] text-gray-400">
                                                     Loading messages...
                                                 </p>
                                             </div>
                                         )
                                     }
 
+                                    {
+                                        !loading.messages && allMessagesBwTwo.length === 0 && (
+                                            <div className="flex flex-col justify-center items-center h-full gap-3 text-center px-5">
 
-{
-    !loading.messages && allMessagesBwTwo.length === 0 && (
-        <div className="flex flex-col justify-center items-center h-full gap-3 text-center px-5">
+                                                <div className="w-16 h-16 rounded-full bg-[#1d2235] flex items-center justify-center ring-1 ring-[#2a3142]">
+                                                    <svg
+                                                        className="w-7 h-7 text-gray-500"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        strokeWidth="1.8"
+                                                        viewBox="0 0 24 24"
+                                                    >
+                                                        <path
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                            d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.77 9.77 0 01-4-.82L3 20l1.32-3.3A7.63 7.63 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                                                        />
+                                                    </svg>
+                                                </div>
 
-            <div className="w-16 h-16 rounded-full bg-[#1d2235] flex items-center justify-center">
-                <svg
-                    className="w-8 h-8 text-gray-400"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                    viewBox="0 0 24 24"
-                >
-                    <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.77 9.77 0 01-4-.82L3 20l1.32-3.3A7.63 7.63 0 013 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-                    />
-                </svg>
-            </div>
+                                                <p className="text-gray-200 font-medium text-[14.5px]">
+                                                    No messages yet
+                                                </p>
 
-            <p className="text-gray-300 font-medium">
-                No messages yet
-            </p>
+                                                <p className="text-[13px] text-gray-500 max-w-[250px]">
+                                                    Start the conversation and send your first message
+                                                </p>
 
-            <p className="text-sm text-gray-500 max-w-[250px]">
-                Start the conversation and send your first message
-            </p>
-
-        </div>
-    )
-}
-
-
+                                            </div>
+                                        )
+                                    }
                                     {
                                         loading.messages == false &&
                                         allMessagesBwTwo.map((message) => {
@@ -635,7 +635,7 @@ let handleDelete = async () => {
                                                 <div key={message._id}>
                                                     {show && (
                                                         <div className="flex justify-center my-4">
-                                                            <span className="bg-[#2a3142] text-gray-300 px-3 py-1 rounded-full text-sm">
+                                                            <span className="bg-[#1d2235] text-gray-400 px-3 py-1 rounded-full text-[11.5px] font-medium border border-[#2a3142]">
                                                                 {curr}
                                                             </span>
                                                         </div>
@@ -668,10 +668,10 @@ let handleDelete = async () => {
                                         {imageBlobs.map((src, index) => (
                                         <div
                                             key={index}
-                                            className="relative w-20 h-20 flex-shrink-0 rounded-md overflow-hidden border border-[#2a3142] bg-[#141720]">
+                                            className="relative w-16 h-16 flex-shrink-0 rounded-md overflow-hidden border border-[#2a3142] bg-[#141720]">
 
                                             <img  src={src} alt="preview" className="w-full h-full object-cover"/>
-                                            <button className="absolute top-1 right-1 bg-black/60 text-white text-xs w-5 h-5 rounded-full"
+                                            <button className="absolute top-1 right-1 bg-black/70 hover:bg-black/90 text-white text-[11px] w-4.5 h-4.5 rounded-full flex items-center justify-center transition-colors duration-150"
                                             onClick={() =>{
                                                 setImageBlobs(prev => prev.filter((_, i) => i !== index))
                                                 setAttachments(prev => prev.filter((_, i) => i !== index))
@@ -698,15 +698,16 @@ let handleDelete = async () => {
                 </div>
 
 
-                <div className={`w-[25vw] bg-[#212634] min-h-[100vh] flex  flex-col items-center`} ref={sideOverlayRef}>
+                <div className={`${conversationSelected ? "w-[25vw]":""} bg-[#212634] min-h-[100vh] flex flex-col items-center border-l border-[#1d2230]`} ref={sideOverlayRef}>
                     {
-                        isSideBarOpen && 
+                        conversationSelected && 
                         <SideOverlay 
                         setUserSelectedIdIfNotGroup={setUserSelectedIdIfNotGroup}
                         setIsSideBarOpen={setIsSideBarOpen} 
                         userA={userSelectedIdIfNotGroup} 
                         userB={currentUserId}
                         onlineUsers={onlineUsers}
+                        setClearChatPopupOpen={setClearChatPopupOpen}
                         onClearChat={handleClearChat}
                         />
                     }

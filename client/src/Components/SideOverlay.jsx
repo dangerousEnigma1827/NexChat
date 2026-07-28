@@ -11,6 +11,7 @@ function SideOverlay({
   userB,
   onlineUsers,
   setUserSelectedIdIfNotGroup,
+  setClearChatPopupOpen,
   onClearChat = () => {},
   onMuteToggle = () => {},
   onBlockUser = () => {},

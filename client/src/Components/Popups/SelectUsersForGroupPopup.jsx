@@ -1,3 +1,4 @@
+// SelectUsersForGroupPopup.jsx
 import axios from 'axios'
 import React, { useContext, useEffect, useState } from 'react'
 import { ArrowLeftIcon, Search, X, UsersIcon, Loader2 } from 'lucide-react'
@@ -14,10 +15,10 @@ function SelectUsersForGroupPopup({
 
     const { currentUserId } = useContext(UserContext)
 
-    const {
-        groupName,
-        groupDescription
-    } = useContext(GroupContext)
+    let {
+        groupName, groupDescription,
+        setGroupName, setGroupDescription
+        } = useContext(GroupContext)
 
     const [allSingleUsers, setAllSingleUsers] = useState([])
     const [searchQuery, setSearchQuery] = useState('')
@@ -100,74 +101,83 @@ function SelectUsersForGroupPopup({
     }
 
     return (
-        <div className='fixed inset-0 bg-black/60 backdrop-blur-md flex justify-center items-center z-[100000]'>
+        <div className='fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-[100000] px-4'>
 
-            <div className='w-[550px] h-[600px] bg-[#1b2130] border border-[#2e3548] rounded-2xl shadow-2xl p-6 flex flex-col'>
+            <div className='w-full max-w-[500px] sm:w-[500px] h-[560px] bg-[#1b2130] border border-[#2a3040] rounded-xl shadow-2xl p-5 flex flex-col'>
 
-                <div className='flex items-center justify-between mb-6'>
+                {/* Header */}
+                <div className='flex items-center justify-between mb-4'>
 
                     <div>
-                        <h1 className='text-2xl font-bold text-white'>
+                        <h1 className='text-[17px] font-semibold text-white'>
                             Select Users
                         </h1>
 
-                        <p className='text-sm text-gray-400 mt-1'>
+                        <p className='text-[12.5px] text-gray-500 mt-0.5'>
                             Choose members for your group
                         </p>
                     </div>
 
                     <button
-                        onClick={() => setSelectUsersForGroupPopupOpen(false)}
-                        className='text-gray-400 hover:text-white transition'
+                        onClick={() => {
+                            setSelectUsersForGroupPopupOpen(false)
+                            setGroupDescription("")
+                            setGroupName("")
+                        }}
+                        className='w-8 h-8 flex items-center justify-center rounded-full text-gray-400 hover:bg-[#242b3f] hover:text-white transition-colors duration-150'
                     >
-                        <X size={22}/>
+                        <X size={18}/>
                     </button>
 
                 </div>
 
-                <div className='w-full bg-[#141720] h-[58px] rounded-xl flex items-center gap-3 px-4 mb-5 border border-[#2e3548]'>
+
+                {/* Search */}
+                <div className='w-full bg-[#141720] h-[46px] rounded-lg flex items-center gap-2.5 px-3.5 mb-4 border border-[#2a3040] focus-within:border-[#4c7dff]/50 transition-colors duration-150'>
 
                     <Search
-                        size={18}
-                        className='text-gray-400'
+                        size={16}
+                        className='text-gray-500'
                     />
 
                     <input
                         value={searchQuery}
                         onChange={(e)=>setSearchQuery(e.target.value)}
                         placeholder="Search users..."
-                        className='flex-1 bg-transparent outline-none text-white placeholder:text-gray-500'
+                        className='flex-1 bg-transparent outline-none text-[14px] text-white placeholder:text-gray-500'
                     />
 
                 </div>
 
-                <div className='flex-1 overflow-y-auto pr-1'>
+
+                {/* Users */}
+                <div className='flex-1 overflow-y-auto pr-1 space-y-1'>
 
                     {
                         loading ?
 
-                        <div className='h-full flex flex-col justify-center items-center gap-4'>
+                        <div className='h-full flex flex-col justify-center items-center gap-3'>
 
-                            <div className='w-16 h-16 rounded-full bg-[#1d2235] flex items-center justify-center'>
+                            <div className='w-14 h-14 rounded-full bg-[#1d2235] flex items-center justify-center'>
 
                                 <UsersIcon
-                                    size={32}
+                                    size={26}
                                     fill="#4c7dff"
                                     className='text-[#4c7dff]'
                                 />
 
                             </div>
 
-                            <p className='text-white font-medium text-lg'>
+                            <p className='text-white font-medium text-[14.5px]'>
                                 Loading users
                             </p>
 
-                            <p className='text-gray-400 text-sm'>
+                            <p className='text-gray-500 text-[12.5px]'>
                                 Fetching your contacts...
                             </p>
 
                             <Loader2
-                                size={28}
+                                size={22}
                                 className='text-[#4c7dff] animate-spin'
                             />
 
@@ -183,23 +193,26 @@ function SelectUsersForGroupPopup({
                                 selectedUsers.includes(user._id)
 
                             return (
+
                                 <div
                                     key={idx}
                                     onClick={() => handleUserSelect(user._id)}
                                     className={`
-                                        h-[75px] w-full flex items-center
-                                        px-4 mb-2 rounded-xl cursor-pointer
-                                        transition
-                                        ${isSelected
-                                            ? 'border border-[#4c7dff]'
-                                            : 'hover:bg-[#2b3142]'
+                                        min-h-[64px] w-full flex items-center justify-between
+                                        px-4 py-2 mt-1 rounded-lg cursor-pointer
+                                        border transition-colors duration-150
+                                        ${
+                                            isSelected
+                                            ? 'bg-[#4c7dff]/10 border-[#4c7dff]/60'
+                                            : 'border-transparent hover:bg-[#242b3f]'
                                         }
                                     `}
                                 >
 
-                                    <div className='flex items-center gap-4'>
+                                    <div className='flex items-center gap-3 min-w-0'>
 
-                                        <div className='rounded-full bg-[#141720] h-[52px] w-[52px] flex justify-center items-center overflow-hidden'>
+                                        {/* Avatar */}
+                                        <div className='rounded-full bg-[#141720] h-[42px] w-[42px] flex justify-center items-center overflow-hidden ring-1 ring-[#2a3142] flex-shrink-0'>
 
                                             {
                                                 user.pfp ?
@@ -211,52 +224,79 @@ function SelectUsersForGroupPopup({
 
                                                 :
 
-                                                <p className='text-white text-lg font-medium'>
+                                                <p className='text-white text-[14px] font-medium'>
                                                     {user.username?.[0]?.toUpperCase()}
                                                 </p>
                                             }
 
                                         </div>
 
-                                        <p className='text-white'>
+
+                                        <p className='text-[14px] text-gray-100 font-medium truncate max-w-[260px]'>
                                             {user.username}
                                         </p>
 
                                     </div>
 
+
+                                    {/* Selection */}
+                                    <div
+                                        className={`
+                                            w-4 h-4 rounded-full border-2 
+                                            flex items-center justify-center 
+                                            flex-shrink-0 transition-colors duration-150
+                                            ${
+                                                isSelected
+                                                ? "bg-[#4c7dff] border-[#4c7dff]"
+                                                : "border-[#3a4155]"
+                                            }
+                                        `}
+                                    >
+                                        {
+                                            isSelected &&
+                                            <div className='w-1.5 h-1.5 rounded-full bg-white'/>
+                                        }
+
+                                    </div>
+
+
                                 </div>
+
                             )
                         })
 
                         :
 
                         <div className='h-full flex justify-center items-center'>
-                            <p className='text-gray-400'>
+                            <p className='text-gray-500 text-[13.5px]'>
                                 No users found
                             </p>
                         </div>
+
                     }
 
                 </div>
 
-                <div className='mt-5 pt-5 flex justify-between'>
+
+                {/* Footer */}
+                <div className='mt-4 pt-4 border-t border-[#2a3040] flex justify-between'>
 
                     <button
                         onClick={()=>{
-                            console.log("clicking")
                             setSelectUsersForGroupPopupOpen(false)
                             setCreateGroupPopupOpen(true)
                         }}
-                        className='px-5 py-2.5 bg-[#2b3142] rounded-lg text-white flex items-center gap-1 hover:bg-[#363d50] transition'
+                        className='px-4 py-2.5 bg-[#242b3f] rounded-lg text-[13.5px] font-medium text-gray-300 flex items-center gap-1.5 hover:bg-[#2b3346] transition-colors duration-150'
                     >
-                        <ArrowLeftIcon size={20}/>
+                        <ArrowLeftIcon size={16}/>
                         Back
                     </button>
+
 
                     <button
                         disabled={selectedUsers.length === 0}
                         onClick={handleCreateGroup}
-                        className='px-5 py-2.5 bg-[#4c7dff] rounded-lg text-white disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#3f6ee8] transition'
+                        className='px-4 py-2.5 bg-[#4c7dff] rounded-lg text-[13.5px] font-medium text-white disabled:opacity-40 disabled:cursor-not-allowed hover:bg-[#3f6ee8] transition-colors duration-150 shadow-sm'
                     >
                         Create Group
                     </button>

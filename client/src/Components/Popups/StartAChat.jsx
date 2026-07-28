@@ -1,3 +1,4 @@
+// StartAChat.jsx
 import axios from 'axios'
 import { Search, X } from 'lucide-react'
 import React, { useState } from 'react'
@@ -81,23 +82,28 @@ function StartAChat({setStartAChat,userSearchText, setUserSearchText,getAllConve
 
   return (
     <>
-      <div className='h-screen w-screen fixed inset-0 flex justify-center items-center bg-black/50 backdrop-blur-sm z-[100000]'>
-        <div className='h-[72vh] w-[32vw] min-w-[420px] rounded-2xl bg-[#232a3a] border border-[#31384d] shadow-2xl p-6'>
+      <div className='h-screen w-screen fixed inset-0 flex justify-center items-center bg-black/60 backdrop-blur-sm z-[100000] px-4'>
+        <div className='h-[68vh] w-full max-w-[420px] rounded-xl bg-[#1b2130] border border-[#2a3040] shadow-2xl p-5'>
           <div className='flex flex-col h-full text-white'>
-            <div className='flex justify-between items-center mb-6'>
-              <div className='w-[24px]' />
-              <h1 className='text-[1.3rem] font-semibold tracking-wide'>Find Users</h1>
+            <div className='flex justify-between items-center mb-5'>
+              <div className='w-6' />
+              <h1 className='text-[16px] font-semibold'>Find Users</h1>
 
-              <X size={22} className='text-gray-400 hover:text-red-500 cursor-pointer transition-all duration-300' onClick={() => {
+              <button
+                onClick={() => {
                     setStartAChat(false)
                     setUserSearchText("")
                     setUsernameSearchResutls([])
-                }}/>
+                }}
+                className='w-7 h-7 flex items-center justify-center rounded-full text-gray-400 hover:bg-[#242b3f] hover:text-white transition-colors duration-150'
+              >
+                <X size={17} />
+              </button>
             </div>
 
-            <div className='w-full h-[58px] bg-[#141720] rounded-xl border border-[#2b3245] flex items-center px-4 gap-3 transition-all duration-300'>
-              <Search size={20} className='text-gray-400' />
-              <input type="text" value={userSearchText} placeholder='Search users...' className='flex-1 bg-transparent outline-none text-[15px] text-white placeholder:text-gray-500'
+            <div className='w-full h-[46px] bg-[#141720] rounded-lg border border-[#2a3040] focus-within:border-[#4c7dff]/50 flex items-center px-3.5 gap-2.5 transition-colors duration-150'>
+              <Search size={16} className='text-gray-500' />
+              <input type="text" value={userSearchText} placeholder='Search users...' className='flex-1 bg-transparent outline-none text-[14px] text-white placeholder:text-gray-500'
                 onChange={(e) => setUserSearchText(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") handleSearchUser()
@@ -105,8 +111,8 @@ function StartAChat({setStartAChat,userSearchText, setUserSearchText,getAllConve
               {
                 userSearchText?.length > 0 && (
                   <X
-                    size={18}
-                    className='text-gray-400 hover:text-red-500 cursor-pointer transition-all duration-300'
+                    size={15}
+                    className='text-gray-500 hover:text-white cursor-pointer transition-colors duration-150 flex-shrink-0'
                     onClick={() =>{
                         setUserSearchText("")
                         setHasSearched(false)
@@ -119,7 +125,7 @@ function StartAChat({setStartAChat,userSearchText, setUserSearchText,getAllConve
             </div>
             <button
               disabled={!userSearchText.trim() || loading.searchLoading}
-              className={`w-full  disabled:cursor-not-allowed disabled:opacity-20 h-[52px] bg-[#4c7dff] hover:bg-[#3f6ee8] rounded-xl mt-4 font-medium text-[15px] transition-all duration-300 active:scale-[0.98]`}
+              className={`w-full disabled:cursor-not-allowed disabled:opacity-40 h-[44px] bg-[#4c7dff] hover:bg-[#3f6ee8] rounded-lg mt-3 font-medium text-[13.5px] transition-colors duration-150 shadow-sm active:scale-[0.98]`}
 
               onClick={handleSearchUser}>
                 {!loading.searchLoading ? 
@@ -130,13 +136,15 @@ function StartAChat({setStartAChat,userSearchText, setUserSearchText,getAllConve
                   </div>)}
             </button>
 
-            <div className='flex-1 mt-5 bg-[#141720] rounded-2xl border border-[#2b3245] overflow-y-auto'>
+            <div className='flex-1 mt-4 bg-[#141720] rounded-lg border border-[#2a3040] overflow-y-auto'>
 
               {
                 !hasSearched && (
-                  <div className='w-full h-full flex flex-col justify-center items-center text-gray-500 gap-2'>
-                    <Search size={32} className='opacity-60' />
-                    <p className='text-[15px]'>Search For Users To Start chatting</p>
+                  <div className='w-full h-full flex flex-col justify-center items-center text-gray-500 gap-2 px-6 text-center'>
+                    <div className='w-12 h-12 rounded-full bg-[#1d2235] flex items-center justify-center mb-1'>
+                      <Search size={20} className='text-gray-600' />
+                    </div>
+                    <p className='text-[13px]'>Search for users to start chatting</p>
                   </div>
                 )
               }
@@ -144,9 +152,11 @@ function StartAChat({setStartAChat,userSearchText, setUserSearchText,getAllConve
               {
                 (userSearchText.trim() != "" && hasSearched && usernameSearchResults.length == 0) && (
 
-                  <div className='w-full h-full flex flex-col justify-center items-center text-gray-500 gap-2'>
-                    <Search size={32} className='opacity-60' />
-                    <p className='text-[15px]'>No Users found...</p>
+                  <div className='w-full h-full flex flex-col justify-center items-center text-gray-500 gap-2 px-6 text-center'>
+                    <div className='w-12 h-12 rounded-full bg-[#1d2235] flex items-center justify-center mb-1'>
+                      <Search size={20} className='text-gray-600' />
+                    </div>
+                    <p className='text-[13px]'>No users found</p>
                   </div>
                 )
               }
@@ -156,12 +166,12 @@ function StartAChat({setStartAChat,userSearchText, setUserSearchText,getAllConve
                 (hasSearched && usernameSearchResults.length != 0) && (
 
                   (
-                  <div className='w-[100%] flex flex-col items-center p-2'>
-                    <p className='text-gray-400'>{usernameSearchResults.length} Result {usernameSearchResults.length > 1 ? "'s" : ""} found</p>
+                  <div className='w-full flex flex-col items-stretch p-2'>
+                    <p className='text-[11.5px] text-gray-500 px-2 mb-1 uppercase tracking-wider font-medium'>{usernameSearchResults.length} result{usernameSearchResults.length > 1 ? "s" : ""} found</p>
                     {
                       usernameSearchResults.map((user) => {
                         return (
-                          <div key={user._id} className={`  ${user._id != currentUserId ? '':'hidden'} h-[7vh] w-[100%] flex items-center justify-between mb-3 gap-2 cursor-pointer hover:bg-[#2b3142] rounded-md px-2 py-8 transition-all duration-300`}
+                          <div key={user._id} className={`  ${user._id != currentUserId ? '':'hidden'} h-[62px] w-full flex items-center gap-3 mb-1 cursor-pointer hover:bg-[#22283a] rounded-lg px-2.5 transition-colors duration-150`}
                             onClick={() => {
                                 setSelectedUserFromSearch(user._id)
                                 setConversationSelected(user._id)
@@ -171,19 +181,17 @@ function StartAChat({setStartAChat,userSearchText, setUserSearchText,getAllConve
                                 handlestartConversation()
                             }}>
 
-                            <div className='flex items-center gap-4'>
-                              <div className='relative'>
-                                <div className='rounded-full bg-[#141720] h-[7vh] w-[7vh] flex justify-center items-center overflow-hidden'>
+                              <div className='relative flex-shrink-0'>
+                                <div className='rounded-full bg-[#141720] h-11 w-11 flex justify-center items-center overflow-hidden ring-1 ring-[#2a3142]'>
                                   {
-                                    user.pfp ? (<img src={user.pfp} className='h-full w-full object-cover rounded-full'/>) : (<p className='text-white text-md font-medium'>{user.username?.substring(0, 1).toUpperCase()}</p>)
+                                    user.pfp ? (<img src={user.pfp} className='h-full w-full object-cover'/>) : (<p className='text-white text-[14px] font-medium'>{user.username?.substring(0, 1).toUpperCase()}</p>)
                                   }
                                 </div>
                               </div>
 
                               <div className='flex flex-col min-w-0'>
-                                <p className='text-xl text-white truncate'>{user.username}</p>
+                                <p className='text-[14px] text-gray-100 font-medium truncate'>{user.username}</p>
                               </div>
-                            </div>
                           </div>
                         )
                       })

@@ -1,3 +1,4 @@
+// ConversationListBar.jsx
 import React, { useContext } from 'react'
 import { UserRound, UsersRound } from 'lucide-react'
 import useTime from '../Hooks/useTime'
@@ -68,19 +69,19 @@ function ConversationListBar({
     <div className="w-full h-full overflow-hidden bg-[#1b1f30] rounded-xl border border-[#1d2230] flex flex-col p-3">
 
       <button
-        className="w-full py-3 bg-[#4c7dff] hover:opacity-90 active:scale-[0.98] transition text-white font-medium rounded-lg shadow-md"
+        className="w-full py-2.5 bg-[#4c7dff] hover:bg-[#3f6ee8] active:scale-[0.98] transition-all duration-150 text-white text-[14px] font-medium rounded-lg shadow-sm"
         onClick={()=>setStartAChat(true)}
       >
         + Start New Chat
       </button>
 
-      <div className="mt-4 flex flex-col flex-1 overflow-y-auto pr-1 space-y-2">
+      <div className="mt-4 flex flex-col flex-1 overflow-y-auto pr-1 space-y-1">
 
         {
           loading.conversation && (
             <div className="flex-1 flex flex-col justify-center items-center gap-3">
-              <div className="w-10 h-10 border-4 border-[#2a3142] border-t-[#4c7dff] rounded-full animate-spin"/>
-              <p className="text-sm text-gray-400">
+              <div className="w-9 h-9 border-[3px] border-[#2a3142] border-t-[#4c7dff] rounded-full animate-spin"/>
+              <p className="text-[13px] text-gray-400">
                 Loading conversations...
               </p>
             </div>
@@ -90,11 +91,11 @@ function ConversationListBar({
         {
           !loading.conversation &&
           conversations.length===0 && (
-            <div className="flex-1 flex flex-col justify-center items-center text-gray-400 text-center">
-              <p className="font-medium">
+            <div className="flex-1 flex flex-col justify-center items-center text-center gap-1">
+              <p className="font-medium text-gray-300 text-[14px]">
                 No conversations yet
               </p>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-[12px] text-gray-500">
                 Start a new chat to begin
               </p>
             </div>
@@ -146,12 +147,12 @@ function ConversationListBar({
                   setAllMessagesSeen(conversation._id)
 
                 }}
-                className={`flex items-center gap-3 px-3 py-3 rounded-xl cursor-pointer transition hover:bg-[#22283a] ${isActive ? "bg-[#22283a]" : ""}`}
+                className={`flex items-center gap-3 px-2.5 py-2.5 rounded-lg cursor-pointer transition-colors duration-150 hover:bg-[#22283a] ${isActive ? "bg-[#242b3f]" : ""}`}
               >
 
-                <div className="relative">
+                <div className="relative flex-shrink-0">
 
-                  <div className="h-12 w-12 rounded-full overflow-hidden bg-[#141720] flex items-center justify-center">
+                  <div className="h-12 w-12 rounded-full overflow-hidden bg-[#141720] flex items-center justify-center ring-1 ring-[#2a3142]">
 
                     {
                       conversation.type==="private"
@@ -160,13 +161,13 @@ function ConversationListBar({
                       ?
                       <img src={user.pfp} className="h-full w-full object-cover"/>
                       :
-                      <UserRound className="text-white"/>
+                      <UserRound size={20} className="text-gray-400"/>
                       :
                       conversation.groupIcon
                       ?
                       <img src={conversation.groupIcon} className="h-full w-full object-cover"/>
                       :
-                      <UsersRound className="text-white"/>
+                      <UsersRound size={20} className="text-gray-400"/>
                     }
 
                   </div>
@@ -174,16 +175,16 @@ function ConversationListBar({
                   {
                     conversation.type==="private" &&
                     onlineUsers.includes(user?._id) &&
-                    <div className="absolute bottom-0 right-0 h-3 w-3 bg-green-500 rounded-full border-2 border-[#1b1f30]"/>
+                    <div className="absolute bottom-0 right-0 h-3 w-3 bg-emerald-400 rounded-full border-2 border-[#1b1f30]"/>
                   }
 
                 </div>
 
                 <div className="flex-1 min-w-0">
 
-                  <div className="flex justify-between items-center">
+                  <div className="flex justify-between items-center gap-2">
 
-                    <p className="text-white font-medium truncate">
+                    <p className="text-[14px] text-gray-100 font-medium truncate">
                       {
                         conversation.type==="private"
                         ? user?.username
@@ -191,7 +192,7 @@ function ConversationListBar({
                       }
                     </p>
 
-                    <p className="text-[11px] text-gray-500">
+                    <p className="text-[11px] text-gray-500 flex-shrink-0">
                       {
                         conversation.lastTimeMessageSent &&
                         formatTime(conversation.lastTimeMessageSent)
@@ -200,7 +201,7 @@ function ConversationListBar({
 
                   </div>
 
-                  <p className="text-sm text-gray-400 truncate">
+                  <p className="text-[12.5px] text-gray-500 truncate mt-0.5">
 
                     {
                       conversation.lastMessageSent

@@ -1,31 +1,27 @@
+// LogoutPopup.jsx
 import React from 'react'
 import { SignOutIcon } from '@phosphor-icons/react'
 
 function LogoutPopup({handleLogout, setLogoutPopupOpen}) {
   return (
-    <>
-    <div className='h-screen w-screen fixed inset-0 z-1000000 flex justify-center items-center bg-black/40 backdrop-blur-sm'>
-        <div className='h-[40vh] w-[30vw] rounded-2xl bg-[#232a3a] border border-[#31384d] shadow-2xl p-8'>
-            <div className='flex flex-col justify-center items-center h-full text-white px-8'>
-
-                <div className='h-16 w-16 rounded-full p-2 bg-red-500/20 flex items-center justify-center mb-5'>
-                    <SignOutIcon size={32} color="#f44336" />
+    <div className='h-screen w-screen fixed inset-0 z-[100000] flex justify-center items-center bg-black/60 backdrop-blur-sm px-4'>
+        <div className='w-full max-w-[360px] rounded-xl bg-[#1b2130] border border-[#2a3040] shadow-2xl p-6'>
+            <div className='flex flex-col justify-center items-center text-white'>
+                <div className='h-12 w-12 rounded-full bg-red-500/10 flex items-center justify-center mb-4'>
+                    <SignOutIcon size={22} className='text-red-400' />
                 </div>
-
-                <h1 className='text-2xl font-semibold mb-3'>Logout from NexChat?</h1>
-                <p className='text-gray-400 text-sm text-center mb-8'>You will be logged out.</p>
-                <div className='flex gap-4'>
-                    <button className='px-6 py-2 rounded-md bg-[#2b3142] hover:bg-[#3b4258] transition'
+                <h1 className='text-[16px] font-semibold mb-1.5'>Log out of NexChat?</h1>
+                <p className='text-gray-500 text-[13px] text-center mb-5'>You'll need to sign in again to continue.</p>
+                <div className='flex gap-2.5 w-full'>
+                    <button className='flex-1 h-[42px] rounded-lg bg-[#242b3f] text-[13.5px] font-medium text-gray-300 hover:bg-[#2b3346] transition-colors duration-150'
                         onClick={() => {
                             setLogoutPopupOpen(false)
                         }}>Cancel</button>
-                    <button className='px-6 py-2 rounded-md bg-red-500 hover:bg-red-600 transition' onClick={handleLogout}>Logout</button>
+                    <button className='flex-1 h-[42px] rounded-lg bg-red-500 hover:bg-red-600 text-[13.5px] font-medium transition-colors duration-150 shadow-sm' onClick={handleLogout}>Logout</button>
                 </div>
-
             </div>
         </div>
     </div>
-    </>
   )
 }
 

@@ -1,3 +1,4 @@
+// InputArea.jsx
 import React from 'react'
 import { Plus, Send } from 'lucide-react'
 import * as Tooltip from "@radix-ui/react-tooltip"
@@ -14,22 +15,24 @@ function InputArea({
   const tooltipClass = `
     bg-[#1a1f2e]
     text-white
-    text-xs
-    px-3
-    py-1.5
+    text-[11.5px]
+    font-medium
+    px-2.5
+    py-1
     rounded-md
     shadow-lg
     border border-[#2a3142]
   `
 
+  const canSend = (text?.trim()?.length > 0) || imageBlobs.length > 0
 
   return (
 
     <Tooltip.Provider delayDuration={300}>
 
-      <div className='w-full px-4 py-3 bg-[#11131a] border-t border-[#2a2f3d] flex justify-center'>
+      <div className='w-full px-4 py-3 bg-[#141720] border-t border-[#2a3040] flex justify-center'>
         
-        <div className='w-full max-w-5xl bg-[#1a1d27] rounded-2xl px-4 py-3 flex gap-3 shadow-lg items-center'>
+        <div className='w-full max-w-5xl bg-[#1b2130] rounded-xl border border-[#2a3040] focus-within:border-[#4c7dff]/40 px-3.5 py-2.5 flex gap-2.5 items-center transition-colors duration-150'>
 
 
           {/* Upload */}
@@ -38,10 +41,10 @@ function InputArea({
 
             <Tooltip.Trigger asChild>
 
-              <label className='cursor-pointer'>
+              <label className='cursor-pointer flex-shrink-0'>
 
-                <div className='p-2 rounded-full hover:bg-[#2b3142] transition'>
-                  <Plus size={22} className='text-gray-300' />
+                <div className='p-2 rounded-full hover:bg-[#242b3f] transition-colors duration-150'>
+                  <Plus size={20} className='text-gray-400' />
                 </div>
 
 
@@ -65,7 +68,7 @@ function InputArea({
               sideOffset={8}
               className={tooltipClass}
             >
-              Attach Files
+              Attach files
               <Tooltip.Arrow className="fill-[#1a1f2e]" />
             </Tooltip.Content>
 
@@ -81,7 +84,7 @@ function InputArea({
 
           <textarea
             placeholder='Type a message...'
-            className='flex-1 bg-transparent resize-none outline-none border-none text-white placeholder:text-gray-500 text-sm max-h-32 min-h-[24px] py-2 leading-6'
+            className='flex-1 bg-transparent resize-none outline-none border-none text-white placeholder:text-gray-500 text-[14px] max-h-32 min-h-[22px] py-1.5 leading-6'
             rows={1}
             value={text}
             onChange={(e)=>setText(e.target.value)}
@@ -117,11 +120,11 @@ function InputArea({
 
               <button
 
-                disabled={!text?.trim() && imageBlobs.length===0}
+                disabled={!canSend}
 
                 onClick={()=>{
 
-                  if(!text.trim() && imageBlobs.length===0)
+                  if(!canSend)
                     return
 
                   sendMessageFunc()
@@ -132,19 +135,19 @@ function InputArea({
                 }}
 
                 className={`
-                  p-2 rounded-full transition
+                  p-2 rounded-full transition-colors duration-150 flex-shrink-0
                   ${
-                    (text?.trim() || imageBlobs.length>0)
+                    canSend
                     ?
-                    "bg-blue-500 hover:bg-blue-600 cursor-pointer"
+                    "bg-[#4c7dff] hover:bg-[#3f6ee8] cursor-pointer"
                     :
-                    "bg-[#2b3142] cursor-not-allowed"
+                    "bg-[#242b3f] cursor-not-allowed"
                   }
                 `}
 
               >
 
-                <Send size={18} className='text-white'/>
+                <Send size={16} className={canSend ? 'text-white' : 'text-gray-500'}/>
 
               </button>
 
@@ -156,7 +159,7 @@ function InputArea({
               sideOffset={8}
               className={tooltipClass}
             >
-              Send Message
+              Send message
               <Tooltip.Arrow className="fill-[#1a1f2e]" />
             </Tooltip.Content>
 
