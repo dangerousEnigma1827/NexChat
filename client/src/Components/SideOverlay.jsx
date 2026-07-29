@@ -73,7 +73,8 @@ function SideOverlay({
     if (userA && userB) handleFindCommonGroups();
   }, [userA, userB]);
 
-  const isOnline = onlineUsers?.includes(isconversationAGroup ? conversationSelected : userB);
+  let isOnline = onlineUsers?.includes(isconversationAGroup ? conversationSelected : userB);
+
 
   const SectionLabel = ({ label, icon: Icon }) => (
     <div className="flex items-center gap-1.5 px-1 mb-2.5">

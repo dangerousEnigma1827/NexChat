@@ -21,9 +21,12 @@ export const sendMessage = async (req,res)=>{
                 returnDocument:"after"
             }
         )
+        console.log("msg sent to ", req.body.conversationId.toString())
+        console.log("msg is ", msg)
 
+        io.to(req.body.conversationId.toString()).emit("recieve_message", messageSent)
         res.json(messageSent)
-        io.to(req.body.recieverId).emit("recieve_message", messageSent)
+
     }catch(err){
         console.log("error sending message to frontend from backend", err)
     }

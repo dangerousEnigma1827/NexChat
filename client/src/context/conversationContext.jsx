@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useState,useEffect } from "react";
 
 export const ConversationContext = createContext()
 
@@ -12,7 +12,14 @@ export function ConversationProvider({children}){
     let [isconversationAGroup, setIsConversationAGroup] = useState(false)
     let [conversationId, setConversationId] = useState()
     
-    
+    useEffect(() => {
+  console.log("ConversationProvider mounted");
+
+  return () => {
+    console.log("ConversationProvider unmounted");
+  };
+}, []);
+
     return (
         <ConversationContext.Provider 
         value={{

@@ -36,6 +36,7 @@ import { formatDayLabel } from '../utils/formatDays.js'
 import UserProfilePopup from '../Components/Popups/UserProfilePopup.jsx';
 import EditProfilePopup from '../Components/Popups/EditProfilePopup.jsx';
 import LoadingSpin from '../Components/LoadingSpin.jsx';
+import LoadingPage from './LoadingPage.jsx';
 
 function HomePage() {
 
@@ -66,8 +67,10 @@ function HomePage() {
     let [loading, setLoading] = useState({messages:false, conversation:false})
 
     let{
-        currentUserId, setUserId
+        currentUserId, setUserId,userLoading
     } = useContext(UserContext)
+
+
 
     let {
         groupName, setGroupName,
@@ -399,21 +402,58 @@ let handleDelete = async () => {
     }, [allMessagesBwTwo])
 
     useEffect(() => {
+
+        if(!currentUserId) return;
+
         socket.connect()
         socket.on("connect", () => {
+            // console.log(currentUserId)
             socket.emit("join", currentUserId)
         })
-        socket.on("recieve_message", (msg) => {
-            setAllMessagesBwTwo(prev => [...prev, msg])
+
+        socket.on("recieve_message",(msg)=>{
+            if(msg.senderId != currentUserId){
+                // console.log(currentUserId)
+                // console.log(msg)
+                // console.log(String(msg.conversationId) == String(conversationId))
+                // console.log(msg.conversationId)
+                // console.log(conversationSelected)
+                // currently opened chat
+                if(msg.conversationId === conversationId){
+
+                    setAllMessagesBwTwo(prev=>[
+                        ...prev,
+                        msg
+                    ])
+
+                }
+                // update conversation sidebar always
+                setConversations(prev =>
+                    prev.map(c =>
+                        c._id === msg.conversationId
+                        ? {
+                            ...c,
+                            lastMessageSent: msg,
+                            lastTimeMessageSent: new Date(),
+                            lastMessageSentBy: msg.senderId
+                        }
+                        : c
+                    )
+                )
+            }
         })
-        socket.on("online_users", setOnlineUsers)
+
+
+        socket.on("online_users", (users)=>{
+            setOnlineUsers(users)
+        })
 
         return () => {
             socket.off("connect")
             socket.off("recieve_message")
         }
 
-    }, [currentUserId])
+    }, [currentUserId, conversationSelected, conversationId])
 
     // useEffect(() => {
     //     let handleClick = (e) => {
@@ -425,6 +465,11 @@ let handleDelete = async () => {
     //     document.addEventListener("mousedown", handleClick)
     //     return () => document.removeEventListener("mousedown", handleClick)
     // }, [isSideBarOpen])
+
+
+    if(userLoading){
+        return <LoadingPage/>
+    }
 
 
     return (

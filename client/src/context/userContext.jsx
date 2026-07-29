@@ -1,55 +1,81 @@
 import { createContext, useEffect, useState } from "react";
 import api from "../api/apiInstance";
 
-export const UserContext = createContext()
+export const UserContext = createContext();
 
-export function UserProvider({children}){
-    let [currentUserId, setUserId] = useState(null)
-    let [currentUserUsername, setCurrentUserUsername] = useState(null)
-    let [currentUserAbout, setCurrentUserAbout] = useState(null)
-    let [currentUserPfp, setCurrentUserPfp] = useState(null)
-    let [currentUserEmail, setCurrentUserEmail] = useState(null)
-    let token = localStorage.getItem('token')
+export function UserProvider({ children }) {
 
-    let getCurrentUser = async () => {
+    const [currentUserId, setUserId] = useState(null);
+    const [currentUserUsername, setCurrentUserUsername] = useState(null);
+    const [currentUserAbout, setCurrentUserAbout] = useState(null);
+    const [currentUserPfp, setCurrentUserPfp] = useState(null);
+    const [currentUserEmail, setCurrentUserEmail] = useState(null);
+
+    const [userLoading, setUserLoading] = useState(true);
+
+
+    const getCurrentUser = async (token) => {
         try {
-            let res = await api.get('/auth/me', {
-                headers: { Authorization: `Bearer ${token}` }
-            })
-            setUserId(res.data._id)
-            setCurrentUserAbout(res.data.about)
-            setCurrentUserUsername(res.data.username)
-            setCurrentUserPfp(res.data.pfp)
-            setCurrentUserEmail(res.data.email)
-            console.log(res.data)
+            // console.log("calling /auth/me")
+            const res = await api.get("/auth/me")
+            // console.log("USER RESPONSE:", res.data)
+            if(res.data._id){
+                setUserId(res.data._id)
+                setCurrentUserUsername(res.data.username)
+                setCurrentUserAbout(res.data.about)
+                setCurrentUserPfp(res.data.pfp)
+                setCurrentUserEmail(res.data.email)
+                setUserLoading(false)
+            }
 
-            console.log(res.data.email)
-
-        } catch (err) {
-            console.log(err)
+        }catch(err){
+            console.log("USER ERROR:", err.response?.data || err)
+            setUserLoading(false)
         }
     }
 
-    useEffect(()=>{
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+
         if(token){
-            getCurrentUser()
+            getCurrentUser(token);
         }
-    },[token])
+        else{
+            setUserLoading(false);
+        }
+    }, []);
+
+
 
     return (
-        <UserContext.Provider value={{
-            currentUserId,
-            setUserId,
-            currentUserUsername,
-            setCurrentUserUsername,
-            currentUserAbout,
-            setCurrentUserAbout,
-            currentUserPfp,
-            setCurrentUserPfp, 
-            currentUserEmail,
-            setCurrentUserEmail,
-            getCurrentUser}}>
+        <UserContext.Provider
+            value={{
+
+                currentUserId,
+                setUserId,
+
+                currentUserUsername,
+                setCurrentUserUsername,
+
+                currentUserAbout,
+                setCurrentUserAbout,
+
+                currentUserPfp,
+                setCurrentUserPfp,
+
+                currentUserEmail,
+                setCurrentUserEmail,
+
+                userLoading,
+
+                getCurrentUser
+
+            }}
+        >
+
             {children}
+
         </UserContext.Provider>
-    )
+    );
 }

@@ -8,9 +8,11 @@ import toast from 'react-hot-toast'
 import LoadingSpin from '../LoadingSpin'
 import { useContext } from 'react'
 import api from '../../api/apiInstance'
+import { useEffect } from 'react'
 function StartAChat({setStartAChat,userSearchText, setUserSearchText,getAllConversationsInFr, getAllMessagesBwtwo}){
 
   let {
+      conversationId,
       setConversationId,
       setConversationSelected,
       setConversationSelectedtedUsername,
@@ -75,10 +77,16 @@ function StartAChat({setStartAChat,userSearchText, setUserSearchText,getAllConve
         setStartAChat(false)
         setUserSearchText("")
         setUsernameSearchResutls([])
+        getAllMessagesBwtwo()
+
     }catch(err){
         console.log("error starting convo from frontend ", err)
     }
   }
+
+  useEffect(()=>{
+    getAllMessagesBwtwo()
+  },[conversationId])
 
   return (
     <>

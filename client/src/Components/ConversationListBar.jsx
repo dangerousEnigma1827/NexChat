@@ -1,11 +1,12 @@
 // ConversationListBar.jsx
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { UserRound, UsersRound } from 'lucide-react'
 import useTime from '../Hooks/useTime'
 import { ConversationContext } from '../context/conversationContext'
 import { UserContext } from '../context/userContext'
 import { GroupContext } from '../context/groupContext'
 import api from '../api/apiInstance'
+import socket from '../socket/socket'
 
 function ConversationListBar({
   onlineUsers,
@@ -22,6 +23,7 @@ function ConversationListBar({
   const {
     conversations,
     conversationSelected,
+    conversationId:convo,
     setConversationId,
     setIsConversationAGroup,
     setConversationSelected,
@@ -64,6 +66,26 @@ function ConversationListBar({
       ?.toLowerCase()
       .includes(conversationSearch.toLowerCase())
   })
+
+  useEffect(() => {
+    if (!conversationSelected) return;
+
+    socket.emit("join_conversation", conversationSelected);
+
+    return () => {
+        socket.emit("leave_conversation", conversationSelected);
+    };
+  }, [conversationSelected]);
+
+
+  useEffect(()=>{
+    // console.log(onlineUsers)
+  },[onlineUsers])
+
+
+  useEffect(()=>{
+    console.log(conversationSelected)
+  },[conversationSelected])
 
   return (
     <div className="w-full h-full overflow-hidden bg-[#1b1f30] rounded-xl border border-[#1d2230] flex flex-col p-3">
@@ -116,11 +138,8 @@ function ConversationListBar({
               <div
                 key={conversation._id}
                 onClick={()=>{
-
-                  setAllMessagesBwTwo([])
-
-                  if(conversation.type==="private"){
-
+                  if((conversation._id != conversationSelected) && (conversation.type==="private")){
+                    console.log(conversation._id, conversationSelected)
                     setUserSelectedIdIfNotGroup(user._id)
                     setConversationSelected(conversation._id)
                     setConversationId(conversation._id)
@@ -130,17 +149,17 @@ function ConversationListBar({
                     setConversationSelectedtedAbout(user.about)
 
                   }else{
-
-                    setUserSelectedIdIfNotGroup(null)
-                    setConversationSelected(conversation._id)
-                    setConversationId(conversation._id)
-                    setIsConversationAGroup(true)
-                    setConversationSelectedtedUsername(conversation.groupName)
-                    setConversationSelectedDescription(conversation.groupDescription)
-                    setConversationSelectedtedPfp(conversation.groupIcon)
-                    setGroupMembers(conversation.participants)
-                    setGroupAdmins(conversation.groupAdmin)
-
+                    if((conversation._id != conversationSelected)){
+                        setUserSelectedIdIfNotGroup(null)
+                        setConversationSelected(conversation._id)
+                        setConversationId(conversation._id)
+                        setIsConversationAGroup(true)
+                        setConversationSelectedtedUsername(conversation.groupName)
+                        setConversationSelectedDescription(conversation.groupDescription)
+                        setConversationSelectedtedPfp(conversation.groupIcon)
+                        setGroupMembers(conversation.participants)
+                        setGroupAdmins(conversation.groupAdmin)
+                    }
                   }
 
                   setIsSideBarOpen(true)
