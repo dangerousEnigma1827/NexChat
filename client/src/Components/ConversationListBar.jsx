@@ -83,10 +83,6 @@ function ConversationListBar({
   },[onlineUsers])
 
 
-  useEffect(()=>{
-    console.log(conversationSelected)
-  },[conversationSelected])
-
   return (
     <div className="w-full h-full overflow-hidden bg-[#1b1f30] rounded-xl border border-[#1d2230] flex flex-col p-3">
 

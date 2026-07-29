@@ -388,11 +388,13 @@ let handleDelete = async () => {
         }
     }, [currentUserId])
 
+
     useEffect(() => {
         if (conversationId && currentUserId) {
             getAllMessagesBwtwo()
         }
     }, [conversationId, currentUserId])
+
 
     useEffect(() =>{
         if(scrollRef.current){
@@ -400,6 +402,7 @@ let handleDelete = async () => {
             scrollRef.current.scrollHeight;
         }
     }, [allMessagesBwTwo])
+
 
     useEffect(() => {
 
@@ -446,6 +449,49 @@ let handleDelete = async () => {
 
         socket.on("online_users", (users)=>{
             setOnlineUsers(users)
+        })
+
+        socket.on("messages_seen",(data)=>{
+            const {conversationId, userId}=data;
+
+            setAllMessagesBwTwo(prev => {
+
+                let newarr = prev.map(message => ({
+                    ...message,
+                    seenBy:[
+                        ...(message.seenBy || []),
+                        userId
+                    ]
+                }))
+
+                // console.log("before", prev)
+                // console.log("after", newarr)
+
+                return newarr
+            })
+        })
+
+        socket.on("message_deleted",(deletedMessage)=>{
+            setAllMessagesBwTwo(prev =>
+                prev.map(message =>
+                    message._id === deletedMessage._id
+                    ? deletedMessage
+                    : message
+                )
+            );
+        });
+
+        socket.on("message_edited",(editedMessage)=>{
+            setAllMessagesBwTwo(prev =>
+                prev.map(message =>
+                    message._id === editedMessage._id
+                    ? {
+                        ...message,
+                        ...editedMessage
+                    }
+                    : message
+                )
+            )
         })
 
         return () => {

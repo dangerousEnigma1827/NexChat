@@ -1,6 +1,7 @@
 import userModels from '../models/userModels.js'
 import conversationModels from '../models/conversationModels.js'
 import Message from '../models/messageModels.js'
+import io from '../server.js'
 
 export const conversationAdd = async (req,res) => {
     try{
@@ -147,7 +148,17 @@ export const setAllConversationToSeen = async (req,res)=> {
                 }
             }
         );
+
+        io.to(req.body.conversationId.toString())
+        .emit(
+            "messages_seen",
+            {
+                conversationId:req.body.conversationId,
+                userId:req.user.userId
+            }
+        )
+
     }catch(err){
-        console.log("erorr setting seen in bkd")
+        console.log("erorr setting seen in bkd", err)
     }
 }

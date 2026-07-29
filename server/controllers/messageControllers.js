@@ -21,10 +21,14 @@ export const sendMessage = async (req,res)=>{
                 returnDocument:"after"
             }
         )
-        console.log("msg sent to ", req.body.conversationId.toString())
-        console.log("msg is ", msg)
+
+        // console.log("msg sent to ", req.body.conversationId.toString())
+        // console.log("msg is ", msg)
 
         io.to(req.body.conversationId.toString()).emit("recieve_message", messageSent)
+
+
+        
         res.json(messageSent)
 
     }catch(err){
@@ -59,10 +63,10 @@ export const deleteFromBackendController = async (req, res) => {
             typeOf,
             messageToDelete,
             attachmentUrlForDeletion
-        } = req.body
+        } = req.body;
 
 
-        let updatedMessage
+        let updatedMessage;
 
 
         if(typeOf === "text"){
@@ -74,9 +78,9 @@ export const deleteFromBackendController = async (req, res) => {
                     isDeletedForEveryone:true
                 },
                 {
-                   returnDocument:"after"
+                    returnDocument:"after"
                 }
-            )
+            );
 
         }
 
@@ -85,8 +89,8 @@ export const deleteFromBackendController = async (req, res) => {
 
             updatedMessage = await Message.findOneAndUpdate(
                 {
-                    _id:messageToDelete,
-                    "attachments.url":attachmentUrlForDeletion
+                    _id: messageToDelete,
+                    "attachments.url": attachmentUrlForDeletion
                 },
                 {
                     $set:{
@@ -97,7 +101,7 @@ export const deleteFromBackendController = async (req, res) => {
                 {
                     returnDocument:"after"
                 }
-            )
+            );
 
         }
 
@@ -105,39 +109,74 @@ export const deleteFromBackendController = async (req, res) => {
         if(!updatedMessage){
             return res.status(404).json({
                 message:"Message not found"
-            })
+            });
         }
 
 
-        res.json(updatedMessage)
+        // emit deletion update to everyone in this conversation
+        io.to(updatedMessage.conversationId.toString())
+          .emit(
+              "message_deleted",
+              updatedMessage
+          );
+
+
+        res.json(updatedMessage);
 
 
     }catch(err){
 
-        console.log("error deleting message",err)
+        console.log("error deleting message",err);
+
+        res.status(500).json({
+            message:"Server error"
+        });
+
+    }
+};
+
+export const editMessageController = async (req,res)=>{
+    try{
+
+        let editedMessage = await Message.findByIdAndUpdate(
+            req.body.messageId,
+            {
+                $set:{
+                    text:req.body.editedText,
+                    isEdited:true
+                }
+            },
+            {
+                returnDocument:"after"
+            }
+        )
+
+
+        if(!editedMessage){
+            return res.status(404).json({
+                message:"Message not found"
+            })
+        }
+
+
+        // send update to everyone in conversation
+        io.to(editedMessage.conversationId.toString())
+          .emit(
+              "message_edited",
+              editedMessage
+          )
+
+
+        res.json(editedMessage)
+
+
+    }catch(err){
+
+        console.log("error editing message",err)
 
         res.status(500).json({
             message:"Server error"
         })
 
-    }
-}
-
-export const editMessageController = async (req,res)=>{
-    try{
-        let editFromBackend = await Message.findByIdAndUpdate(
-            req.body.messageId, 
-            {
-                $set:{
-                    text : req.body.editedText,
-                    isEdited:true
-                }
-            }, {returnDocument:"after"}
-        )
-        let recieverId = editFromBackend.recieverId;
-        io.to(recieverId).emit("recieve_message", editFromBackend)
-        res.json(editFromBackend)
-    }catch(err){
-        console.log("error occured editing message in backend", err)
     }
 }
