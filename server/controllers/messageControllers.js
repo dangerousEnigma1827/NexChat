@@ -135,6 +135,51 @@ export const deleteFromBackendController = async (req, res) => {
     }
 };
 
+export const deleteForMeController = async (req,res)=>{
+    try{
+
+        const {
+            messageToDelete
+        } = req.body;
+        
+        const userId = req.user.userId; // assuming auth middleware adds req.user
+
+        let updatedMessage = await Message.findByIdAndUpdate(
+            messageToDelete,
+            {
+                $addToSet:{
+                    deletedFor:userId
+                }
+            },
+            {
+                returnDocument:"after"
+            }
+        );
+
+
+        if(!updatedMessage){
+            return res.status(404).json({
+                message:"Message not found"
+            });
+        }
+
+        res.json({
+            message:"Deleted for me",
+            updatedMessage
+        });
+
+
+    }catch(err){
+
+        console.log("error deleting message for me",err);
+
+        res.status(500).json({
+            message:"Server error"
+        });
+
+    }
+}
+
 export const editMessageController = async (req,res)=>{
     try{
 

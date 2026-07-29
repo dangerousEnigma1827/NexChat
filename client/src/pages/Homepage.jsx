@@ -24,6 +24,7 @@ import CreateGroupPopup from '../Components/Popups/CreateGroupPopup.jsx';
 import SelectUsersForGroupPopup from '../Components/Popups/SelectUsersForGroupPopup.jsx';
 import SideOverlay from '../Components/SideOverlay.jsx';
 import ImagePreview from '../Components/Popups/ImagePreview.jsx';
+import DeleteForMePopup from '../Components/Popups/DeleteForMePopup.jsx';
 
 //context
 import { ConversationContext } from '../context/conversationContext.jsx';
@@ -93,6 +94,7 @@ function HomePage() {
     let [selectUsersForGroupPopupOpen, setSelectUsersForGroupPopupOpen] = useState(false)
     let [userProfilePopupOpen, setUserProfilePopupOpen] = useState(false)
     let [editProfilePopupOpen, setEditProfilePopupOpen] = useState(false)
+    let [deleteForMePopupOpen,setDeleteForMePopupOpen] = useState(false)
 
     let [dropdownOpen, setDropdownOpen] = useState(false);
     let [dropdownNextToNexChatIcon, setDropdownNextToNextChatIcon] = useState(false)
@@ -253,24 +255,38 @@ let handleDelete = async () => {
     }
 }
 
-    // let handleDeleteForMe = async () => {
-    //     try {
-    //         let typeOf = attachmentUrlForDeletion ? "attachment" : "text"
+   let handleDeleteForMe = async()=>{
+        try{
 
-    //         await api.delete('/messages/delete', {
-    //             data: {
-    //                 typeOf,
-    //                 messageToDelete,
-    //                 attachmentUrlForDeletion
-    //             },
-    //             headers: { Authorization: `Bearer ${token}` }
-    //         })
+            let res = await api.delete(
+                "/messages/deleteforme",
+                {
+                    data:{
+                        messageToDelete: messageToDelete
+                    },
+                    headers:{
+                        Authorization:`Bearer ${token}`
+                    }
+                }
+            )
 
-    //         getAllMessagesBwtwo()
-    //     } catch (err) {
-    //         console.log(err)
-    //     }
-    // }
+
+            // hide from current user only
+            setAllMessagesBwTwo(prev =>
+                prev.filter(
+                    message => message._id !== messageToDelete
+                )
+            )
+
+
+            setDeleteForMePopupOpen(false)
+            setDropArrowdownId(null)
+            setMessageToDelete(null)
+
+        }catch(err){
+            console.log(err)
+        }
+    }
 
     let handleEdit = async () => {
         try {
@@ -525,10 +541,24 @@ let handleDelete = async () => {
                 logoutPopupOpen && 
                 <LogoutPopup handleLogout={handleLogout} setLogoutPopupOpen={setLogoutPopupOpen}/>
             }
+
             {
                 deletePopupOpen && 
-                <DeletePopup handleDelete={handleDelete} setDeletePopupOpen={setDeletePopupOpen} setDropArrowdownId={setDropArrowdownId} setAttachmentUrlForDeletion={setAttachmentUrlForDeletion}/>
+                <DeletePopup 
+                handleDelete={handleDelete} 
+                setDeletePopupOpen={setDeletePopupOpen} setDropArrowdownId={setDropArrowdownId} setAttachmentUrlForDeletion={setAttachmentUrlForDeletion}/>
             }
+
+            {
+                deleteForMePopupOpen &&
+                <DeleteForMePopup
+                    handleDeleteForMe={handleDeleteForMe}
+                    messageToDelete={messageToDelete}
+                    setDeleteForMePopupOpen={setDeleteForMePopupOpen}
+                    setDropArrowdownId={setDropArrowdownId}
+                />
+            }
+
             {
                 clearChatPopupOpen && 
                 <ClearChatPopup setClearChatPopupOpen={setClearChatPopupOpen} setDropdownOpen={setDropdownOpen} handleClearChat={handleClearChat} getAllMessagesBwtwo={getAllMessagesBwtwo}/>
@@ -745,7 +775,10 @@ let handleDelete = async () => {
                                                         setMessageToDeleteTime={setMessageToDeleteTime}
                                                         setMessageToDeleteText={setMessageToDeleteText}
                                                         setImagePreviewOpen={setImagePreviewOpen}
-                                                        setPreviewSrc={setPreviewSrc}/>
+                                                        setPreviewSrc={setPreviewSrc}
+                                                        setDeleteForMePopupOpen={setDeleteForMePopupOpen}
+                                                        />
+                                                        
                                                 </div>
                                             )
                                         })

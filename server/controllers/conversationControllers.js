@@ -65,14 +65,30 @@ export const getAllConversations = async (req,res) => {
 
 export const getAllMessagesOfAConversation = async (req,res) => {
     try{
-        let allmessagesOfAConversationReq = await Message.find(
-            {
-                conversationId : req.params.conversationId
+
+        let userId = req.user._id; // from auth middleware
+
+        let allmessagesOfAConversationReq = await Message.find({
+            conversationId: req.params.conversationId,
+
+            // hide messages deleted for this user
+            deletedFor:{
+                $ne:userId
             }
-        ).populate('senderId')
+
+        })
+        .populate('senderId')
+        .sort({createdAt:1});
+
+
         res.json(allmessagesOfAConversationReq)
+
     }catch(err){
         console.log("error getting all messages of a convo", err)
+
+        res.status(500).json({
+            message:"Error getting messages"
+        })
     }
 }
 

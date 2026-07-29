@@ -19,7 +19,8 @@ function OneMessage({
   setMessageToDeleteTime,
   setMessageToDeleteText,
   setPreviewSrc,
-  setImagePreviewOpen, scrollRef
+  setImagePreviewOpen, scrollRef,
+  setDeleteForMePopupOpen
 }) {
 
   let {currentUserId} = useContext(UserContext)
@@ -27,7 +28,20 @@ function OneMessage({
 
   let {isconversationAGroup} = useContext(ConversationContext)
 
+  const isDeletedForMe = message.deletedFor?.some(
+      userId => 
+          String(userId) === String(currentUserId) ||
+          userId?._id === currentUserId
+  )
+
+  if(isDeletedForMe){
+      return null;
+  }
+
   return (
+
+    
+
     <div className={`flex w-full px-4 py-0.5 ${isMine ? "justify-end" : "justify-start"} mt-1`}>
       <div className={`flex flex-col max-w-[65%] ${isMine ? "items-end" : "items-start"}`}>
 
@@ -103,7 +117,7 @@ function OneMessage({
               )}
               <button
                 className="flex items-center w-full px-4 py-2.5 text-sm text-gray-400 hover:bg-[#232a3a] hover:text-white transition-colors"
-                onClick={() => setDeletePopupOpen(true)}
+                onClick={() => setDeleteForMePopupOpen(true)}
               >
                 Delete for me
               </button>
