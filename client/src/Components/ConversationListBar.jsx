@@ -135,7 +135,7 @@ function ConversationListBar({
                 key={conversation._id}
                 onClick={()=>{
                   if((conversation._id != conversationSelected) && (conversation.type==="private")){
-                    console.log(conversation._id, conversationSelected)
+                    console.log(user.about)
                     setUserSelectedIdIfNotGroup(user._id)
                     setConversationSelected(conversation._id)
                     setConversationId(conversation._id)
@@ -143,7 +143,6 @@ function ConversationListBar({
                     setConversationSelectedtedUsername(user.username)
                     setConversationSelectedtedPfp(user.pfp)
                     setConversationSelectedtedAbout(user.about)
-
                   }else{
                     if((conversation._id != conversationSelected)){
                         setUserSelectedIdIfNotGroup(null)

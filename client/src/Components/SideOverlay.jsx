@@ -169,20 +169,23 @@ function SideOverlay({
           )}
 
 
-          {/* {!isconversationAGroup && (
-            <div className="mt-4 flex flex-col flex-1 overflow-y-auto pr-1 space-y-2">
-              <div className="bg-[#1b1f30] rounded-xl border border-[#1d2230] p-3">
-              <SectionLabel label={"ABOUT"} />
-                <div className="flex items-center gap-3 px-1 py-1">
+          {/* About (private only) */}
+          {!isconversationAGroup && (
+            <div className="flex flex-col">
+              <div className="bg-[#1b1f30] rounded-lg border border-[#1d2230] p-3">
+                <SectionLabel label={"About"} icon={FileText} />
 
+                <div className="flex items-center gap-3 px-1">
                   <div className="min-w-0">
-                    <p className="text-[13px] text-white truncate">{conversationSelectedtedAbout}</p>
+                    <p className="text-[13px] text-gray-300 leading-relaxed break-words">
+                      {conversationSelectedtedAbout || `I am ${conversationSelectedUsername}`}
+                    </p>
                   </div>
-
                 </div>
+
               </div>
             </div>
-          )} */}
+          )}
 
           {isconversationAGroup && (
             <div className="flex flex-col">
