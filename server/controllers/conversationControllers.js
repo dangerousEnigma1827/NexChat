@@ -95,9 +95,14 @@ export const getAllMessagesOfAConversation = async (req,res) => {
 export const getAllSingleUsers = async (req,res)=>{
     try{
 
+            
+        console.log("hello")
+        console.log(req.user.userId)
         let allSingleUsersReq = await conversationModels.find({
             participants: req.user.userId
         }).populate('participants')
+
+        console.log("single users are ", allSingleUsersReq)
 
         let allSingleUsersArr = []
 

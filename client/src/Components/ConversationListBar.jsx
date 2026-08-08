@@ -130,6 +130,7 @@ function ConversationListBar({
 
             const isActive = conversation._id === conversationSelected
 
+            console.log(conversation)
             return (
               <div
                 key={conversation._id}
@@ -216,24 +217,22 @@ function ConversationListBar({
                   </div>
 
                   <p className="text-[12.5px] text-gray-500 truncate mt-0.5">
-
                     {
-                      conversation.lastMessageSent
-                      ?
-                      conversation.lastMessageSent.senderId._id === currentUserId
-                      ?
-                      `You: ${conversation.lastMessageSent.text}`
-                      :
-                      conversation.type==="private"
-                      ?
-                      `${user?.username}: ${conversation.lastMessageSent.text}`
-                      :
-                      `${conversation.lastMessageSent.senderId.username}: ${conversation.lastMessageSent.text}`
-                      :
-                      "No messages yet"
+                        conversation.lastMessageSent
+                        ?
+                        conversation.lastMessageSentBy?._id === currentUserId
+                        ?
+                        `You: ${conversation.lastMessageSent.text}`
+                        :
+                        conversation.type === "private"
+                        ?
+                        `${user?.username}: ${conversation.lastMessageSent.text}`
+                        :
+                        `${conversation.lastMessageSentBy?.username}: ${conversation.lastMessageSent.text}`
+                        :
+                        "No messages yet"
                     }
-
-                  </p>
+                </p>
 
                 </div>
 

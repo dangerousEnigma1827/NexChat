@@ -1,5 +1,6 @@
 // SelectUsersForGroupPopup.jsx
 import axios from 'axios'
+import api from '../../api/apiInstance'
 import React, { useContext, useEffect, useState } from 'react'
 import { ArrowLeftIcon, Search, X, UsersIcon, Loader2 } from 'lucide-react'
 import { UserContext } from '../../context/userContext'
@@ -28,18 +29,8 @@ function SelectUsersForGroupPopup({
     const handleAllSingleUsers = async () => {
         try {
             setLoading(true)
-
-            const res = await axios.get(
-                'http://localhost:5000/api/conversations/getAllSingleUsers',
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            )
-
+            const res = await api.get('/conversations/getAllSingleUsers')
             setAllSingleUsers(res.data)
-
         } catch (err) {
             console.log("error getting all single users in frontend", err)
         } finally {

@@ -196,6 +196,9 @@ function HomePage() {
             setText("")
             setAttachments([])
             setImageBlobs([])
+
+
+            getAllConversationsInFr();
         } catch(err) {
             console.log(err)
         }

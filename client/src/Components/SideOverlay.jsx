@@ -132,18 +132,16 @@ function SideOverlay({
             </div>
           }
 
-            {!isconversationAGroup ? <span className={`absolute bottom-1 right-1 w-3.5 h-3.5 rounded-full border-[3px] border-[#212634] ${isOnline ? "bg-emerald-400" : "bg-gray-600"}`} /> : ""}
+            {/* {!isconversationAGroup ? <span className={`absolute bottom-1 right-1 w-3.5 h-3.5 rounded-full border-[3px] border-[#212634] ${isOnline ? "bg-emerald-400" : "bg-gray-600"}`} /> : ""} */}
           </div>
 
           <h2 className="text-[17px] font-semibold text-white leading-tight tracking-tight">
             {conversationSelectedUsername}
           </h2>
 
-          {!isconversationAGroup ? <span className={`text-[12px] font-medium mt-1 flex items-center gap-1.5 ${
-            isOnline ? "text-emerald-400" : "text-gray-500"
-          }`}>
+          {!isconversationAGroup ? <span className={`text-[12px] font-medium mt-1 flex items-center gap-1.5`}>
             <span className={`w-1.5 h-1.5 rounded-full ${isOnline ? "bg-emerald-400" : "bg-gray-600"}`} />
-            {isOnline ? "Online" : "Offline"}
+            {/* {isOnline ? "Online" : "Offline"} */}
           </span> : ""}
 
           {isconversationAGroup && groupMembers && (
@@ -245,10 +243,10 @@ function SideOverlay({
                       }
 
                     </div>
-                    {conversation.type === "private" &&
+                    {/* {conversation.type === "private" &&
                       onlineUsers.includes(conversation._id) && (
                         <div className="absolute bottom-0 right-0 h-2.5 w-2.5 bg-emerald-400 rounded-full border-2 border-[#1b1f30]" />
-                      )}
+                      )} */}
                   </div>
 
                     <div className="flex flex-col min-w-0 flex-1">
