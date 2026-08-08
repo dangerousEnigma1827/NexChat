@@ -313,6 +313,8 @@ let handleDelete = async () => {
 
             setEditPopupOpen(false)
             setDropArrowdownId(null)
+
+            
         } catch (err) {
             console.log(err)
         }
